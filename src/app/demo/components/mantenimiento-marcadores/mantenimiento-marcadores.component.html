@@ -1,0 +1,83 @@
+<div style="margin: 10px;">
+    <p-panel header="Mantenimiento de Marcadores">
+        <p-breadcrumb class="max-w-full" [model]="items"></p-breadcrumb>
+        <br>
+    </p-panel>
+</div>
+
+<br>
+
+<div>
+    <p-table
+        #dt1
+        [value]="marcadores"
+        dataKey="CodigoMarcador"
+        editMode="row"
+        [paginator]="true"
+        [rows]="5"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [loading]="loading"
+        [tableStyle]="'min-width: 75rem'">
+
+        <!-- Columnas filtros -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Código Marcador</th>
+                <th>Descripción Marcador</th>
+                <th>IP</th>
+                <th>Código Equipo</th>
+                <th>Nombre Equipo</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <!-- Cuerpo de la tabla -->
+        <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="rowData">
+                <td>{{ rowData.CodigoMarcador }}</td>
+                <td>{{ rowData.DescripcionMarcador }}</td>
+                <td>{{ rowData.IP }}</td>
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.CodigoEquipo" required>
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.CodigoEquipo }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.NombreEquipo">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.NombreEquipo }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>
+                    <div class="flex justify-content-center align-items-center gap-2">
+                        <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(rowData)" class="p-button-rounded p-button-text"></button>
+                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(rowData, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+                    </div>
+                </td>
+                <td>
+                    <div div class="flex justify-content-center align-items-center gap-2">
+                        <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text" (click)="clearEquipmentFields(rowData)"></button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <!-- Mensaje vacío -->
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="6">No se encontraron registros.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

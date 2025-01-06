@@ -1,0 +1,79 @@
+<p-confirmDialog></p-confirmDialog>
+<div style="margin: 10px;">
+    <p-panel header="Usuarios">
+      <p-breadcrumb class="max-w-full" [model]="items"></p-breadcrumb>
+    </p-panel>
+  </div>
+
+  <div style="margin: 10px">
+    <!-- Formulario de registro -->
+    <form [formGroup]="usuarioForm" (ngSubmit)="selectedUsuario ? updateUsuario() : createUsuario()">
+        <div class="p-fluid grid">
+            <div class="field col-12 md:col-3">
+                <label>.</label>
+                <br>
+                <button type="button" pButton icon="pi pi-plus" class="submit-button p-button-sm" style="width: 20%;" (click)="enableForm()" [disabled]="!buttonStates.add"></button>
+                <button type="button" pButton icon="pi pi-pencil" class="submit-button p-button-sm" style="width: 20%;" (click)="editMode()" [disabled]="!buttonStates.edit"></button>
+                <button type="button" pButton icon="pi pi-trash" class="submit-button p-button-sm" style="width: 20%;" (click)="enableDeleteMode()"  [disabled]="!buttonStates.delete"></button>
+                <button type="submit" pButton icon="pi pi-save" class="submit-button p-button-sm" style="width: 20%;" [disabled]="!buttonStates.save"></button>
+                <button type="button" pButton icon="pi pi-times" class="submit-button p-button-sm" style="width: 20%;" (click)="cancelAction()" [disabled]="!buttonStates.cancel"></button>
+            </div>
+        </div>
+        <div class="p-fluid grid">
+
+            <div class="field col-12 md:col-3">
+                <label for="idUsuario">ID Usuario</label>
+                <br>
+                <input id="idUsuario" type="text" pInputText formControlName="idUsuario" class="p-field" style="width: 90%;" placeholder="Ingrese un nombre de usuario" />
+            </div>
+
+            <div class="field col-12 md:col-3">
+                <label for="clave">Contraseña</label>
+                <div class="password-field">
+                    <input id="clave" type="password" pInputText formControlName="Clave" [type]="showPassword ? 'text' : 'password'" class="p-field" style="width: 80%;"
+                    placeholder="Ingrese su contraseña"/>
+                    <button type="button" pButton icon="pi pi-eye" (click)="togglePassword()" class="password-toggle"></button>
+                </div>
+            </div>
+
+            <div class="field col-12 md:col-3">
+                <label for="perfil">Perfil</label>
+                <br>
+                <p-dropdown [options]="perfiles" formControlName="Perfil" class="p-field" placeholder="Seleccione un perfil" [showClear]="true"></p-dropdown>
+            </div>
+
+        </div>
+    </form>
+    <p-toast></p-toast>
+    <!-- Tabla usuarios  (onRowSelect)="confirmDelete($event.data)"-->
+    <p-card>
+        <p-table
+            [value]="usuarios"
+            [loading]="loading"
+            dataKey="idUsuario"
+            [paginator]="true"
+            [rows]="5"
+            [rowsPerPageOptions]="[5, 10, 20]"
+            [tableStyle]="'min-width: 50rem'"
+            [selectionMode]="tableDisabled ? null : 'single'"
+            [(selection)]="selectedUsuario"
+            (onRowSelect)="onRowSelect($event.data)"
+            [ngClass]="{'disabled-table': tableDisabled,'row-selected':selectedUsuario}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>ID Usuario</th>
+                    <th>Perfil</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData>
+                <tr [pSelectableRow]="rowData">
+                    <td>{{ rowData.idUsuario }}</td>
+                    <td>{{ rowData.Perfil }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+  </div>
+
+
+

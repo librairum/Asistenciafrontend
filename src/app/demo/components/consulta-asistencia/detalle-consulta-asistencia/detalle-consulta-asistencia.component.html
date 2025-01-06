@@ -1,0 +1,67 @@
+<router-outlet></router-outlet>
+<div style="margin: 10px;">
+    <p-panel header="Detalle de Asistencia">
+        <div>
+            <p-breadcrumb class="max-w-full" [model]="breadcrumbs">
+                <ng-template #item let-item>
+                    <ng-container *ngIf="item.routerLink; else elseBlock">
+                        <a [routerLink]="item.routerLink" class="p-breadcrumb-item-link">
+                            <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
+                            <span class="text-primary font-semibold">{{ breadcrumbs.label }}</span>
+                        </a>
+                    </ng-container>
+                    <ng-template #elseBlock>
+                        <a [href]="item.url">
+                            <span class="text-color">{{ item.label }}</span>
+                        </a>
+                    </ng-template>
+                </ng-template>
+            </p-breadcrumb>
+        </div>
+        <br>
+        <br>
+        <div class="grid align-items-center">
+            <div style="width: 100%;">  <!-- Agrega esta clase o estilo para el ancho completo -->
+                <p-table [value]="asistencia ? [asistencia] : []" [lazy]="true">  <!-- Establece ancho 100% -->
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th>Item</th>
+                        <th>Fecha</th>
+                        <th>Día</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Salida</th>
+                        <th></th>
+                        <th>Horas 25</th>
+                        <th>Horas 35</th>
+                        <th>Horas 60</th>
+                        <th>Horas 100</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData>
+                      <tr>
+                        <td>{{ rowData.codigo }}</td>
+                        <td>{{ rowData.Fecha | date: 'yyyy-MM-dd' }}</td>
+                        <td>{{ getDayOfWeek(rowData.Fecha) }}</td>
+                        <td>{{ rowData.Marcacion_Entrada }}</td>
+                        <td>{{ rowData.Marcacion_Salida }}</td>
+                        <td></td>
+                        <td>{{ rowData.Hrs_25 }}</td>
+                        <td>{{ rowData.Hrs_35 }}</td>
+                        <td>{{ rowData.Hrs_60 }}</td>
+                        <td>{{ rowData.Hrs_100 }}</td>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                      <tr>
+                        <td colspan="6" style="text-align: right; font-weight: bold;">Totales:</td>
+                        <td>{{ calculateTotal('Hrs_25') }}</td>
+                        <td>{{ calculateTotal('Hrs_35') }}</td>
+                        <td>{{ calculateTotal('Hrs_60') }}</td>
+                        <td>{{ calculateTotal('Hrs_100') }}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+            </div>
+        </div>
+    </p-panel>
+</div>

@@ -1,0 +1,214 @@
+<div style="margin:10px;">
+    <p-panel header="Consulta de Asistencia">
+        <p-breadcrumb class="max-w-full" [model]="items" />
+        <br>
+        <div class="grid align-items-center">
+            <!-- Fecha de Inicio -->
+            <div class="col-3" style="text-align: center;">
+                <div class="field">
+                    <label for="startDate" class="mr-2 font-medium text-gray-700">Fecha de Inicio</label>
+                    <br>
+                    <p-calendar
+                        dateFormat="yy-mm-dd"
+                        [maxDate]="minStartDate"
+                        [(ngModel)]="startDate"
+                        inputId="startDate"
+                        class="w-full"
+                        placeholder="Selecciona una fecha"
+                        [showIcon]="true"
+                        (onDateSelect)="validateDates()">
+                    </p-calendar>
+                </div>
+            </div>
+            <!-- Fecha Fin -->
+            <div class="col-3" style="text-align: center;">
+                <div class="field">
+                    <label for="endDate" class="mr-2 font-medium text-gray-700">Fecha Fin</label>
+                    <br>
+                    <p-calendar
+                        dateFormat="yy-mm-dd"
+                        [(ngModel)]="endDate"
+                        [maxDate]="maxEndDate"
+                        inputId="endDate"
+                        class="w-full"
+                        placeholder="Selecciona una fecha"
+                        [showIcon]="true"
+                        (onDateSelect)="validateDates()">
+                    </p-calendar>
+                </div>
+            </div>
+            <!-- Planilla -->
+            <div class="col-3" style="text-align: center;">
+                <div class="field">
+                    <label for="planilla" class="mr-2 font-medium text-gray-700">Planilla</label>
+                    <br>
+                    <p-dropdown optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecciona la planilla" class="w-full">
+                        <ng-template pTemplate="selectedItem">
+                            <div class="country-item country-item-value" *ngIf="selectedCountry">
+                                <div>{{ selectedCountry.name }}</div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-country pTemplate="item">
+                            <div class="country-item">
+                                <div>{{ country.name }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+            </div>
+            <!-- Botón Buscar -->
+            <div class="col-3">
+                <div class="field" style="text-align: center;">
+                    <button pButton type="button" label="Buscar" icon="pi pi-search" (click)="buscar()" class="w-auto p-button-sm"></button>
+                </div>
+            </div>
+        </div>
+
+
+    </p-panel>
+</div>
+<br>
+    <div>
+        <p-table
+    #dt1
+    [value]="asistencia"
+    [columns]="columnas"
+    dataKey="item"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [paginator]="true"
+    [lazy]="true"
+    [loading]="loading"
+    [globalFilterFields]="columnsGlobalFilterFields"
+    [tableStyle]="'min-width: 75rem'">
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Item</th>
+            <th style="max-width: 150px; min-width: 100px;">Trabajador</th>
+            <th style="max-width: 150px; min-width: 100px;">Días</th>
+            <th>Hrs 25</th>
+            <th>Hrs 35</th>
+            <th>Hrs 60</th>
+            <th>Hrs 100</th>
+            <th>Acciones</th>
+        </tr>
+        <tr>
+
+        <th style="max-width: 110px; min-width: 100px;">
+            <p-columnFilter
+            type="text"
+            field="codigo"
+            placeholder="Codigo"
+            ariaLabel="Filter code"
+            [showMenu]="false">
+            </p-columnFilter>
+        </th>
+        <th style="max-width: 150px; min-width: 100px;">
+            <p-columnFilter
+            type="text"
+            field="Apellidos_y_Nombres"
+            placeholder="Busca por nombre"
+            ariaLabel="Filter Apellidos y Nombres"
+            [showMenu]="false">
+            </p-columnFilter>
+        </th>
+        <th style="max-width: 150px; min-width: 100px;">
+            <p-columnFilter
+            type="text"
+            field="Fecha"
+            placeholder="Busca por fecha"
+            ariaLabel="Filter Fecha"
+            [showMenu]="false">
+            </p-columnFilter>
+        </th>
+        <th>
+        </th>
+        <th>
+        </th>
+        <th>
+        </th>
+        <th>
+        </th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-asistencia>
+        <tr>
+        <td>{{ asistencia.codigo }}</td>
+        <td>{{ asistencia.Apellidos_y_Nombres }}</td>
+        <td>{{ asistencia.Fecha | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ asistencia.Hrs_25 }}</td>
+        <td>{{ asistencia.Hrs_35 }}</td>
+        <td>{{ asistencia.Hrs_60 }}</td>
+        <td>{{ asistencia.Hrs_100 }}</td>
+        <td>
+            <button pButton icon="pi pi-eye" (click)="viewDetails(asistencia)" label="Ver Detalles"></button>
+        </td>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+        <tr>
+        <td colspan="8">No se encontraron registros.</td>
+        </tr>
+    </ng-template>
+    </p-table>
+
+    <!-- Outlet para cargar los detalles en la subruta -->
+    <router-outlet></router-outlet>
+</div>
+
+<!-- Modal del detalle <ng-template #footer>
+          <p-dialog
+    [(visible)]="showDetailsDialog"
+    header="Detalles de Asistencia"
+    [modal]="true"
+    [closable]="true"
+    [style]="{ width: '80vw' }">
+
+    <p-table [value]="selectedAsistencia ? [selectedAsistencia] : []" [style]="{ 'width': '100%' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Item</th>
+                <th>Fecha</th>
+                <th>Día</th>
+                <th>Hora Inicio</th>
+                <th>Hora Salida</th>
+                <th></th>
+                <th>Horas 25</th>
+                <th>Horas 35</th>
+                <th>Horas 60</th>
+                <th>Horas 100</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+            <tr>
+                <td>{{ rowData.codigo }}</td>
+                <td>{{ rowData.Fecha | date: 'yyyy-MM-dd' }}</td>
+                <td>{{ getDayOfWeek(rowData.Fecha) }}</td>
+                <td>{{ rowData.Marcacion_Entrada }}</td>
+                <td>{{ rowData.Marcacion_Salida }}</td>
+                <td></td>
+                <td>{{ rowData.Hrs_25 }}</td>
+                <td>{{ rowData.Hrs_35 }}</td>
+                <td>{{ rowData.Hrs_60 }}</td>
+                <td>{{ rowData.Hrs_100 }}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <tr>
+                <td colspan="6" style="text-align: right; font-weight: bold;">Totales:</td>
+                <td>{{ calculateTotal('Hrs_25') }}</td>
+                <td>{{ calculateTotal('Hrs_35') }}</td>
+                <td>{{ calculateTotal('Hrs_60') }}</td>
+                <td>{{ calculateTotal('Hrs_100') }}</td>
+            </tr>
+        </ng-template>
+
+    </p-table>
+</p-dialog>
+</ng-template> -->
+
+
+
