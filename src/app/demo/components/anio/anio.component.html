@@ -9,7 +9,7 @@
   <div class="card">
     <div class="flex justify-content-start mb-3">
       <button type="button" pButton icon="pi pi-plus" label="Nuevo"
-              (click)="showAddRow()" class="p-button-sm"></button>
+              (click)="showAddRow()" [disabled]="isEditingAnyRow" class="p-button-sm"></button>
     </div>
 
     <p-table [value]="mAnioList" dataKey="pla61Codigo" editMode="row"
@@ -40,23 +40,21 @@
                     {{ anio.pla61Codigo }}
                 </div>
             </td>
-            <td [pEditableColumn]="anio.pla61Descripcion" [pEditableColumnField]="'pla61Descripcion'">
-                <p-cellEditor>
-                    <ng-template pTemplate="input">
-                        <div class="p-inputgroup">
-                        <input pInputText type="text" [(ngModel)]="anio.pla61Descripcion" class="p-inputtext-sm" required>
-                        </div>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                        {{anio.pla61Descripcion}}
-                    </ng-template>
-                </p-cellEditor>
+            <td>
+                <div *ngIf="!editing">
+                    {{ anio.pla61Descripcion }}
+                </div>
+                <div *ngIf="editing">
+                    <input pInputText type="text" [(ngModel)]="anio.pla61Descripcion"
+                           class="p-inputtext-sm w-full" required>
+                </div>
             </td>
             <td>
                 <div class="flex justify-content-center gap-2">
                 <button *ngIf="!editing" pButton pInitEditableRow
                         (click)="onRowEditInit(anio)"
                         icon="pi pi-pencil"
+                        [disabled]="isNew || isEditingAnyRow"
                         class="p-button-rounded p-button-text p-button-sm"></button>
                 <button *ngIf="editing" pButton pSaveEditableRow
                         (click)="onRowEditSave(anio)"
@@ -69,6 +67,7 @@
                 <button *ngIf="!editing" pButton type="button"
                         (click)="onDelete(anio, ri)"
                         icon="pi pi-trash"
+                        [disabled]="isNew || isEditingAnyRow"
                         class="p-button-rounded p-button-text p-button-sm p-button-danger"></button>
                 </div>
             </td>
