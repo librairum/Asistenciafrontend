@@ -45,6 +45,12 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
+                label: 'Perfil',
+                items: [
+                    { label: 'Mantenimiento de Perfil', icon: 'pi pi-fw pi-user-edit', routerLink: ['perfil'] }
+                ]
+            },
+            {
                 label: 'Home',
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/Menu'] }
