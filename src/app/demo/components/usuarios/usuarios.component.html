@@ -107,7 +107,7 @@
                                 icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm"
                                 [disabled]="isNew || isEditingAnyRow"></button>
                             <button *ngIf="editing" pButton pSaveEditableRow (click)="onRowEditSave(rowData)"
-                                icon="pi pi-check"
+                                icon="pi pi-save"
                                 class="p-button-rounded p-button-text p-button-sm p-button-success" [disabled]="!isPasswordValid(rowData)"></button>
                             <button *ngIf="editing" pButton pCancelEditableRow (click)="onRowEditCancel(rowData, ri)"
                                 icon="pi pi-times"
