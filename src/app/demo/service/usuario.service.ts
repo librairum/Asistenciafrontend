@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { Usuario, UsuarioCrear } from '../model/Usuario';
+import { ListarPerfil, Usuario, UsuarioCrear } from '../model/Usuario';
 import { ApiResponse } from '../model/api_response';
 
 
@@ -9,9 +9,14 @@ import { ApiResponse } from '../model/api_response';
     providedIn: 'root'
 })
 export class UsuarioService {
-    private apiUrl = 'https://104.225.142.105/Usuario';
-
+    private apiUrl = 'https://localhost:7089/Usuario';
+    private apiUrlPerfil = 'https://localhost:7089/Perfil';
     constructor(private http: HttpClient) { }
+
+    getAllPerfil(): Observable<ListarPerfil[]> {
+        return this.http.get<ApiResponse<ListarPerfil>>(`${this.apiUrlPerfil}/SpList`)
+            .pipe(map(response => response.data));
+    }
 
     //listar usuarios
     getAll(): Observable<Usuario[]> {

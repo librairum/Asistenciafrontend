@@ -13,3 +13,8 @@ export interface UsuarioCrear{
     codigoPerfil:string,
     codigoempresa:string
 }
+export interface ListarPerfil{
+    codigo:string,
+    nombre: string,
+    descripcion: string
+}

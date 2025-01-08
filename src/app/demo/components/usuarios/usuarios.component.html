@@ -93,8 +93,16 @@
                             {{ rowData.nomPerfil }}
                         </div>
                         <div *ngIf="editing">
-                            <p-dropdown [options]="perfiles" [(ngModel)]="rowData.codigoperfil" class="p-field"
-                                required></p-dropdown>
+                            <!-- <p-dropdown [options]="perfiles" [(ngModel)]="rowData.codigoperfil" class="p-field"
+                                required></p-dropdown> -->
+                                <p-dropdown
+                                [options]="perfil"
+                                optionLabel="nombre"
+                                optionValue="codigo"
+                                (onchange)="onPerfilChange($event)"
+                                [(ngModel)]="rowData.codigoperfil"
+                                >
+                                </p-dropdown>
                         </div>
                     </td>
 
@@ -131,6 +139,13 @@
                                         style="width: 80%;" placeholder="ID Usuario" />
                                 </span>
                             </div>
+                            <div class="mb-3" style="flex: 1; margin-bottom: 15px;">
+                                <span class="p-input-icon-left w-full">
+                                    <i class="pi pi-tag"></i>
+                                    <input id="nombreUsuario" pInputText formControlName="nombreUsuario" class="p-field"
+                                        style="width: 80%;" placeholder="nombre Usuario" />
+                                </span>
+                            </div>
 
                             <div class="mb-3" style="flex: 1; margin-bottom: 15px;">
                                 <span class="p-input-icon-left w-full">
@@ -143,15 +158,25 @@
                                     </div>
                                 </span>
                             </div>
-
-                            <div class="mb-3" style="flex: 1; margin-bottom: 15px;">
+                            <div style="flex: 2.1;">
+                                <p-dropdown
+                                [options]="perfil"
+                                formControlName="codigoPerfil"
+                                optionLabel="nombre"
+                                optionValue="codigo"
+                                (onchange)="onPerfilChange($event)"
+                                [(ngModel)]="selectPerfil"
+                                >
+                                </p-dropdown>
+                            </div>
+                            <!-- <div class="mb-3" style="flex: 1; margin-bottom: 15px;">
                                 <span class="p-input-icon-left w-full">
                                     <i class="pi pi-file"></i>
                                     <p-dropdown [options]="perfiles" formControlName="codigoPerfil" class="p-field"
                                         placeholder="Seleccione un perfil" [showClear]="true"
                                         appendTo="body"></p-dropdown>
                                 </span>
-                            </div>
+                            </div> -->
 
                             <div class="mb-3" style="flex: 0; margin-bottom: 15px;">
                                 <div class="flex gap-2 justify-content-end">

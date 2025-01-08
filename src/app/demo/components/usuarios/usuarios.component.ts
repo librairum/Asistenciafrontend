@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Usuario, UsuarioCrear } from '../../model/Usuario';
+import { ListarPerfil, Usuario, UsuarioCrear } from '../../model/Usuario';
 import { UsuarioService } from '../../service/usuario.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -40,14 +40,28 @@ export class UsuariosComponent implements OnInit {
     items: any[] = [];
     passwordVisible: boolean = false;
     isEditingAnyRow: boolean = false;
-    
-    
-    perfiles = [
-        { label: 'Administrador', value: '03' },
-        { label: 'Estándar', value: '04' },
-    ];
+    perfil: ListarPerfil[] = [];
+    selectPerfil: string | null = null;
+    perfilesL: string[] = [];
+
+    // perfiles = [
+    //     { label: 'Administrador', value: '03' },
+    //     { label: 'Estándar', value: '04' },
+    // ];
 
     constructor(private fb: FormBuilder, private uS: UsuarioService, private mS: MessageService, private confirmationsService: ConfirmationService, private bS: BreadcrumbService) { }
+    loadPerfiles() {
+        this.uS.getAllPerfil()
+            .subscribe(
+                (data: ListarPerfil[]) => {
+                    this.perfil = data;
+                    console.log('perfiles: ',data)
+                },
+            );
+    }
+    onPerfilChange(event:any){
+        this.selectPerfil=event.value;
+    }
 
     ngOnInit(): void {
         this.bS.setBreadcrumbs([
@@ -59,10 +73,12 @@ export class UsuariosComponent implements OnInit {
         })
         this.initForm();
         this.loadUsuario();
+        this.loadPerfiles();
     }
     initForm() {
         this.UsuarioForm = this.fb.group({
             codigo: ['', Validators.required],
+            nombreUsuario: ['', Validators.required],
             claveUsuario: ['', Validators.required],
             codigoPerfil: ['', Validators.required],
         });
@@ -76,21 +92,21 @@ export class UsuariosComponent implements OnInit {
                 },
             });
     }
-    onRowEditInit(usuario: Usuario,index: number) {
+    onRowEditInit(usuario: Usuario, index: number) {
         this.editingRowIndex = index;
         this.editingUsuario = { ...usuario }
-        this.isEditingAnyRow=true;
+        this.isEditingAnyRow = true;
     }
     //Actualizar datos
     onRowEditSave(rowData: any) {
         if (rowData) {
             const updUsuario: UsuarioCrear = {
-                codigo: rowData.codigousuario,       
-                cuentaCod: '0000001',                  
-                nombreUsuario: rowData.nombreUsuario,  
-                claveUsuario: rowData.claveUsuario,   
-                codigoPerfil: rowData.codigoperfil,    
-                codigoempresa: '00001'           
+                codigo: rowData.codigousuario,
+                cuentaCod: '0000001',
+                nombreUsuario: rowData.nombreUsuario,
+                claveUsuario: rowData.claveUsuario,
+                codigoPerfil: rowData.codigoperfil,
+                codigoempresa: '00001'
             };
 
             this.uS.update(updUsuario).subscribe({
@@ -98,6 +114,8 @@ export class UsuariosComponent implements OnInit {
                     this.editingUsuario = null;
                     this.isEditingAnyRow = false;
                     this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro actualizado' });
+                    this.loadPerfiles();
+                    this.loadUsuario();
                 },
                 error: () => {
                     this.mS.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar' });
@@ -115,7 +133,7 @@ export class UsuariosComponent implements OnInit {
     }
     showAddRow() {
         this.isEditing = true;
-        this.isNew=true;
+        this.isNew = true;
         this.UsuarioForm.reset();
     }
     onSave() {
@@ -127,13 +145,12 @@ export class UsuariosComponent implements OnInit {
             const newUsuario: UsuarioCrear = {
                 ...formData,
                 cuentaCod: '0000001',
-                nombreUsuario: 'prueba',
                 codigoempresa: '00001'
             };
             this.uS.create(newUsuario).subscribe({
                 next: () => {
                     this.isEditing = false;
-                    this.isNew=false;
+                    this.isNew = false;
                     this.UsuarioForm.reset();
                     this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado' });
                     this.loadUsuario();
@@ -148,7 +165,7 @@ export class UsuariosComponent implements OnInit {
 
     onCancel() {
         this.isEditing = false;
-        this.isNew=false;
+        this.isNew = false;
         this.UsuarioForm.reset();
     }
 
@@ -178,7 +195,7 @@ export class UsuariosComponent implements OnInit {
     togglePassword(): void {
         this.showPassword = !this.showPassword;
     }
-    ocultarTexto(rowData: any){
+    ocultarTexto(rowData: any) {
         const claveUsuario = String(rowData.claveUsuario);
         return '•'.repeat(claveUsuario.length);
     }
