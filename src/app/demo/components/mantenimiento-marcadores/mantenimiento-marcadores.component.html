@@ -64,10 +64,10 @@
 
                 <td>
                     <div class="flex justify-content-center gap-2">
-                        <button [disabled]="rowData.marcadorClienteCod!=''" *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(rowData, ri)" class="p-button-rounded p-button-text"></button>
+                        <button  *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(rowData, ri)" class="p-button-rounded p-button-text"></button>
                         <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-save" (click)="onRowEditSave(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
                         <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(rowData, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
-                        <button [disabled]="rowData.marcadorClienteCod==''" *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="onDeleteMarcador(rowData)" class="p-button-rounded p-button-danger p-button-text"></button>
+                        <button  *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="onDeleteMarcador(rowData)" class="p-button-rounded p-button-danger p-button-text"></button>
                     </div>
                 </td>
             </tr>

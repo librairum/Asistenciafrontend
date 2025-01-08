@@ -9,7 +9,7 @@ import { ApiResponse } from '../model/api_response';
     providedIn: 'root',
 })
 export class MarcadorService {
-    private apiUrl = 'https://localhost:7089/Marcador';
+    private apiUrl = 'http://104.225.142.105:2060/Marcador';
 
     constructor(private http: HttpClient) {}
 
@@ -24,11 +24,11 @@ export class MarcadorService {
             .pipe(
                 map((response) => response.item || ''),
                 catchError((error) => {
-                    console.error('Error al crear el perfil:', error);
+                    console.error('Error al crear:', error);
                     return throwError(
                         () =>
                             new Error(
-                                'No se pudo crear el perfil. Intente nuevamente.'
+                                'No se pudo crear. Intente nuevamente.'
                             )
                     );
                 })
