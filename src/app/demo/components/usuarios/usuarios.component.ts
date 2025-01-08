@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Usuario } from '../../model/Usuario';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Usuario, UsuarioCrear } from '../../model/Usuario';
 import { UsuarioService } from '../../service/usuario.service';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
@@ -17,305 +17,173 @@ import { BreadcrumbService } from '../../service/breadcrumb.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
-  selector: 'app-usuarios',
-  standalone: true,
-  imports: [CardModule,ReactiveFormsModule,CommonModule,TableModule,ButtonModule,InputTextModule,ToastModule,DropdownModule,InputMaskModule,PanelModule,BreadcrumbModule,ConfirmDialogModule],
-  templateUrl: './usuarios.component.html',
-  styleUrl: './usuarios.component.scss',
-  providers:[MessageService,ConfirmationService]
+    selector: 'app-usuarios',
+    standalone: true,
+    imports: [CardModule, ReactiveFormsModule, ReactiveFormsModule, CommonModule, TableModule, ButtonModule, InputTextModule, ToastModule, DropdownModule, InputMaskModule, PanelModule, BreadcrumbModule, ConfirmDialogModule, FormsModule],
+    templateUrl: './usuarios.component.html',
+    styleUrl: './usuarios.component.scss',
+    providers: [MessageService, ConfirmationService]
 })
 export class UsuariosComponent implements OnInit {
-    usuarios:Usuario[]=[];
-    loading:boolean = false;
-    usuarioForm:FormGroup;
-    selectedUsuario:Usuario |null = null;
-    showPassword:boolean = false;
-    formDisabled:boolean = true;
-    tableDisabled:boolean = true;
-    items:any[] = [];
-    currentMode:'edit' | 'delete' | null=null;
-    buttonStates = {
-        add: true,
-        save: false,
-        edit: true,
-        delete: true,
-        cancel: false
-    };
-
-    perfiles=[
-        { label:'Administrador', value:'Administrador'},
-        { label:'Estándar', value:'Estándar'},
+    UsuarioForm: FormGroup;
+    mUsuarioList: Usuario[] = [];
+    ocultarCodigoPerfil = false;
+    showPassword: boolean = false;
+    isEditingData: boolean = false;
+    isEditing: boolean = false;
+    editingRowIndex: number | null = null;
+    editingUsuario: Usuario | null = null;
+    editingRows: { [s: string]: boolean } = {};
+    displayDialog: boolean = false;
+    isNew: boolean = false;
+    clonedUsuario: { [s: string]: Usuario } = {}
+    items: any[] = [];
+    passwordVisible: boolean = false;
+    isEditingAnyRow: boolean = false;
+    
+    
+    perfiles = [
+        { label: 'Administrador', value: '03' },
+        { label: 'Estándar', value: '04' },
     ];
 
-    constructor(private fb:FormBuilder,private uS:UsuarioService,private mS:MessageService,private bS:BreadcrumbService,private cS:ConfirmationService){ }
+    constructor(private fb: FormBuilder, private uS: UsuarioService, private mS: MessageService, private confirmationsService: ConfirmationService, private bS: BreadcrumbService) { }
 
     ngOnInit(): void {
         this.bS.setBreadcrumbs([
-            { icon: 'pi pi-home',routerLink: '/' },
+            { icon: 'pi pi-home', routerLink: '/' },
             { label: 'Usuarios', routerLink: '/usuarios' }
         ]);
-        this.bS.currentBreadcrumbs$.subscribe(bc=>{
-            this.items=bc;
+        this.bS.currentBreadcrumbs$.subscribe(bc => {
+            this.items = bc;
         })
         this.initForm();
-        this.loadUsuarios();
+        this.loadUsuario();
     }
-
-    initForm(){
-        this.usuarioForm=this.fb.group({
-            idUsuario:[{ value: '', disabled: this.formDisabled },Validators.required],
-            Clave:[{ value: '', disabled: this.formDisabled },Validators.required],
-            Perfil:[{ value: '', disabled: this.formDisabled },Validators.required],
+    initForm() {
+        this.UsuarioForm = this.fb.group({
+            codigo: ['', Validators.required],
+            claveUsuario: ['', Validators.required],
+            codigoPerfil: ['', Validators.required],
         });
     }
 
-    enableForm():void{
-        this.formDisabled=false;
-        Object.keys(this.usuarioForm.controls).forEach(key => {
-            this.usuarioForm.controls[key].enable();
-        });
-        this.buttonStates = {
-            add: false,
-            save: true,
-            edit: false,
-            delete: false,
-            cancel: true
-        };
-    }
-
-    disableForm():void{
-        this.formDisabled = true;
-        Object.keys(this.usuarioForm.controls).forEach(key => {
-            this.usuarioForm.controls[key].disable();
-        });
-    }
-
-    enableTable():void{
-        this.tableDisabled=false;
-    }
-
-    disableTable():void{
-        this.tableDisabled=true;
-    }
-
-    editMode():void{
-        this.enableTable();
-        this.selectedUsuario=null;
-        this.currentMode='edit';
-        this.buttonStates = {
-            add: false,
-            save: true,
-            edit: false,
-            delete: false,
-            cancel: true
-        };
-    }
-
-    enableDeleteMode():void{
-        this.tableDisabled=false;
-        this.selectedUsuario=null;
-        this.currentMode='delete';
-        this.buttonStates = {
-            add: false,
-            save: false,
-            edit: false,
-            delete: false,
-            cancel: true
-        };
-    }
-
-    onRowSelect(rowData:Usuario): void{
-        if (this.currentMode === 'edit') {
-            this.selectedUsuario = {...rowData};
-            this.usuarioForm.patchValue(this.selectedUsuario);
-            this.enableForm();
-        } else if (this.currentMode === 'delete') {
-            this.confirmDelete(rowData);
-        }
-    }
-
-    cancelAction(): void {
-        this.usuarioForm.reset();
-        this.disableForm();
-        this.disableTable();
-        this.selectedUsuario = null;
-        this.currentMode = null;
-        this.buttonStates = {
-            add: true,
-            save: false,
-            edit: true,
-            delete: true,
-            cancel: false
-        };
-        this.mS.add({
-            severity: 'info',
-            summary: 'Cancelado',
-            detail: 'Acción cancelada'
-        });
-    }
-
-    loadUsuarios():void{
-        this.loading=true;
-        this.uS.getUsuario().subscribe({
-            next: (data)=>{
-                this.usuarios=data;
-            },
-            error:(err)=>{
-                this.mS.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No se pudieron cargar los usuarios'
-                });
-            },
-            complete: ()=>{
-                this.loading=false;
-            }
-        })
-    }
-
-    createUsuario():void{
-        if(this.usuarioForm.valid){
-            this.uS.createUsuario(this.usuarioForm.value).subscribe({
-                next: (data)=>{
-                    this.mS.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: 'Usuario creado correctamente'
-                    });
-                    this.loadUsuarios();
-                    this.usuarioForm.reset();
-                    this.disableForm();
-                    this.buttonStates = {
-                        add: true,
-                        save: false,
-                        edit: true,
-                        delete: true,
-                        cancel: false
-                    };
-
+    loadUsuario(): void {
+        this.uS.getAll()
+            .subscribe({
+                next: (data) => {
+                    this.mUsuarioList = data;
                 },
-                error: (err)=>{
-                    this.mS.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'No se pudo crear el usuario'
-                    });
-                }
             });
-        } else{
-            this.mS.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Complete todos los campos para registrar'
-            });
-        }
     }
-
-    editUsuario(usuario:Usuario):void{
-        this.selectedUsuario={...usuario};
-        this.usuarioForm.patchValue(this.selectedUsuario);
+    onRowEditInit(usuario: Usuario,index: number) {
+        this.editingRowIndex = index;
+        this.editingUsuario = { ...usuario }
+        this.isEditingAnyRow=true;
     }
-
-    updateUsuario():void{
-        if(this.usuarioForm.valid && this.selectedUsuario){
-            const updatedUsuario = {
-                ...this.selectedUsuario,
-                ...this.usuarioForm.value
+    //Actualizar datos
+    onRowEditSave(rowData: any) {
+        if (rowData) {
+            const updUsuario: UsuarioCrear = {
+                codigo: rowData.codigousuario,       
+                cuentaCod: '0000001',                  
+                nombreUsuario: rowData.nombreUsuario,  
+                claveUsuario: rowData.claveUsuario,   
+                codigoPerfil: rowData.codigoperfil,    
+                codigoempresa: '00001'           
             };
-            this.uS.updateUsuario(this.selectedUsuario.id,updatedUsuario).subscribe({
-                next: ()=>{
-                    this.mS.add({
-                        severity: 'success',
-                        summary: 'Éxito',
-                        detail: 'Usuario actualizado correctamente'
-                    });
-                    this.loadUsuarios();
-                    this.usuarioForm.reset();
-                    this.selectedUsuario=null;
-                    this.disableForm();
-                    this.disableTable();
-                    this.buttonStates = {
-                        add: true,
-                        save: false,
-                        edit: true,
-                        delete: true,
-                        cancel: false
-                    };
+
+            this.uS.update(updUsuario).subscribe({
+                next: () => {
+                    this.editingUsuario = null;
+                    this.isEditingAnyRow = false;
+                    this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro actualizado' });
                 },
-                error: ()=>{
-                    this.mS.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: 'No se pudo actualizar el usuario'
-                    });
+                error: () => {
+                    this.mS.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar' });
                 }
             });
         }
     }
+    onRowEditCancel(usuario: Usuario, index: number) {
+        if (this.editingUsuario) {
+            this.mUsuarioList[index] = { ...this.editingUsuario };
+            this.editingUsuario = null;
+            this.isEditingAnyRow = false;
+            this.loadUsuario()
+        }
+    }
+    showAddRow() {
+        this.isEditing = true;
+        this.isNew=true;
+        this.UsuarioForm.reset();
+    }
+    onSave() {
+        if (this.UsuarioForm.valid) {
+            // Obtener los datos del formulario
+            const formData = this.UsuarioForm.value;
 
-    confirmDelete(usuario:Usuario):void{
-        this.cS.confirm({
-            message: `¿Está seguro de eliminar al usuario ${usuario.idUsuario}?`,
-            header: 'Confirmación de Eliminación',
+            // Agregar los valores predeterminados
+            const newUsuario: UsuarioCrear = {
+                ...formData,
+                cuentaCod: '0000001',
+                nombreUsuario: 'prueba',
+                codigoempresa: '00001'
+            };
+            this.uS.create(newUsuario).subscribe({
+                next: () => {
+                    this.isEditing = false;
+                    this.isNew=false;
+                    this.UsuarioForm.reset();
+                    this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado' });
+                    this.loadUsuario();
+                },
+                error: (err) => {
+                    console.error('Error al guardar:', err);
+                    this.mS.add({ severity: 'error', summary: 'Error', detail: 'No se pudo guardar el registro' });
+                },
+            });
+        }
+    }
+
+    onCancel() {
+        this.isEditing = false;
+        this.isNew=false;
+        this.UsuarioForm.reset();
+    }
+
+    onDelete(usuario: Usuario, index: number) {
+        this.confirmationsService.confirm({
+            message: `¿Está seguro que desea eliminar al usuario <b>${usuario.nombreUsuario}</b>?`,
+            header: 'Confirmar Eliminación',
             icon: 'pi pi-exclamation-triangle',
-            accept:()=>{
-                this.deleteUsuario(usuario.id);
-                this.tableDisabled=true;
-                this.buttonStates = {
-                    add: true,
-                    save: false,
-                    edit: true,
-                    delete: true,
-                    cancel: false
-                };
-            },
-            reject:()=>{
-                this.tableDisabled=true;
-                this.buttonStates = {
-                    add: true,
-                    save: false,
-                    edit: true,
-                    delete: true,
-                    cancel: false
-                };
+            acceptLabel: 'Sí, eliminar',
+            rejectLabel: 'No, cancelar',
+            acceptButtonStyleClass: 'p-button-danger',
+            rejectButtonStyleClass: 'p-button',
+            accept: () => {
+                this.uS.delete(usuario).subscribe({
+                    next: () => {
+                        this.mUsuarioList.splice(index, 1);
+                        this.mS.add({
+                            severity: 'success',
+                            summary: 'Éxito',
+                            detail: 'Registro eliminado'
+                        });
+                    }
+                });
             }
         });
-        this.selectedUsuario=null;
-        this.usuarioForm.reset();
     }
-
-    deleteUsuario(id:string):void{
-        this.uS.deleteUsuario(id).subscribe({
-            next:()=>{
-                this.mS.add({
-                    severity: 'success',
-                    summary: 'Éxito',
-                    detail: 'Usuario eliminado correctamente'
-                });
-                this.loadUsuarios();
-                this.buttonStates = {
-                    add: true,
-                    save: false,
-                    edit: true,
-                    delete: true,
-                    cancel: false
-                };
-            },
-            error:()=>{
-                this.mS.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No se pudo eliminar el usuario'
-                })
-            }
-        })
+    togglePassword(): void {
+        this.showPassword = !this.showPassword;
     }
-    togglePassword():void{
-        this.showPassword=!this.showPassword;
+    ocultarTexto(rowData: any){
+        const claveUsuario = String(rowData.claveUsuario);
+        return '•'.repeat(claveUsuario.length);
     }
-
-
-
-
-
+    // // Función que reemplaza el texto con puntos
+    // ocultarTexto(texto: string): string {
+    //     return '•'.repeat(texto.length); 
+    // }
 }
