@@ -33,8 +33,8 @@ export class MantenimientoMarcadoresComponent implements OnInit{
 
     ngOnInit(): void {
         this.bS.setBreadcrumbs([
-            { icon: 'pi pi-home',routerLink: '/' },
-            { label: 'Mantenimiento Marcadores', routerLink: '/marcadores' }
+            { icon: 'pi pi-home',routerLink: '/Menu' },
+            { label: 'Mantenimiento Marcadores', routerLink: '/Menu/marcadores' }
         ]);
         this.bS.currentBreadcrumbs$.subscribe(bc=>{
             this.items=bc;

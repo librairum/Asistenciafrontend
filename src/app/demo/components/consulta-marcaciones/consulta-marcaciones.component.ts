@@ -39,8 +39,8 @@ export class ConsultaMarcacionesComponent implements OnInit {
     constructor(private mS:MarcacionesService,private bS:BreadcrumbService,private fb:FormBuilder,private messageService: MessageService){}
     ngOnInit(): void {
         this.bS.setBreadcrumbs([
-            { icon: 'pi pi-home',routerLink: '/' },
-            { label: 'Marcaciones', routerLink: '/marcaciones' }
+            { icon: 'pi pi-home',routerLink: '/Menu' },
+            { label: 'Marcaciones', routerLink: '/Menu/marcaciones' }
         ]);
         this.bS.currentBreadcrumbs$.subscribe(bc=>{
             this.items=bc;

@@ -40,8 +40,8 @@ export class AnioComponent implements OnInit {
     constructor(private fb:FormBuilder,private maS:MAnioService,private mS:MessageService,private  confirmationsService:ConfirmationService,private bS:BreadcrumbService){}
     ngOnInit(): void {
         this.bS.setBreadcrumbs([
-            { icon: 'pi pi-home',routerLink: '/' },
-            { label: 'Manteniemiento Años', routerLink: '/anio' }
+            { icon: 'pi pi-home',routerLink: '/Menu' },
+            { label: 'Manteniemiento Años', routerLink: '/Menu/anio' }
         ]);
         this.bS.currentBreadcrumbs$.subscribe(bc=>{
             this.items=bc;

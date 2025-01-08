@@ -35,9 +35,9 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
                     this.loading=false;
         })
         this.bS.setBreadcrumbs([
-            { icon: 'pi pi-home',routerLink: '/' },
-            { label: 'Asistencia', routerLink: '/asistencia' },
-            { label: 'Detalle Asistencia', routerLink: '/asistencia/detalle-asistencia' }
+            { icon: 'pi pi-home',routerLink: '/Menu' },
+            { label: 'Asistencia', routerLink: '/Menu/asistencia' },
+            { label: 'Detalle Asistencia', routerLink: '/Menu/asistencia/detalle-asistencia' }
         ]);
         this.bS.currentBreadcrumbs$.subscribe(bc=>{
             this.breadcrumbs=bc;

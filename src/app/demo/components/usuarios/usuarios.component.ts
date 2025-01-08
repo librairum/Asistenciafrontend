@@ -51,8 +51,8 @@ export class UsuariosComponent implements OnInit {
 
     ngOnInit(): void {
         this.bS.setBreadcrumbs([
-            { icon: 'pi pi-home',routerLink: '/' },
-            { label: 'Usuarios', routerLink: '/usuarios' }
+            { icon: 'pi pi-home',routerLink: '/Menu' },
+            { label: 'Usuarios', routerLink: '/Menu/usuarios' }
         ]);
         this.bS.currentBreadcrumbs$.subscribe(bc=>{
             this.items=bc;

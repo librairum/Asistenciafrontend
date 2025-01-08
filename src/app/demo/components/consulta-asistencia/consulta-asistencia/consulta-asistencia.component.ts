@@ -51,8 +51,8 @@ export class ConsultaAsistenciaComponent implements OnInit {
     constructor(private aS:AsistenciaService,private route:Router, private bS:BreadcrumbService){}
     ngOnInit(): void{
         this.bS.setBreadcrumbs([
-            { icon: 'pi pi-home',routerLink: '/' },
-            { label: 'Asistencia', routerLink: '/asistencia' }
+            { icon: 'pi pi-home',routerLink: '/Menu' },
+            { label: 'Asistencia', routerLink: '/Menu/asistencia' }
         ]);
         this.bS.currentBreadcrumbs$.subscribe(bc=>{
             this.items=bc;
