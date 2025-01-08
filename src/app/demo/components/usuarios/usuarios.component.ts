@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ListarPerfil, Usuario, UsuarioCrear } from '../../model/Usuario';
 import { UsuarioService } from '../../service/usuario.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -43,13 +43,9 @@ export class UsuariosComponent implements OnInit {
     perfil: ListarPerfil[] = [];
     selectPerfil: string | null = null;
     perfilesL: string[] = [];
-
-    // perfiles = [
-    //     { label: 'Administrador', value: '03' },
-    //     { label: 'Estándar', value: '04' },
-    // ];
-
-    constructor(private fb: FormBuilder, private uS: UsuarioService, private mS: MessageService, private confirmationsService: ConfirmationService, private bS: BreadcrumbService) { }
+    
+    
+    constructor(private fb: FormBuilder, private uS: UsuarioService, private mS: MessageService, private confirmationsService: ConfirmationService, private bS: BreadcrumbService,private cdRef: ChangeDetectorRef) { }
     loadPerfiles() {
         this.uS.getAllPerfil()
             .subscribe(
@@ -59,6 +55,7 @@ export class UsuariosComponent implements OnInit {
                 },
             );
     }
+    
     onPerfilChange(event:any){
         this.selectPerfil=event.value;
     }
@@ -97,6 +94,9 @@ export class UsuariosComponent implements OnInit {
         this.editingUsuario = { ...usuario }
         this.isEditingAnyRow = true;
     }
+    isPasswordValid(rowData: any): boolean {
+        return rowData.claveUsuario && rowData.claveUsuario.trim() !== '';
+      }
     //Actualizar datos
     onRowEditSave(rowData: any) {
         if (rowData) {
@@ -111,11 +111,10 @@ export class UsuariosComponent implements OnInit {
 
             this.uS.update(updUsuario).subscribe({
                 next: () => {
+                    this.loadUsuario();
                     this.editingUsuario = null;
                     this.isEditingAnyRow = false;
                     this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro actualizado' });
-                    this.loadPerfiles();
-                    this.loadUsuario();
                 },
                 error: () => {
                     this.mS.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar' });
@@ -154,6 +153,7 @@ export class UsuariosComponent implements OnInit {
                     this.UsuarioForm.reset();
                     this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado' });
                     this.loadUsuario();
+                    this.loadPerfiles();
                 },
                 error: (err) => {
                     console.error('Error al guardar:', err);
@@ -196,11 +196,6 @@ export class UsuariosComponent implements OnInit {
         this.showPassword = !this.showPassword;
     }
     ocultarTexto(rowData: any) {
-        const claveUsuario = String(rowData.claveUsuario);
-        return '•'.repeat(claveUsuario.length);
+        return '••••••••';
     }
-    // // Función que reemplaza el texto con puntos
-    // ocultarTexto(texto: string): string {
-    //     return '•'.repeat(texto.length); 
-    // }
 }

@@ -9,7 +9,8 @@ import { ApiResponse } from '../model/api_response';
     providedIn: 'root'
 })
 export class UsuarioService {
-    private apiUrl = 'https://localhost:7089/Usuario';
+    private apiUrl = 'http://104.225.142.105:2060/Usuario';
+    // private apiUrl = 'https://localhost:7089/Usuario';
     private apiUrlPerfil = 'https://localhost:7089/Perfil';
     constructor(private http: HttpClient) { }
 
