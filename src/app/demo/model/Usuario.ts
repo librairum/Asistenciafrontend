@@ -1,6 +1,20 @@
-export class Usuario{
-    id:string;
-    idUsuario:string;
-    Clave:string;
-    Perfil:string;
+export interface Usuario{
+    codigousuario:string;
+    nombreUsuario:string;
+    claveUsuario:string;
+    codigoperfil:string;
+    nomPerfil: string;
+}
+export interface UsuarioCrear{
+    codigo:string,
+    cuentaCod:string,
+    nombreUsuario:string,
+    claveUsuario:string,
+    codigoPerfil:string,
+    codigoempresa:string
+}
+export interface ListarPerfil{
+    codigo:string,
+    nombre: string,
+    descripcion: string
 }

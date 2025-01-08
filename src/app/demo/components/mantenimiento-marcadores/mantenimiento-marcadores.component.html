@@ -1,4 +1,7 @@
-<div style="margin: 10px;">
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="container">
     <p-panel header="Mantenimiento de Marcadores">
         <p-breadcrumb class="max-w-full" [model]="items"></p-breadcrumb>
         <br>
@@ -7,67 +10,64 @@
 
 <br>
 
-<div>
+<div class="card">
     <p-table
         #dt1
         [value]="marcadores"
-        dataKey="CodigoMarcador"
+        dataKey="id"
         editMode="row"
         [paginator]="true"
-        [rows]="5"
+        [rows]="10"
         [rowsPerPageOptions]="[5, 10, 20]"
         [loading]="loading"
-        [tableStyle]="'min-width: 75rem'">
+        responsiveLayout="scroll">
 
         <!-- Columnas filtros -->
         <ng-template pTemplate="header">
             <tr>
-                <th>Código Marcador</th>
-                <th>Descripción Marcador</th>
-                <th>IP</th>
-                <th>Código Equipo</th>
-                <th>Nombre Equipo</th>
-                <th></th>
-                <th></th>
+                <th>Código proveedor</th>
+                <th>Descripción proveedor</th>
+                <th>IP proveedor</th>
+                <th>Código cliente</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
             </tr>
         </ng-template>
 
         <!-- Cuerpo de la tabla -->
         <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
             <tr [pEditableRow]="rowData">
-                <td>{{ rowData.CodigoMarcador }}</td>
-                <td>{{ rowData.DescripcionMarcador }}</td>
-                <td>{{ rowData.IP }}</td>
+                <td>{{ rowData.marcadorProveedorCod }}</td>
+                <td>{{ rowData.marcadorProveedorDesc }}</td>
+                <td>{{ rowData.marcadorProveedorIp }}</td>
                 <td>
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input pInputText [(ngModel)]="rowData.CodigoEquipo" required>
+                            <input pInputText [(ngModel)]="rowData.marcadorClienteCod" placeholder="Código cliente" required>
                         </ng-template>
                         <ng-template pTemplate="output">
-                            {{ rowData.CodigoEquipo }}
+                            {{ rowData.marcadorClienteCod }}
                         </ng-template>
                     </p-cellEditor>
                 </td>
                 <td>
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input pInputText [(ngModel)]="rowData.NombreEquipo">
+                            <input pInputText [(ngModel)]="rowData.marcadorDesc" placeholder="Descripción" required>
                         </ng-template>
                         <ng-template pTemplate="output">
-                            {{ rowData.NombreEquipo }}
+                            {{ rowData.marcadorDesc }}
                         </ng-template>
                     </p-cellEditor>
                 </td>
+        
+
                 <td>
-                    <div class="flex justify-content-center align-items-center gap-2">
-                        <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(rowData)" class="p-button-rounded p-button-text"></button>
-                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                    <div class="flex justify-content-center gap-2">
+                        <button [disabled]="rowData.marcadorClienteCod!=''" *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(rowData, ri)" class="p-button-rounded p-button-text"></button>
+                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-save" (click)="onRowEditSave(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
                         <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(rowData, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
-                    </div>
-                </td>
-                <td>
-                    <div div class="flex justify-content-center align-items-center gap-2">
-                        <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text" (click)="clearEquipmentFields(rowData)"></button>
+                        <button [disabled]="rowData.marcadorClienteCod==''" *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="onDeleteMarcador(rowData)" class="p-button-rounded p-button-danger p-button-text"></button>
                     </div>
                 </td>
             </tr>

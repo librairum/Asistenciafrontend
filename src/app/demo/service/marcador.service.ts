@@ -1,30 +1,47 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { Marcador } from '../model/Marcador';
+import { Marcador_ins } from '../model/Marcador';
+import { ApiResponse } from '../model/api_response';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class MarcadorService {
-    private apiUrl='http://localhost:5000/Marcadores';
+    private apiUrl = 'https://localhost:7089/Marcador';
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
     // listar todos los marcadores
-    getMarcadores():Observable<Marcador[]>{
-        return this.http.get<Marcador[]>(this.apiUrl)
+    getMarcadores(): Observable<Marcador[]> {
+        return this.http.get<ApiResponse<Marcador>>(`${this.apiUrl}/SpLista`)
+                  .pipe(map(response => response.data));
+    }
+    createMarcador(marcador: Marcador_ins): Observable<string> {
+        return this.http
+            .post<ApiResponse<string>>(`${this.apiUrl}/SpInserta`, marcador)
+            .pipe(
+                map((response) => response.item || ''),
+                catchError((error) => {
+                    console.error('Error al crear el perfil:', error);
+                    return throwError(
+                        () =>
+                            new Error(
+                                'No se pudo crear el perfil. Intente nuevamente.'
+                            )
+                    );
+                })
+            );
     }
 
-    // editar Marcador - solo se puede actualizar CodigoEquipo y NombreEquipo
-    updateMarcador(id:string,marcador:Marcador):Observable<void>{
-        console.log('Datos del marcador:', marcador);
-        return this.http.put<void>(`${this.apiUrl}/${id}`, marcador);
-
-    }
-
-    //elimanr solo codigo y nombreequipo
-    deteleMarcador(CodigoMarcador:string):Observable<void>{
-        return this.http.delete<void>(`${this.apiUrl}/${CodigoMarcador}`);
+    //elimanar
+    deteleMarcador(codigo_cli: string,codigo_pro: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/SpElimina?codigoMarcadorCliente=${codigo_cli}&codigoMarcadorProveedor=${codigo_pro}`).pipe(
+            catchError((error) => {
+                console.error('Error al eliminar el registro:', error);
+                return throwError(error);
+            })
+        );
     }
 }

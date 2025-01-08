@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Router, RouterModule } from '@angular/router';
+import { GlobalserviceService } from '../../service/globalservice.service';
 
 @Component({
   selector: 'app-autorizacion',
@@ -20,19 +21,21 @@ import { Router, RouterModule } from '@angular/router';
   providers:[MessageService]
 })
 export class AutorizacionComponent implements OnInit {
+    perfilglobal:string = '';
 
     loginForm:FormGroup;
-    constructor(private fb:FormBuilder,private aS:AutorizacionService,private mS:MessageService, private link:Router){
+    constructor(private fb:FormBuilder,private aS:AutorizacionService,private mS:MessageService, private link:Router, private globalService:GlobalserviceService){
         this.loginForm=fb.group({
             nombreusuario:['', Validators.required],
             claveusuario:['',Validators.required],
-            codigoempresa:['',Validators.required],
+            codigoempresa:'00001',
         });
     }
 
 
     ngOnInit(): void {
-
+        const valor=null
+        this.globalService.setCodigoPerfil(valor)
     }
 
     onSubmit() {
@@ -42,6 +45,8 @@ export class AutorizacionComponent implements OnInit {
         this.aS.autenticacion(autenticacion).subscribe({
             next: (response) => {
             if (response.isSuccess) {
+                this.globalService.setCodigoPerfil(response.data[0].codigoPerfil)
+                console.log(this.globalService.getCodigoPerfil())
                 this.link.navigate(['/Menu']);
 
             } else {

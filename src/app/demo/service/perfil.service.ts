@@ -8,7 +8,7 @@ import { Perfil } from '../model/perfil';
   providedIn: 'root'
 })
 export class PerfilService {
-    private apiUrl='https://localhost:7089/Perfil'
+    private apiUrl='http://104.225.142.105:2060/Perfil'
 
     constructor(private http:HttpClient) { }
 

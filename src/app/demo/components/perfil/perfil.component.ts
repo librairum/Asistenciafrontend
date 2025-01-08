@@ -85,7 +85,7 @@ export class PerfilComponent implements OnInit {
     loadPerfil(): void {
         this.maS.getAll().subscribe({
             next: (data) => {
-                console.log('Datos obtenidos:', data); // Console log para verificar la data
+                //console.log('Datos obtenidos:', data); // Console log para verificar la data
                 this.mPerfilList = data;
             },
             error: (err) => {
@@ -138,6 +138,11 @@ export class PerfilComponent implements OnInit {
         this.editingRows[index] = false; // Desactiva edición para esta fila
         this.editingPerfil = null;
         this.enableAddbutton = true;
+        this.mS.add({
+            severity: 'info',
+            summary: 'Edición cancelada',
+            detail: 'Los cambios se han revertido',
+        });
     }
 
     showAddRow() {
@@ -175,6 +180,7 @@ export class PerfilComponent implements OnInit {
     onCancel() {
         this.isEditing = false;
         this.mPerfilForm.reset();
+        
     }
 
     onDelete(perfil: Perfil, index: number) {

@@ -35,6 +35,7 @@ export class AnioComponent implements OnInit {
     isNew:boolean = false;
     clonedAnios:{[s:string]:m_anio}={}
     items:any[] = [];
+    isEditingAnyRow: boolean = false;
 
     constructor(private fb:FormBuilder,private maS:MAnioService,private mS:MessageService,private  confirmationsService:ConfirmationService,private bS:BreadcrumbService){}
     ngOnInit(): void {
@@ -64,12 +65,14 @@ export class AnioComponent implements OnInit {
 
     onRowEditInit(m_anio:m_anio) {
         this.editingAnio={...m_anio}
+        this.isEditingAnyRow=true;
     }
     onRowEditSave(anio: m_anio) {
         if (this.editingAnio) {
           this.maS.update(anio.pla61Codigo, anio).subscribe({
             next: () => {
               this.editingAnio = null;
+              this.isEditingAnyRow = false;
               this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro actualizado' });
             },
             error: () => {
@@ -83,6 +86,7 @@ export class AnioComponent implements OnInit {
         if (this.editingAnio) {
           this.mAnioList[index] = { ...this.editingAnio };
           this.editingAnio = null;
+          this.isEditingAnyRow = false;
           this.loadMAnio()
         }
     }
@@ -90,6 +94,7 @@ export class AnioComponent implements OnInit {
 
     showAddRow() {
         this.isEditing = true;
+        this.isNew=true;
         this.mAnioForm.reset();
     }
 
@@ -99,6 +104,7 @@ export class AnioComponent implements OnInit {
         this.maS.create(newAnio).subscribe({
             next: () => {
                 this.isEditing = false;
+                this.isNew=false;
                 this.mAnioForm.reset();
                 this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado' });
                 this.loadMAnio();
@@ -113,6 +119,7 @@ export class AnioComponent implements OnInit {
 
     onCancel() {
         this.isEditing = false;
+        this.isNew=false;
         this.mAnioForm.reset();
     }
 
