@@ -8,7 +8,7 @@ import { permisosxperfil } from '../model/permisosxperfil';
   providedIn: 'root'
 })
 export class PermisosxperfilService {
-    private apiUrl='https://localhost:7089/Permisos'
+    private apiUrl='http://104.225.142.105:2060/Permisos'
     constructor(private http:HttpClient) { }
 
     getPermisosPorPerfil(codigoPerfil:string,codModulo:string):Observable<ApiResponse<permisosxperfil>>{

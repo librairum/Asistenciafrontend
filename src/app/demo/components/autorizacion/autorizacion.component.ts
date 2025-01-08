@@ -22,6 +22,7 @@ import { GlobalserviceService } from '../../service/globalservice.service';
 })
 export class AutorizacionComponent implements OnInit {
     perfilglobal:string = '';
+    nombre:string='';
 
     loginForm:FormGroup;
     constructor(private fb:FormBuilder,private aS:AutorizacionService,private mS:MessageService, private link:Router, private globalService:GlobalserviceService){
@@ -35,7 +36,9 @@ export class AutorizacionComponent implements OnInit {
 
     ngOnInit(): void {
         const valor=null
+        const nombre=null
         this.globalService.setCodigoPerfil(valor)
+        this.globalService.setNombre_Usuario(nombre)
     }
 
     onSubmit() {
@@ -46,7 +49,8 @@ export class AutorizacionComponent implements OnInit {
             next: (response) => {
             if (response.isSuccess) {
                 this.globalService.setCodigoPerfil(response.data[0].codigoPerfil)
-                console.log(this.globalService.getCodigoPerfil())
+                this.globalService.setNombre_Usuario(response.data[0].nombreUsuario)
+                //console.log(response.data[0].nombreUsuario)
                 this.link.navigate(['/Menu']);
 
             } else {

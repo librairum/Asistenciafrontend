@@ -75,9 +75,12 @@ export class AppMenuComponent implements OnInit {
 
     private getIconForFormulario(codigoFormulario: string): string {
         const iconMap: { [key: string]: string } = {
-            '010100': 'pi pi-fw pi-clock',
-            '010200': 'pi pi-fw pi-desktop',
+            '010100': 'pi pi-fw pi-book',
+            '010200': 'pi pi-fw pi-server',
+            '020100': 'pi pi-fw pi-user',
             '020200': 'pi pi-fw pi-users',
+            '030100': 'pi pi-fw pi-calendar',
+            '030200': 'pi pi-fw pi-calendar',
             // Add more mappings as needed
         };
 

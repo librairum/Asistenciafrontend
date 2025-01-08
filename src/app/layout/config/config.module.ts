@@ -6,6 +6,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { ButtonModule } from 'primeng/button';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AppConfigComponent } from './app.config.component';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @NgModule({
     imports: [

@@ -13,6 +13,7 @@ import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
 import { Breadcrumb } from 'primeng/breadcrumb';
 import { AutorizacionComponent } from './demo/components/autorizacion/autorizacion.component';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent],
