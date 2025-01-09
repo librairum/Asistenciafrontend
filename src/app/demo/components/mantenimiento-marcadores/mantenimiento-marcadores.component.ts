@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { PanelModule } from 'primeng/panel';
-import { EditableRow, TableModule } from 'primeng/table';
+import { EditableRow, Table, TableModule } from 'primeng/table';
 import { Marcador, Marcador_ins } from '../../model/Marcador';
 import { MarcadorService } from '../../service/marcador.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -39,9 +39,14 @@ import { ToastModule } from 'primeng/toast';
 })
 export class MantenimientoMarcadoresComponent implements OnInit {
     marcadores: Marcador[] = [];
+    marcadores2: Marcador[] = [];
     originalMarcadores: { [s: string]: Marcador } = {};
     loading: boolean = false;
     searchForm: FormGroup;
+    editing: boolean = false;
+    editingRowIndex: number | null = null; // Índice de la fila en edición
+
+    @ViewChild('dt1') table: Table; // Referencia a la tabla
 
     items: any[] = [];
     constructor(
@@ -76,6 +81,7 @@ export class MantenimientoMarcadoresComponent implements OnInit {
                 this.marcadores.forEach((marcador, index) => {
                     marcador['id'] = index + 1; // Agregar la propiedad 'id' incrementalmente
                 });
+                this.marcadores2 = this.marcadores;
             },
             error: (err) => {
                 this.messageService.add({
@@ -90,13 +96,28 @@ export class MantenimientoMarcadoresComponent implements OnInit {
         });
     }
 
-    onRowEditInit(marcador: Marcador): void {
-        this.originalMarcadores[marcador.marcadorProveedorCod] = {
-            ...marcador,
-        };
+    onRowEditInit(marcador: Marcador, index: number): void {
+        if (marcador.marcadorClienteCod != '') {
+            this.messageService.add({
+                severity: 'info',
+                summary: 'Info',
+                detail: 'Eliminar el cliente actual',
+            });
+            // Cancelar edición directamente
+            this.table.cancelRowEdit(index);
+        } else {
+            this.editingRowIndex = index; // Marca la fila en edición
+       
+            this.originalMarcadores[marcador.marcadorProveedorCod] = {
+                ...marcador,
+            };
+        }
     }
 
     onRowEditSave(marcador: Marcador, index: number): void {
+        this.editingRowIndex = null; // Desmarca la edición
+
+   
         //console.log('paara actualizar:', marcador); // Console log para verificar la data
         if (marcador.marcadorDesc != '' && marcador.marcadorClienteCod != '') {
             const marcador_ins: Marcador_ins = {
@@ -117,6 +138,7 @@ export class MantenimientoMarcadoresComponent implements OnInit {
                         summary: 'Éxito',
                         detail: 'Guardado correctamente',
                     });
+
                     this.loadMarcadores(); // Recargar lista para ver cambios
                 },
                 error: (err) => {
@@ -144,14 +166,17 @@ export class MantenimientoMarcadoresComponent implements OnInit {
                 summary: 'Error',
                 detail: 'Campos incompletos',
             });
-            this.loadMarcadores(); // Recargar lista para ver cambios
 
+            this.loadMarcadores(); // Recargar lista para ver cambios
         }
     }
 
     onRowEditCancel(marcador: Marcador, index: number): void {
+        this.editingRowIndex = null; // Desmarca la edición
+
         const originalMarcador =
             this.originalMarcadores[marcador.marcadorProveedorCod];
+
         if (originalMarcador) {
             this.marcadores[index] = { ...originalMarcador };
             delete this.originalMarcadores[marcador.marcadorProveedorCod];

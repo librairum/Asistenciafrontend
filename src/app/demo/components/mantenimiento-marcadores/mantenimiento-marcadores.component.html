@@ -43,7 +43,10 @@
                 <td>
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input pInputText [(ngModel)]="rowData.marcadorClienteCod" placeholder="Código cliente" required>
+                            <input *ngIf="editingRowIndex!=null && editingRowIndex==ri" pInputText [(ngModel)]="rowData.marcadorClienteCod" placeholder="Código cliente" required>
+                            <div *ngIf="editingRowIndex==null || editingRowIndex!=ri">
+                                {{ rowData.marcadorClienteCod }}
+                            </div>
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{ rowData.marcadorClienteCod }}
@@ -53,25 +56,64 @@
                 <td>
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input pInputText [(ngModel)]="rowData.marcadorDesc" placeholder="Descripción" required>
+                            <input *ngIf="editingRowIndex!=null && editingRowIndex==ri" pInputText [(ngModel)]="rowData.marcadorDesc" placeholder="Descripción" required>
+                            <div *ngIf="editingRowIndex==null || editingRowIndex!=ri">
+                                {{ rowData.marcadorDesc }}
+                            </div>
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{ rowData.marcadorDesc }}
                         </ng-template>
                     </p-cellEditor>
                 </td>
-        
-
                 <td>
                     <div class="flex justify-content-center gap-2">
-                        <button  *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(rowData, ri)" class="p-button-rounded p-button-text"></button>
-                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-save" (click)="onRowEditSave(rowData)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
-                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(rowData, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
-                        <button  *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="onDeleteMarcador(rowData)" class="p-button-rounded p-button-danger p-button-text"></button>
+                        <button
+                            *ngIf="!editing || editingRowIndex==null || editingRowIndex!=ri"
+                            pButton
+                            pRipple
+                            type="button"
+                            pInitEditableRow
+                            icon="pi pi-pencil"
+                            (click)="onRowEditInit(rowData, ri)"
+                            class="p-button-rounded p-button-text"
+                            [disabled]="editingRowIndex !== null && editingRowIndex !== ri">
+                        </button>
+                        <button
+                            *ngIf="editing && editingRowIndex!=null && editingRowIndex==ri"
+                            pButton
+                            pRipple
+                            type="button"
+                            pSaveEditableRow
+                            icon="pi pi-save"
+                            (click)="onRowEditSave(rowData)"
+                            class="p-button-rounded p-button-text p-button-success mr-2">
+                        </button>
+                        <button
+                            *ngIf="editing && editingRowIndex!=null && editingRowIndex==ri"
+                            pButton
+                            pRipple
+                            type="button"
+                            pCancelEditableRow
+                            icon="pi pi-times"
+                            (click)="onRowEditCancel(rowData, ri)"
+                            class="p-button-rounded p-button-text p-button-danger">
+                        </button>
+                        <button
+                            *ngIf="!editing || editingRowIndex==null || editingRowIndex!=ri"
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-trash"
+                            (click)="onDeleteMarcador(rowData)"
+                            class="p-button-rounded p-button-danger p-button-text"
+                            [disabled]="editingRowIndex != null">
+                        </button>
                     </div>
                 </td>
             </tr>
         </ng-template>
+        
 
         <!-- Mensaje vacío -->
         <ng-template pTemplate="emptymessage">

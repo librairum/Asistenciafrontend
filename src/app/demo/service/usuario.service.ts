@@ -11,7 +11,7 @@ import { ApiResponse } from '../model/api_response';
 export class UsuarioService {
     private apiUrl = 'http://104.225.142.105:2060/Usuario';
     // private apiUrl = 'https://localhost:7089/Usuario';
-    private apiUrlPerfil = 'https://localhost:7089/Perfil';
+    private apiUrlPerfil = 'http://104.225.142.105:2060/Perfil';
     constructor(private http: HttpClient) { }
 
     getAllPerfil(): Observable<ListarPerfil[]> {

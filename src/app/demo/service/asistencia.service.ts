@@ -7,7 +7,7 @@ import { Asistencia } from '../model/Asistencia';
   providedIn: 'root'
 })
 export class AsistenciaService {
-    private apiUrl='http://localhost:5000/Asistencias';
+    private apiUrl='http://104.225.142.105:2060/Asistencias';
 
     constructor(private http: HttpClient) { }
 
