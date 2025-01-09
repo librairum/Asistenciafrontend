@@ -8,3 +8,9 @@ export interface permisosxperfilxtodo{
     grupoMenu?: string;
     habilitado?: string;
 }
+
+export interface perfilxpermisos{
+    codigo?: string;
+    nombre?: string;
+    descripcion?: string;
+}
