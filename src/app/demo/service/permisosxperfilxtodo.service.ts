@@ -9,8 +9,11 @@ import { O } from '@fullcalendar/core/internal-common';
   providedIn: 'root'
 })
 export class PermisosxperfilxtodoService {
-    private apiUrl='http://104.225.142.105:2060/Permisos'
-    private apiUrl2='http://104.225.142.105:2060/Perfil/Splist'
+    //private apiUrl='http://104.225.142.105:2060/Permisos'
+    //private apiUrl2='http://104.225.142.105:2060/Perfil/Splist'
+
+    private apiUrl='https://localhost:7089/Permisos'
+    private apiUrl2='https://localhost:7089/Perfil/Splist'
     constructor(private http:HttpClient) { }
 
     getPermisosPorPerfilxtodo(codigoPerfil:string,codModulo:string):Observable<ApiResponse<permisosxperfilxtodo>>{
@@ -26,10 +29,12 @@ export class PermisosxperfilxtodoService {
             ,codigoPerfil:codigoPerfil
             ,xmlPermisos:xmlPermisos
         };
+        console.log('Datos enviados en la solicitud:', body); // Agregado para depuración
         const headers=new HttpHeaders({
             'Content-Type':'application/json'
         })
         return this.http.post<ApiResponse<permisosxperfilxtodo>>(`${this.apiUrl}/SpInsertaMenuxPerfil`, body, { headers });
+
     }
 
     getPerfilesCombo():Observable<perfilxpermisos[]>{

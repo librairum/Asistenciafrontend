@@ -161,6 +161,20 @@ export class PermisosxperfilxtodoComponent implements OnInit {
         );
     }
 
+    areAllChildrenDeactivated(padre: permisosxperfilxtodo): boolean {
+        const hijos = this.getHijos(padre);
+        return hijos.every(hijo => {
+            const nietos = this.getNietos(hijo);
+            return hijo.habilitado === 'N' && nietos.every(nieto => nieto.habilitado === 'N');
+        });
+    }
+
+    // Nueva función para verificar si todos los nietos de un hijo están desactivados
+    areAllGrandchildrenDeactivated(hijo: permisosxperfilxtodo): boolean {
+        const nietos = this.getNietos(hijo);
+        return nietos.every(nieto => nieto.habilitado === 'N');
+    }
+
     // Método para manejar el cambio en un checkbox
     onCheckboxChange(permiso: permisosxperfilxtodo, checked: boolean): void {
         permiso.habilitado = checked ? 'S' : 'N';
@@ -177,23 +191,29 @@ export class PermisosxperfilxtodoComponent implements OnInit {
             });
         } else if (this.isHijo(permiso)) {
             // Si es hijo, actualizar padre (si es necesario) y nietos
+            const padre = this.getPadre(permiso);
+            const nietos = this.getNietos(permiso);
+
             if (checked) {
-                const padre = this.getPadre(permiso);
+                // Si se activa el hijo, activar el padre
                 if (padre) {
                     padre.habilitado = 'S';
                 }
-            }
-
-            const nietos = this.getNietos(permiso);
-            if (!checked) {
+            } else {
+                // Si se desactiva el hijo, desactivar todos sus nietos
                 nietos.forEach(nieto => {
                     nieto.habilitado = 'N';
                 });
+
+                // Verificar si todos los hermanos están desactivados
+                if (padre && this.areAllChildrenDeactivated(padre)) {
+                    padre.habilitado = 'N';
+                }
             }
         } else if (this.isNieto(permiso)) {
             // Si es nieto, actualizar padre y padre-hijo si es necesario
+            const padreHijo = this.getPadreHijo(permiso);
             if (checked) {
-                const padreHijo = this.getPadreHijo(permiso);
                 if (padreHijo) {
                     padreHijo.habilitado = 'S';
                     const padre = this.getPadre(padreHijo);
@@ -201,8 +221,67 @@ export class PermisosxperfilxtodoComponent implements OnInit {
                         padre.habilitado = 'S';
                     }
                 }
+            } else {
+                // Si se desactiva el nieto, verificar si todos los nietos del mismo padre-hijo están desactivados
+                if (padreHijo && this.areAllGrandchildrenDeactivated(padreHijo)) {
+                    padreHijo.habilitado = 'N';
+                    // Verificar si todos los hijos del padre están desactivados
+                    const padre = this.getPadre(padreHijo);
+                    if (padre && this.areAllChildrenDeactivated(padre)) {
+                        padre.habilitado = 'N';
+                    }
+                }
             }
         }
+        this.updatePermisosInBackend();
     }
+
+
+    generatePermisosXML():string{
+        const habilitados=this.permisos.filter(p=>p.habilitado ==='S');
+
+        const menuItems = habilitados.map(p =>
+            `<tbl><codigomenu>${p.codigo}</codigomenu></tbl>`
+        ).join('');
+        return `<DataSet>${menuItems}</DataSet>`;
+    }
+    updatePermisosInBackend(): void {
+        if (!this.selectedperfil) {
+            this.mS.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No hay perfil seleccionado'
+            });
+            return;
+        }
+
+        const xmlPermisos = this.generatePermisosXML();
+
+        this.ptS.insertarPermisos('01', this.selectedperfil, xmlPermisos).subscribe({
+            next: (response: ApiResponse<permisosxperfilxtodo>) => {
+                if (response.isSuccess) {
+                    this.mS.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Permisos actualizados correctamente'
+                    });
+                } else {
+                    this.mS.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Error al actualizar permisos'
+                    });
+                }
+            },
+            error: (error) => {
+                this.mS.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error al actualizar permisos'
+                });
+            }
+        });
+    }
+
 
 }

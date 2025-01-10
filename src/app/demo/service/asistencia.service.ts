@@ -1,31 +1,55 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Asistencia } from '../model/Asistencia';
+import { map, Observable } from 'rxjs';
+import { Asistencia, AsistenciaDetalle, PLanilla_Combo } from '../model/Asistencia';
+import { ApiResponse } from '../model/api_response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AsistenciaService {
-    private apiUrl='http://localhost:5000/Asistencias';
+    private apiUrl='https://localhost:7089/Asistencia';
 
     constructor(private http: HttpClient) { }
 
     //listar las asistencias
-    getAsistencias():Observable<Asistencia[]>{
-        return this.http.get<Asistencia[]>(this.apiUrl);
+    getCalculoResumen(fechainicio:string,fechafin:string,codigoplanilla:string):Observable<ApiResponse<Asistencia>>{
+        const params=new HttpParams()
+        .set('fechainicio', fechainicio)
+        .set('fechafin', fechafin)
+        .set('codigoplanilla', codigoplanilla);
+
+
+
+        return this.http.get<ApiResponse<Asistencia>>(`${this.apiUrl}/SpListCalculoResumen`, { params });
     }
 
-    //registrar una nueva asistencia
-    createAsistencia(asistencia:Asistencia):Observable<Asistencia>{
-        return this.http.post<Asistencia>(`${this.apiUrl}`, asistencia);
+    formatDateForApi(date: Date): string {
+        const adjustedDate = new Date(date);
+        adjustedDate.setDate(adjustedDate.getDate() + 1);
+
+        const year = adjustedDate.getFullYear();
+        const month = String(adjustedDate.getMonth() + 1).padStart(2, '0');
+        const day = String(adjustedDate.getDate()).padStart(2, '0');
+
+        return `${year}${month}${day}`;
     }
 
-    actualizarAsistencia(codigo:string,asistencia:Asistencia):Observable<Asistencia>{
-        return this.http.put<Asistencia>(`${this.apiUrl}/${codigo}`, asistencia);
+    parseApiDate(dateStr: string): Date {
+        return new Date(dateStr);
     }
 
-    eliminarAsistencia(codigo:string):Observable<void>{
-        return this.http.delete<void>(`${this.apiUrl}/${codigo}`);
+    //planilla
+
+    getPlanillaCombo():Observable<PLanilla_Combo[]>{
+            return this.http.get<ApiResponse<PLanilla_Combo>>(`${this.apiUrl}/SpListPlanilla`).pipe(map(response => response.data));
+    }
+
+    getCalculoDetalle(fechaInicio:string,fechaFin:string,codigoEmpleado:string):Observable<ApiResponse<AsistenciaDetalle>>{
+        const params=new HttpParams()
+        .set('fechainicio', fechaInicio)
+        .set('fechafin', fechaFin)
+        .set('codigoempleado',codigoEmpleado);
+        return this.http.get<ApiResponse<AsistenciaDetalle>>(`${this.apiUrl}/SpListCalculoDetalle`,{params});
     }
 }
