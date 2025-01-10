@@ -8,7 +8,7 @@ import { ApiResponse } from '../model/api_response';
   providedIn: 'root'
 })
 export class MAnioService {
-    private apiUrl='https://localhost:7089/Anio'
+    private apiUrl='http://104.225.142.105:2060/Anio'
 
     constructor(private http:HttpClient) { }
 
