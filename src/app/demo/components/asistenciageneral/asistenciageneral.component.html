@@ -12,50 +12,73 @@
     <div class="flex align-items-center justify-content-between w-full">
         <!-- Contenedor de Fechas -->
         <div class="flex gap-3">
-          <!-- Fecha de Inicio -->
-          <div class="field">
-            <label for="startDate" class="font-medium text-gray-700" style="padding-right: 7px;">Fecha de Inicio:</label>
-            <p-calendar
-              dateFormat="yy-mm-dd"
-              [maxDate]="minStartDate"
-              [(ngModel)]="startDate"
-              inputId="startDate"
-              class="w-full"
-              placeholder="Selecciona una fecha"
-              [showIcon]="true"
-              (onDateSelect)="validateDates()"
-            ></p-calendar>
-          </div>
-      
-          <!-- Fecha Fin -->
-          <div class="field">
-            <label for="endDate" class="font-medium text-gray-700" style="padding-right: 7px;">Fecha Fin:</label>
-            <p-calendar
-              dateFormat="yy-mm-dd"
-              [(ngModel)]="endDate"
-              [maxDate]="maxEndDate"
-              inputId="endDate"
-              class="w-full"
-              placeholder="Selecciona una fecha"
-              [showIcon]="true"
-              (onDateSelect)="validateDates()"
-            ></p-calendar>
-          </div>
+            <!-- Fecha de Inicio -->
+            <div class="field">
+                <label
+                    for="startDate"
+                    class="font-medium text-gray-700"
+                    style="padding-right: 7px"
+                    >Fecha de Inicio:</label
+                >
+                <p-calendar
+                    dateFormat="dd/mm/yy"
+                    [maxDate]="minStartDate"
+                    [(ngModel)]="startDate"
+                    inputId="startDate"
+                    class="w-full"
+                    placeholder="Selecciona una fecha"
+                    [showIcon]="true"
+                    (onDateSelect)="validateDates()"
+                ></p-calendar>
+            </div>
+
+            <!-- Fecha Fin -->
+            <div class="field">
+                <label
+                    for="endDate"
+                    class="font-medium text-gray-700"
+                    style="padding-right: 7px"
+                    >Fecha Fin:</label
+                >
+                <p-calendar
+                    dateFormat="dd/mm/yy"
+                    [(ngModel)]="endDate"
+                    [maxDate]="maxEndDate"
+                    inputId="endDate"
+                    class="w-full"
+                    placeholder="Selecciona una fecha"
+                    [showIcon]="true"
+                    (onDateSelect)="validateDates()"
+                ></p-calendar>
+            </div>
         </div>
-      
-        <!-- Botón Buscar -->
-        <div class="field">
-          <button
-            pButton
-            type="button"
-            label="Buscar"
-            icon="pi pi-search"
-            (click)="Buscar()"
-            class="p-button-sm"
-          ></button>
+
+        <div class="flex gap-3">
+            <!-- Botón Buscar -->
+            <div class="field">
+                <button
+                    pButton
+                    type="button"
+                    label="Buscar"
+                    icon="pi pi-search"
+                    (click)="Buscar()"
+                    class="p-button-sm p-button-primary"
+                ></button>
+            </div>
+
+            <!-- Botón Exportar -->
+            <div class="field">
+                <button
+                    pButton
+                    type="button"
+                    label="Exportar"
+                    icon="pi pi-file-excel"
+                    (click)="generateEXCEL()"
+                    class="p-button-sm p-button-success"
+                ></button>
+            </div>
         </div>
-      </div>
-      
+    </div>
 
     <p-table
         #dt1
@@ -67,16 +90,77 @@
         [rowsPerPageOptions]="[5, 10, 20]"
         [loading]="loading"
         responsiveLayout="scroll"
+        [filters]="filters"
     >
-        <!-- Columnas filtros -->
         <ng-template pTemplate="header">
             <tr>
-                <th>Código marcador</th>
-                <th>Nombre marcador</th>
-                <th>Código empleado</th>
-                <th>Nombre y apellidos</th>
                 <th>Fecha</th>
-                <th>Tiempo</th>
+                <th>Hora</th>
+
+                <th>
+                    <div
+                        class="flex justify-content-between align-items-center"
+                    >
+                        Nro Documento
+                        <!--                   <p-columnFilter type="text" field="codigoEmpleado" display="menu" placeholder="Código"  [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" matchMode="contains"></p-columnFilter>
+-->
+                    </div>
+                </th>
+                <th>
+                    <div
+                        class="flex justify-content-between align-items-center"
+                    >
+                        Nombres y apellidos
+                        <!--                   <p-columnFilter type="text" field="nombreEmpleado" display="menu" placeholder="Nombres"  [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" matchMode="contains"></p-columnFilter>
+ -->
+                    </div>
+                </th>
+                <th>
+                    <div
+                        class="flex justify-content-between align-items-center"
+                    >
+                        Nombre marcador
+                        <!--                 <p-columnFilter type="text" field="nombreMarcador" display="menu" placeholder="Marcador"  [showOperator]="false" [showAddButton]="false" [showMatchModes]="false" matchMode="contains"></p-columnFilter>
+-->
+                    </div>
+                </th>
+            </tr>
+
+            <!-- Filtros de la primera fila -->
+            <tr>
+                <th></th>
+                <th></th>
+                <th style="max-width: 110px; min-width: 100px">
+                    <p-columnFilter
+                        type="text"
+                        field="codigoEmpleado"
+                        placeholder="Código"
+                        [showMenu]="false"
+                        MatchMode="contains"
+                    >
+                    </p-columnFilter>
+                </th>
+                <th style="max-width: 150px; min-width: 100px">
+                    <p-columnFilter
+                        type="text"
+                        field="nombreEmpleado"
+                        placeholder="Nombres"
+                        [showMenu]="false"
+                        MatchMode="contains"
+                    >
+                    </p-columnFilter>
+                </th>
+
+                <th style="max-width: 150px; min-width: 100px">
+                    <p-columnFilter
+                        type="text"
+                        field="nombreMarcador"
+                        placeholder="Marcador"
+                        [showMenu]="false"
+                        MatchMode="contains"
+                    >
+                    </p-columnFilter>
+                </th>
             </tr>
         </ng-template>
 
@@ -88,12 +172,11 @@
             let-ri="rowIndex"
         >
             <tr [pEditableRow]="rowData">
-                <td>{{ rowData.codigoMarcador }}</td>
-                <td>{{ rowData.nombreMarcador }}</td>
-                <td>{{ rowData.codigoEmpleado }}</td>
-                <td>{{ rowData.nombreEmpleado }}</td>
                 <td>{{ rowData.fechaFormateada }}</td>
                 <td>{{ rowData.tiempoFormateado }}</td>
+                <td>{{ rowData.codigoEmpleado }}</td>
+                <td>{{ rowData.nombreEmpleado }}</td>
+                <td>{{ rowData.nombreMarcador }}</td>
             </tr>
         </ng-template>
 
