@@ -9,7 +9,7 @@ import { ApiResponse } from '../model/api_response';
 })
 export class AutorizacionService {
 
-    private apiUrl='https://localhost:7089/Autenticacion';
+    private apiUrl='http://104.225.142.105:2060/Autenticacion';
 
   constructor(private http:HttpClient) { }
 
