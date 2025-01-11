@@ -5,7 +5,7 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
 import { timer } from 'rxjs';
-import { Asistencia } from 'src/app/demo/model/Asistencia';
+import { Asistencia, AsistenciaDetalle } from 'src/app/demo/model/Asistencia';
 import { AsistenciaService } from 'src/app/demo/service/asistencia.service';
 import { BreadcrumbService } from 'src/app/demo/service/breadcrumb.service';
 
@@ -18,16 +18,20 @@ import { BreadcrumbService } from 'src/app/demo/service/breadcrumb.service';
 })
 export class DetalleConsultaAsistenciaComponent implements OnInit {
     breadcrumbs: any[] = [];
-
-
-    asistencia:Asistencia|null = null;
+    asistencias:AsistenciaDetalle[]=[];
+    navigationData:any;
     loading:boolean = false;
     constructor(
-        private activa:ActivatedRoute,
         private aS:AsistenciaService,
-        private bS:BreadcrumbService
+        private bS:BreadcrumbService,
+        private rout:Router
     ){
-
+        const navigation=rout.getCurrentNavigation();
+        if (navigation?.extras?.state){
+            this.navigationData=navigation.extras.state;
+        } else{
+            this.rout.navigate(['/Menu/asistencia']);
+        }
     }
     ngOnInit(): void{
         this.loading=true;
@@ -42,44 +46,52 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
         this.bS.currentBreadcrumbs$.subscribe(bc=>{
             this.breadcrumbs=bc;
         })
-        const state=history.state as {asistencia:Asistencia};
-        if(state.asistencia){
-            this.asistencia=state.asistencia;
 
-        }
+        this.cargarDetalleAsistencia()
     }
 
-    calculateTotal(field: keyof Asistencia): string {
-        if (!this.asistencia) {
-          return '0';
-        }
-        const value = this.asistencia[field];
-        if (typeof value !== 'string') {
-          return '0';
-        }
-        const totalInSeconds = this.convertToSeconds(value);
-        return this.convertSecondsToHHMMSS(totalInSeconds);
-    }
+    cargarDetalleAsistencia() {
+        const fechaInicio = this.aS.formatDateForApi(this.navigationData.fechaInicio);
+        const fechaFin = this.aS.formatDateForApi(this.navigationData.fechaFin);
 
-      convertToSeconds(timeString: string): number {
-        const parts = timeString.split(':');
-        const hours = parseInt(parts[0], 10);
-        const minutes = parseInt(parts[1], 10);
-        const seconds = parseInt(parts[2], 10);
-        return hours * 3600 + minutes * 60 + seconds;
-    }
+        this.aS.getCalculoDetalle(
+          fechaInicio,
+          fechaFin,
+          this.navigationData.codigoEmpleado
+        ).subscribe({
+          next: (response) => {
+            if (response.isSuccess) {
+              this.asistencias = response.data;
+            }
+          },
+          error: (error) => console.error('Error:', error)
+        });
+      }
 
-      convertSecondsToHHMMSS(totalSeconds: number): string {
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        return [hours, minutes, seconds].map(part => String(part).padStart(2, '0')).join(':');
-    }
+      getDayOfWeek(date: string): string {
+        const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const fecha = new Date(date);
+        return dias[fecha.getDay()];
+      }
 
-      getDayOfWeek(date: Date): string {
-        const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        return days[new Date(date).getDay()];
-    }
+      calculateTotal(field: string): string {
+        // Función para sumar tiempos en formato HH:mm
+        const sumTimes = (times: string[]): string => {
+          let totalMinutes = times.reduce((acc, time) => {
+            const [hours, minutes] = time.split(':').map(Number);
+            return acc + (hours * 60 + minutes);
+          }, 0);
+
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+          return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+        };
+
+        const times = this.asistencias.map(a => a[field as keyof AsistenciaDetalle] as string);
+        return sumTimes(times);
+      }
+
+
 
 
 }
