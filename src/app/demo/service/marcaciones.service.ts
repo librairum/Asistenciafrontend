@@ -7,7 +7,7 @@ import { Marcaciones } from '../model/Marcaciones';
   providedIn: 'root'
 })
 export class MarcacionesService {
-    private apiUrl='http://localhost:5000/Marcaciones'
+    private apiUrl='http://104.225.142.105:2060/Marcaciones'
     constructor(private http:HttpClient) { }
 
   //listar
