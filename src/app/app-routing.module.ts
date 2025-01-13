@@ -28,14 +28,15 @@ import { AuthGuard } from './demo/service/auth.guard';
 		    { path: 'asistenciageneral', loadChildren: () => import('./demo/components/asistenciageneral/asistenciageneral.module').then(m => m.AsistenciGeneralModule) },
 		    { path: 'usuarios', loadChildren: () => import('./demo/components/usuarios/usuarios.module').then(m => m.UsuariosModule) },
                     { path: 'anio', loadChildren: () => import('./demo/components/anio/anio.module').then(m => m.AnioModule) },
-		    { path: 'perfil', loadChildren: () => import('./demo/components/perfil/perfil.module').then(m => m.PerfilModule) }  ,                  
 		    { path: 'asignarpermiso', loadChildren: () => import('./demo/components/permisosxperfilxtodo/permisosxperfilxtodo.module').then(m => m.PermisosxPerfilxTodoModule) },
+                    { path: 'perfil', loadChildren: () => import('./demo/components/perfil/perfil.module').then(m => m.PerfilModule) },////
+                    { path: 'asistenciageneral', loadChildren: () => import('./demo/components/asistenciageneral/asistenciageneral.module').then(m => m.AsistenciGeneralModule) },////
                     { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },
                     { path: 'utilities', loadChildren: () => import('./demo/components/utilities/utilities.module').then(m => m.UtilitiesModule) },
                     { path: 'documentation', loadChildren: () => import('./demo/components/documentation/documentation.module').then(m => m.DocumentationModule) },
                     { path: 'blocks', loadChildren: () => import('./demo/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
                     { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) }
-		    
+
 ]
             },
 
