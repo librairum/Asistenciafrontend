@@ -4,6 +4,7 @@ import { LayoutService } from "./service/app.layout.service";
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Router } from '@angular/router';
 import { GlobalserviceService } from '../demo/service/globalservice.service';
+import { AutorizacionService } from '../demo/service/autorizacion.service';
 
 @Component({
     selector: 'app-topbar',
@@ -19,14 +20,16 @@ export class AppTopBarComponent {
 
     @ViewChild('topbarmenu') menu!: ElementRef;
 
-    constructor(public layoutService: LayoutService,private link:Router,private gS:GlobalserviceService) { }
+    constructor(public layoutService: LayoutService,private link:Router,private gS:GlobalserviceService,private aS:AutorizacionService) { }
 
     nombre:string=this.gS.getNombre_Usuario();
 
 
     cerrarSesion(){
+        this.aS.logout();
         const valor=null;
         this.gS.setCodigoPerfil(valor);
         this.link.navigate(['/Inicio_Sesion']);
+
     }
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -16,8 +16,11 @@ import { AsistenciaService } from '../../../service/asistencia.service';
 import { Router, RouterModule } from '@angular/router';
 import { BreadcrumbService } from 'src/app/demo/service/breadcrumb.service';
 import { Breadcrumb, BreadcrumbModule } from 'primeng/breadcrumb';
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
 import { timer } from 'rxjs';
-
+registerLocaleData(localeEs);
 @Component({
     selector: 'app-consulta-asistencia',
     standalone: true,
@@ -25,10 +28,11 @@ import { timer } from 'rxjs';
         PanelModule, ConfirmDialogModule, CommonModule, ToastModule, DropdownModule, CalendarModule, RouterModule, BreadcrumbModule, CommonModule, ToastModule],
     templateUrl: './consulta-asistencia.component.html',
     styleUrl: './consulta-asistencia.component.scss',
-    providers: [MessageService, ColumnFilter, Breadcrumb]
+    providers: [MessageService, ColumnFilter, Breadcrumb, { provide: LOCALE_ID, useValue: 'es-ES' }]
 })
 export class ConsultaAsistenciaComponent implements OnInit {
     // tabla
+
     asistencia: Asistencia[] = [];
     asistenciaoriginal: Asistencia[] = [];
     columnas = [
@@ -58,8 +62,33 @@ export class ConsultaAsistenciaComponent implements OnInit {
     // para el menu
     items: any[] = [];
 
-    constructor(private aS: AsistenciaService, private router: Router, private bS: BreadcrumbService, private ms: MessageService) { }
+    // calendario
+    espaniol:any[]
+    constructor(private aS: AsistenciaService, private router: Router, private bS: BreadcrumbService, private ms: MessageService, private primeng: PrimeNGConfig) {
+        const navigation = router.getCurrentNavigation();
+        if (navigation?.extras?.state) {
+            const state = navigation.extras.state as any;
+            this.startDate = new Date(state.startDate);
+            this.endDate = new Date(state.endDate);
+            this.selectedPlanilla = state.selectedPlanilla;
+            this.cargarResumen();
+        } else {
+            this.endDate = new Date();
+            this.startDate = new Date(this.endDate.getFullYear(), this.endDate.getMonth(), 1); // Primer día del mes
+            this.selectedPlanilla = "1"
+        }
+    }
     ngOnInit(): void {
+        this.primeng.setTranslation({
+            firstDayOfWeek: 1,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Hoy',
+            clear: 'Limpiar'
+        })
         this.bS.setBreadcrumbs([
             { icon: 'pi pi-home', routerLink: '/Menu' },
             { label: 'Asistencia', routerLink: '/Menu/asistencia' }
@@ -67,10 +96,9 @@ export class ConsultaAsistenciaComponent implements OnInit {
         this.bS.currentBreadcrumbs$.subscribe(bc => {
             this.items = bc;
         })
+        console.log('Valores: ',this.endDate,this.startDate,this.selectedPlanilla)
         this.loadPlanillas()
-        this.endDate=new Date();
-        this.startDate = new Date(this.endDate.getFullYear(), this.endDate.getMonth(), 1); // Primer día del mes
-        this.selectedPlanilla="1"
+        this.cargarResumen()
     }
 
     cargarResumen() {
@@ -94,7 +122,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
                     this.asistencia = response.data;
 
                 } else {
-                    this.asistencia=[];
+                    this.asistencia = [];
                     this.ms.add({ severity: 'error', summary: 'Error', detail: 'No se encontro ningun registro' });
                     console.error(response.message);
                 }
@@ -110,11 +138,12 @@ export class ConsultaAsistenciaComponent implements OnInit {
 
     viewDetails(rowData: Asistencia) {
         // Implementar lógica para ver detalles
-        const navigationExtras={
+        const navigationExtras = {
             state: {
                 codigoEmpleado: rowData.codigoTrabajador,
                 fechaInicio: this.startDate,
-                fechaFin: this.endDate
+                fechaFin: this.endDate,
+                planillaSeleccionada: this.selectedPlanilla
             }
         }
         console.log(navigationExtras.state)

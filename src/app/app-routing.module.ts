@@ -4,6 +4,7 @@ import { NotfoundComponent } from './demo/components/notfound/notfound.component
 import { AppLayoutComponent } from "./layout/app.layout.component";
 import { ConsultaAsistenciaComponent } from './demo/components/consulta-asistencia/consulta-asistencia/consulta-asistencia.component';
 import { AutorizacionComponent } from './demo/components/autorizacion/autorizacion.component';
+import { AuthGuard } from './demo/service/auth.guard';
 
 @NgModule({
     imports: [
@@ -18,7 +19,7 @@ import { AutorizacionComponent } from './demo/components/autorizacion/autorizaci
                 ]
             },
             {
-                path: 'Menu', component: AppLayoutComponent,
+                path: 'Menu', component: AppLayoutComponent, canActivate:[AuthGuard],
                 children: [
                     { path: '', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
                     { path: 'asistencia', loadChildren: () => import('./demo/components/consulta-asistencia/asistencia.module').then(m => m.AsistenciaModule) },

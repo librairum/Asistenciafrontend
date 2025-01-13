@@ -16,6 +16,7 @@
               inputId="startDate"
               class="w-full"
               placeholder="Selecciona una fecha"
+              [locale]="espaniol"
               [showIcon]="true">
             </p-calendar>
           </div>
@@ -48,8 +49,7 @@
               optionLabel="nombrePlanilla"
               optionValue="codigoPlanilla"
               placeholder="Selecciona la planilla"
-              [(ngModel)]="selectedPlanilla"
-              panelStyle="170px">
+              [(ngModel)]="selectedPlanilla">
             </p-dropdown>
           </div>
         </div>
