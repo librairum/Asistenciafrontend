@@ -109,7 +109,6 @@ export class ConsultaAsistenciaComponent implements OnInit {
         this.bS.currentBreadcrumbs$.subscribe(bc => {
             this.items = bc;
         })
-        console.log('Valores: ',this.endDate,this.startDate,this.selectedPlanilla)
         this.loadPlanillas()
         this.cargarResumen()
     }
@@ -161,7 +160,6 @@ export class ConsultaAsistenciaComponent implements OnInit {
                 planillaSeleccionada: this.selectedPlanilla
             }
         }
-        console.log(navigationExtras.state)
         this.router.navigate(['Menu/asistencia/detalle-asistencia'], navigationExtras)
     }
 
@@ -173,7 +171,6 @@ export class ConsultaAsistenciaComponent implements OnInit {
                     const planillaEncontrada = this.planilla.find(p => p.codigoPlanilla === this.selectedPlanilla);
                     if (planillaEncontrada) {
                         this.planillaexcelselect = planillaEncontrada.nombrePlanilla;
-                        console.log('Planilla inicial seleccionada:', this.planillaexcelselect);
                     }
                 }
             }
@@ -189,7 +186,6 @@ export class ConsultaAsistenciaComponent implements OnInit {
         }
         if (planillaSeleccionada) {
             this.planillaexcelselect = planillaSeleccionada.nombrePlanilla;
-            console.log('Planilla seleccionada cambió a:', this.planillaexcelselect);
         }
     }
 

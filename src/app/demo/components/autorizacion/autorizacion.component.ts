@@ -51,7 +51,6 @@ export class AutorizacionComponent implements OnInit {
             if (response.isSuccess) {
                 this.globalService.setCodigoPerfil(response.data[0].codigoPerfil)
                 this.globalService.setNombre_Usuario(response.data[0].nombreUsuario)
-                //console.log(response.data[0].nombreUsuario)
                 this.link.navigate(['/Menu']);
 
             } else {

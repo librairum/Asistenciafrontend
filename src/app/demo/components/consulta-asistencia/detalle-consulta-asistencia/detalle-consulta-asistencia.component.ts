@@ -107,7 +107,6 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
                 selectedPlanilla: this.navigationData.planillaSeleccionada
             }
         }
-        console.log(navigationExtras2.state)
         this.rout.navigate(['/Menu/asistencia'], navigationExtras2)
     }
 
