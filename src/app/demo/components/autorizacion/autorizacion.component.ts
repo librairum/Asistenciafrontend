@@ -35,15 +35,11 @@ export class AutorizacionComponent implements OnInit {
 
 
     ngOnInit(): void {
-        const valor=null
-        const nombre=null
         this.aS.isAuthenticated().subscribe(isAuthenticated => {
             if (isAuthenticated) {
                 this.link.navigate(['/Menu']);
             }
         });
-        this.globalService.setCodigoPerfil(valor)
-        this.globalService.setNombre_Usuario(nombre)
     }
 
     onSubmit() {

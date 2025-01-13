@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -9,7 +9,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { PanelModule } from 'primeng/panel';
-import { ColumnFilter, TableModule } from 'primeng/table';
+import { ColumnFilter, Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { Asistencia, PLanilla_Combo } from '../../../model/Asistencia';
 import { AsistenciaService } from '../../../service/asistencia.service';
@@ -20,6 +20,7 @@ import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { timer } from 'rxjs';
+import * as XLSX from 'xlsx';
 registerLocaleData(localeEs);
 @Component({
     selector: 'app-consulta-asistencia',
@@ -59,11 +60,20 @@ export class ConsultaAsistenciaComponent implements OnInit {
 
     //filtros
     globalFilter: string = '';
+    filters: any
     // para el menu
     items: any[] = [];
 
     // calendario
     espaniol:any[]
+
+    //excel
+    @ViewChild('dt1') dt1:Table|undefined;
+    fechaexcelinicio: string;
+    fechaexcelfin: string;
+    planillaexcelselect:string;
+
+
     constructor(private aS: AsistenciaService, private router: Router, private bS: BreadcrumbService, private ms: MessageService, private primeng: PrimeNGConfig) {
         const navigation = router.getCurrentNavigation();
         if (navigation?.extras?.state) {
@@ -89,6 +99,9 @@ export class ConsultaAsistenciaComponent implements OnInit {
             today: 'Hoy',
             clear: 'Limpiar'
         })
+        this.filters={
+            nombretrabajador: {value:'',matchMode:'contains'}
+        }
         this.bS.setBreadcrumbs([
             { icon: 'pi pi-home', routerLink: '/Menu' },
             { label: 'Asistencia', routerLink: '/Menu/asistencia' }
@@ -111,6 +124,8 @@ export class ConsultaAsistenciaComponent implements OnInit {
 
         const fechaInicio = this.aS.formatDateForApi(this.startDate);
         const fechaFin = this.aS.formatDateForApi(this.endDate);
+        this.fechaexcelinicio=fechaInicio
+        this.fechaexcelfin=fechaFin
 
         this.aS.getCalculoResumen(
             fechaInicio,
@@ -154,128 +169,79 @@ export class ConsultaAsistenciaComponent implements OnInit {
         this.aS.getPlanillaCombo().subscribe(
             (data: PLanilla_Combo[]) => {
                 this.planilla = data;
+                if (this.selectedPlanilla) {
+                    const planillaEncontrada = this.planilla.find(p => p.codigoPlanilla === this.selectedPlanilla);
+                    if (planillaEncontrada) {
+                        this.planillaexcelselect = planillaEncontrada.nombrePlanilla;
+                        console.log('Planilla inicial seleccionada:', this.planillaexcelselect);
+                    }
+                }
             }
         )
     }
 
     onPlanillaChange(event: any) {
+
         this.selectedPlanilla = event.value
+        const planillaSeleccionada = this.planilla.find(p => p.codigoPlanilla === event.value);
         if (!this.selectedPlanilla) {
             this.planilla = [];
         }
-    }
-
-
-
-    /*definirColumnas(): void {
-        this.columnas = [
-            { field: 'item', header: 'Item' },
-            { field: 'nombretrabajador', header: 'Trabajador' },
-            { field: 'dias', header: 'Días' },
-            { field: 'horas25', header: 'Horas 25%' },
-            { field: 'horas60', header: 'Horas 60%' },
-            { field: 'horas100', header: 'Horas 100%' },
-            { field: 'acciones', header: 'Acciones' }
-        ];
-    }
-
-    cargarResumen(): void {
-        if (!this.startDate || !this.endDate || !this.planillaSeleccionada) {
-            this.ms.add({ severity: 'warn', summary: 'Faltan datos', detail: 'Completa todos los campos de filtro' });
-            return;
+        if (planillaSeleccionada) {
+            this.planillaexcelselect = planillaSeleccionada.nombrePlanilla;
+            console.log('Planilla seleccionada cambió a:', this.planillaexcelselect);
         }
+    }
 
+    generateEXCEL(){
+        this.planillaexcelselect=this.planillaexcelselect.slice(0,12)
+        const filteredData=this.dt1?.filteredValue;
+        if(filteredData && filteredData.length>0){
+            const filteredColumnsData=filteredData.map((item:any)=>({
+                item:item.item,
+                Trabajador:item.nombretrabajador,
+                Dias:item.dias,
+                horas25:item.horas25,
+                horas60:item.horas60,
+                horas100:item.horas100,
+            }));
 
-        this.loading = true;
-        const startDateString = this.formatDateToString(this.startDate);
-        const endDateString = this.formatDateToString(this.endDate);
-        this.aS
-            .getCalculoResumen(startDateString, endDateString, this.planillaSeleccionada)
-            .subscribe(
-                (response) => {
-                    this.asistenciaoriginal = response.data || [];
-                    this.asistencia = [...this.asistenciaoriginal];
-                    this.loading = false;
-                },
-                (error) => {
-                    console.error('Error al cargar el resumen de asistencia', error);
-                    this.loading = false;
-                }
+            const wb=XLSX.utils.book_new();
+
+            const ws=XLSX.utils.json_to_sheet(filteredColumnsData);
+
+            XLSX.utils.book_append_sheet(wb,ws,'Exportar');
+
+            XLSX.writeFile(wb, 'Asistencia.xlsx');
+        } else if(this.asistencia && this.asistencia.length > 0){
+            const filteredColumnsData = this.asistencia.map(
+                (item:any)=>({
+                    item:item.item,
+                Trabajador:item.nombretrabajador,
+                Dias:item.dias,
+                horas25:item.horas25,
+                horas60:item.horas60,
+                horas100:item.horas100,
+                })
             );
-    }
 
-    private formatDateToString(date: Date | null): string | null {
-        if (!date) return null;
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}${month}${day}`;
-    }
+            const wb = XLSX.utils.book_new();
 
+                        // Convierte los datos filtrados (con las columnas seleccionadas) a una hoja de trabajo
+                    const ws = XLSX.utils.json_to_sheet(filteredColumnsData);
 
-    validateDates() {
-        if (this.startDate && this.endDate) {
-            if (this.startDate > this.endDate) {
-                // La fecha de inicio no puede ser posterior a la fecha de fin
-                this.endDate = null; // Limpiamos la fecha de fin si ocurre este caso
-            }
-            if (this.endDate > this.maxEndDate) {
-                // La fecha de fin no puede ser posterior a la fecha máxima permitida
-                this.endDate = this.maxEndDate;
-            }
+                        // Añade la hoja de trabajo al libro de trabajo
+                    XLSX.utils.book_append_sheet(wb, ws, this.fechaexcelinicio+'_'+this.fechaexcelfin+'_'+this.planillaexcelselect);
+
+                        // Descarga el archivo Excel
+                    XLSX.writeFile(wb, 'Asist_'+this.fechaexcelinicio+'_'+this.fechaexcelfin+'_'+this.planillaexcelselect+'.xlsx');
+        } else {
+            this.ms.add({ severity: 'error', summary: 'Error', detail: 'No se encontro ningun registro para el excel' });
         }
+
     }
 
 
-    viewDetails(asistencia: Asistencia): void {
-        // Aquí puedes implementar lógica para ver detalles de la asistencia
-        //this.selectedAsistencia = asistencia;
-        //this.showDetailsDialog =true;
-        this.route.navigate(['asistencia/detalle-asistencia'], {
-            state: { asistencia },
-        })
-    }
-
-    getDayOfWeek(date: Date): string {
-        const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        return days[new Date(date).getDay()];
-    }*/
-
-
-
-
-
-
-
-    /*calculateTotal(field: keyof Asistencia): string {
-        if (!this.selectedAsistencia) {
-            return '0';
-        }
-        const value = this.selectedAsistencia[field];
-        // Asegurarte de que el valor sea una cadena antes de proceder
-        if (typeof value !== 'string') {
-            return '0'; // O maneja esto como prefieras, por ejemplo, lanzar un error o ignorar
-        }
-        const totalInSeconds = this.convertToSeconds(value);
-        return this.convertSecondsToHHMMSS(totalInSeconds);
-    }*/
-
-    /*convertToSeconds(timeString: string): number {
-        const parts = timeString.split(':');
-        const hours = parseInt(parts[0], 10);
-        const minutes = parseInt(parts[1], 10);
-        const seconds = parseInt(parts[2], 10);
-
-        return hours * 3600 + minutes * 60 + seconds;
-    }*/
-
-    /*convertSecondsToHHMMSS(totalSeconds: number): string {
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-
-        return [hours, minutes, seconds].map(part => String(part).padStart(2, '0')).join(':');
-    }*/
 
 
 }

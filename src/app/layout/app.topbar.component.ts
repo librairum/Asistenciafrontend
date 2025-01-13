@@ -27,8 +27,7 @@ export class AppTopBarComponent {
 
     cerrarSesion(){
         this.aS.logout();
-        const valor=null;
-        this.gS.setCodigoPerfil(valor);
+        this.gS.clearSession();
         this.link.navigate(['/Inicio_Sesion']);
 
     }
