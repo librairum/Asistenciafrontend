@@ -84,7 +84,7 @@ export class AppMenuComponent implements OnInit {
             // Add more mappings as needed
         };
 
-        return iconMap[codigoFormulario] || 'pi pi-fw pi-config';
+        return iconMap[codigoFormulario] || 'pi pi-fw pi-cog';
     }
 
     private getRouterLink(nombreFormulario: string): string {
