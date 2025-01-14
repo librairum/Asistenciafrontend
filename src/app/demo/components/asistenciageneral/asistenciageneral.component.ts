@@ -146,9 +146,6 @@ export class AsistenciageneralComponent implements OnInit {
     }
 
     loadAsistenciagenerales(): void {
-        console.log(
-            'Fecha inicio: ' + this.stardate + '- Fecha fin: ' + this.enddate
-        );
         this.loading = true;
         this.mrS
             .getAsistenciaByDateRange(this.stardate, this.enddate)
@@ -235,12 +232,6 @@ export class AsistenciageneralComponent implements OnInit {
         //this.validateDates();
 
         if (this.startDate && this.endDate) {
-            console.log(
-                'Fecha inicio: ' +
-                    this.startDate +
-                    '- Fecha fin: ' +
-                    this.endDate
-            );
             this.stardate = this.formatDateAAAAMMDD(this.startDate);
             this.enddate = this.formatDateAAAAMMDD(this.endDate);
 

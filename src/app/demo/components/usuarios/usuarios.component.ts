@@ -43,19 +43,18 @@ export class UsuariosComponent implements OnInit {
     perfil: ListarPerfil[] = [];
     selectPerfil: string | null = null;
     perfilesL: string[] = [];
-    
-    
+
+
     constructor(private fb: FormBuilder, private uS: UsuarioService, private mS: MessageService, private confirmationsService: ConfirmationService, private bS: BreadcrumbService,private cdRef: ChangeDetectorRef) { }
     loadPerfiles() {
         this.uS.getAllPerfil()
             .subscribe(
                 (data: ListarPerfil[]) => {
                     this.perfil = data;
-                    console.log('perfiles: ',data)
                 },
             );
     }
-    
+
     onPerfilChange(event:any){
         this.selectPerfil=event.value;
     }
