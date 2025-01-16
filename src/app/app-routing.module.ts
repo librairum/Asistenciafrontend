@@ -21,7 +21,9 @@ import { AuthGuard } from './demo/service/auth.guard';
             {
                 path: 'Menu', component: AppLayoutComponent, canActivate: [AuthGuard],
                 children: [
-                    { path: '', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
+                    {
+                        path: '', redirectTo: 'asistenciageneral', pathMatch: 'full'
+                    },
                     { path: 'asistencia', loadChildren: () => import('./demo/components/consulta-asistencia/asistencia.module').then(m => m.AsistenciaModule) },
                     { path: 'marcaciones', loadChildren: () => import('./demo/components/consulta-marcaciones/marcaciones.module').then(m => m.MarcacionesModule) },
                     { path: 'marcadores', loadChildren: () => import('./demo/components/mantenimiento-marcadores/marcadores.module').then(m => m.MarcadoresModule) },

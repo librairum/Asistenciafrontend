@@ -20,6 +20,7 @@ import { ToastModule } from 'primeng/toast';
 import { Perfil } from '../../model/perfil';
 import { PerfilService } from '../../service/perfil.service';
 import { BreadcrumbService } from '../../service/breadcrumb.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-perfil',
@@ -36,6 +37,7 @@ import { BreadcrumbService } from '../../service/breadcrumb.service';
         BreadcrumbModule,
         ConfirmDialogModule,
         FormsModule,
+        RouterModule
     ],
     templateUrl: './perfil.component.html',
     styleUrl: './perfil.component.scss',
@@ -60,7 +62,8 @@ export class PerfilComponent implements OnInit {
         private maS: PerfilService,
         private mS: MessageService,
         private confirmationsService: ConfirmationService,
-        private bS: BreadcrumbService
+        private bS: BreadcrumbService,
+        private link:Router
     ) {}
     ngOnInit(): void {
         this.bS.setBreadcrumbs([
@@ -92,6 +95,17 @@ export class PerfilComponent implements OnInit {
                 console.error('Error al obtener datos:', err); // Manejo de errores
             },
         });
+    }
+
+    verasignarPerfiles(rowData: Perfil)
+    {
+        const navigationExtras={
+            state:{
+                codigo:rowData.codigo
+            }
+        }
+        this.link.navigate(['Menu/asignarpermiso'],navigationExtras)
+        console.log(navigationExtras);
     }
 
     onRowEditInit(perfil: any, index: number) {
@@ -180,7 +194,7 @@ export class PerfilComponent implements OnInit {
     onCancel() {
         this.isEditing = false;
         this.mPerfilForm.reset();
-        
+
     }
 
     onDelete(perfil: Perfil, index: number) {

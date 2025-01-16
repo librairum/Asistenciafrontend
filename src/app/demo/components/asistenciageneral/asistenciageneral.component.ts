@@ -50,7 +50,7 @@ export class AsistenciageneralComponent implements OnInit {
     loading: boolean = false;
     searchForm: FormGroup;
     editing: boolean = false;
-
+    mostrarBoton = false;  // Cuando es false, el botón no será visible
     stardate: string;
     enddate: string;
 

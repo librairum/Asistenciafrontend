@@ -49,6 +49,7 @@
                     placeholder="Selecciona una fecha"
                     [showIcon]="true"
                     (onDateSelect)="validateDates()"
+
                 ></p-calendar>
             </div>
         </div>
@@ -62,7 +63,7 @@
                     label="Buscar"
                     icon="pi pi-search"
                     (click)="Buscar()"
-                    class="p-button-sm p-button-primary"
+                    class="p-button p-button-primary"
                 ></button>
             </div>
 
@@ -74,7 +75,8 @@
                     label="Exportar"
                     icon="pi pi-file-excel"
                     (click)="generateEXCEL()"
-                    class="p-button-sm p-button-success"
+                    class="p-button p-button-success"
+                    *ngIf="mostrarBoton"
                 ></button>
             </div>
         </div>

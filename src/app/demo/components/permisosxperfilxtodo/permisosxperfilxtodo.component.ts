@@ -17,11 +17,12 @@ import { PanelModule } from 'primeng/panel';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { permisosxperfil } from '../../model/permisosxperfil';
 import { DropdownModule } from 'primeng/dropdown';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-permisosxperfilxtodo',
   standalone: true,
-  imports: [ReactiveFormsModule,InputTextModule,FormsModule,CommonModule,TableModule,ButtonModule,ProgressSpinnerModule,ToastModule,CheckboxModule,PanelModule,BreadcrumbModule,DropdownModule],
+  imports: [ReactiveFormsModule,InputTextModule,FormsModule,CommonModule,TableModule,ButtonModule,ProgressSpinnerModule,ToastModule,CheckboxModule,PanelModule,BreadcrumbModule,DropdownModule,RouterModule],
   templateUrl: './permisosxperfilxtodo.component.html',
   styleUrl: './permisosxperfilxtodo.component.scss',
   providers:[MessageService]
@@ -33,23 +34,32 @@ export class PermisosxperfilxtodoComponent implements OnInit {
     items:any[]=[];
     perfiles:perfilxpermisos[] = [];
     selectedperfil:string = "";
+    navigationData:any;
 
-    constructor(private fb:FormBuilder,private ptS:PermisosxperfilxtodoService,private gS:GlobalserviceService,private mS:MessageService,private bS:BreadcrumbService) {
-        this.permisosForm=this.fb.group({
-            codigoPerfil:['',Validators.required],
-            codModulo:'01'
-        });
+    constructor(private fb:FormBuilder,private ptS:PermisosxperfilxtodoService,private gS:GlobalserviceService,private mS:MessageService,private bS:BreadcrumbService,private link: Router) {
+        const navigation=link.getCurrentNavigation();
+        if(navigation?.extras?.state){
+            this.navigationData=navigation.extras.state
+        }else{
+            this.link.navigate(['/Menu/perfil'])
+        }
+
     }
 
     ngOnInit(): void {
         this.bS.setBreadcrumbs([
             { icon: 'pi pi-home',routerLink: '/Menu' },
-            { label: 'Permisos', routerLink: '/Menu/asignarpermiso' }
+            { label: 'Perfil',routerLink: '/Menu/perfil' },
+            { label: 'Asignar Permisos', routerLink: '/Menu/asignarpermiso' }
         ]);
         this.bS.currentBreadcrumbs$.subscribe(bc=>{
             this.items=bc;
         })
         this.loadPerfiles()
+        this.permisosForm=this.fb.group({
+            codigoPerfil:this.navigationData.codigo,
+            codModulo:'01'
+        });
         this.cargarPermisos();
 
 
@@ -58,10 +68,12 @@ export class PermisosxperfilxtodoComponent implements OnInit {
     loadPerfiles(){
         this.ptS.getPerfilesCombo().subscribe(
             (data:perfilxpermisos[])=>{
-                this.perfiles=data
+                this.perfiles=data;
+                this.selectedperfil=this.navigationData.codigo;
             }
         )
     }
+
 
     onPerfilChange(event:any){
         this.selectedperfil=event.value

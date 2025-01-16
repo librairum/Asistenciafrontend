@@ -20,12 +20,13 @@
                         (onChange)="onPerfilChange($event)"
                         placeholder="Elija un perfil"
                         [(ngModel)]="selectedperfil"
-                        [showClear]="true">
+                        [readonly]="true">
                     </p-dropdown>
                 </td>
+            <!--
                 <td colspan="2">
                     <button type="submit" pButton label="Cargar Permisos" [disabled]="loading"></button>
-                </td>
+                </td>-->
             </tr>
         </table>
     </form>

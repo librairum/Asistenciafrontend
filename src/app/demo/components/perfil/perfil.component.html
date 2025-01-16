@@ -118,6 +118,14 @@
                                 class="p-button-rounded p-button-text p-button-sm"
                             ></button>
                             <button
+                                *ngIf="!editingRows[ri]"
+                                pButton
+                                pInitEditableRow
+                                (click)="verasignarPerfiles(perfil)"
+                                icon="pi pi-cog"
+                                class="p-button-rounded p-button-text p-button-sm"
+                            ></button>
+                            <button
                                 *ngIf="editingRows[ri]"
                                 pButton
                                 pSaveEditableRow
@@ -153,7 +161,7 @@
                         <form [formGroup]="mPerfilForm" class="grid">
                             <div class="col-5">
                                 <span class="w-full">
-                                    <input                                        
+                                    <input
                                         pInputText
                                         formControlName="Codigo"
                                         placeholder="Código"
@@ -164,7 +172,7 @@
 
                             <div class="col-5">
                                 <span class="w-full">
-                                    <input                                        
+                                    <input
                                         pInputText
                                         formControlName="Nombre"
                                         placeholder="Nombre"
