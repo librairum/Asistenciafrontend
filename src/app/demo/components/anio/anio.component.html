@@ -53,20 +53,20 @@
                 <div class="flex justify-content-center gap-2">
                 <button *ngIf="!editing" pButton pInitEditableRow
                         (click)="onRowEditInit(anio)"
-                        icon="pi pi-pencil"
+                        icon="pi pi-pencil" pTooltip="Editar Año"
                         [disabled]="isNew || isEditingAnyRow"
                         class="p-button-rounded p-button-text p-button-sm"></button>
                 <button *ngIf="editing" pButton pSaveEditableRow
                         (click)="onRowEditSave(anio)"
-                        icon="pi pi-check"
+                        icon="pi pi-check" pTooltip="Guardar"
                         class="p-button-rounded p-button-text p-button-sm p-button-success"></button>
                 <button *ngIf="editing" pButton pCancelEditableRow
                         (click)="onRowEditCancel(anio, ri)"
-                        icon="pi pi-times"
+                        icon="pi pi-times" pTooltip="Cancelar"
                         class="p-button-rounded p-button-text p-button-sm p-button-danger"></button>
                 <button *ngIf="!editing" pButton type="button"
                         (click)="onDelete(anio, ri)"
-                        icon="pi pi-trash"
+                        icon="pi pi-trash" pTooltip="Borrar Año"
                         [disabled]="isNew || isEditingAnyRow"
                         class="p-button-rounded p-button-text p-button-sm p-button-danger"></button>
                 </div>

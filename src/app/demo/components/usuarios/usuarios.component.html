@@ -105,15 +105,15 @@
                         <div class="flex justify-content-center gap-2">
                             <button *ngIf="!editing" pButton pInitEditableRow (click)="onRowEditInit(rowData)"
                                 icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm"
-                                [disabled]="isNew || isEditingAnyRow"></button>
+                                [disabled]="isNew || isEditingAnyRow" pTooltip="Editar Usuario"></button>
                             <button *ngIf="editing" pButton pSaveEditableRow (click)="onRowEditSave(rowData)"
-                                icon="pi pi-save"
+                                icon="pi pi-save" pTooltip="Guardar"
                                 class="p-button-rounded p-button-text p-button-sm p-button-success" [disabled]="!isPasswordValid(rowData)"></button>
                             <button *ngIf="editing" pButton pCancelEditableRow (click)="onRowEditCancel(rowData, ri)"
-                                icon="pi pi-times"
+                                icon="pi pi-times" pTooltip="Cancelar"
                                 class="p-button-rounded p-button-text p-button-sm p-button-danger"></button>
                             <button *ngIf="!editing" pButton type="button" (click)="onDelete(rowData, ri)"
-                                icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm p-button-danger"
+                                icon="pi pi-trash" class="p-button-rounded p-button-text p-button-sm p-button-danger" pTooltip="Borrar Usuario"
                                 [disabled]="isNew || isEditingAnyRow"></button>
                         </div>
                     </td>

@@ -115,6 +115,7 @@
                                 pInitEditableRow
                                 (click)="onRowEditInit(perfil, ri)"
                                 icon="pi pi-pencil"
+                                pTooltip="Editar perfil"
                                 class="p-button-rounded p-button-text p-button-sm"
                             ></button>
                             <button
@@ -122,6 +123,7 @@
                                 pButton
                                 pInitEditableRow
                                 (click)="verasignarPerfiles(perfil)"
+                                pTooltip="Permisos del perfil"
                                 icon="pi pi-cog"
                                 class="p-button-rounded p-button-text p-button-sm"
                             ></button>
@@ -130,6 +132,7 @@
                                 pButton
                                 pSaveEditableRow
                                 (click)="onRowEditSave(perfil, ri)"
+                                pTooltip="Guardar"
                                 icon="pi pi-save"
                                 class="p-button-rounded p-button-text p-button-sm p-button-success"
                             ></button>
@@ -138,6 +141,7 @@
                                 pButton
                                 pCancelEditableRow
                                 (click)="onRowEditCancel(perfil, ri)"
+                                pTooltip="Cancelar"
                                 icon="pi pi-times"
                                 class="p-button-rounded p-button-text p-button-sm p-button-danger"
                             ></button>
@@ -147,6 +151,7 @@
                                 *ngIf="!editingRows[ri]"
                                 pButton
                                 (click)="onDelete(perfil, ri)"
+                                pTooltip="Borrar perfil"
                                 icon="pi pi-trash"
                                 class="p-button-rounded p-button-text p-button-sm p-button-danger"
                             ></button>

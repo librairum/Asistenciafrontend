@@ -21,6 +21,7 @@ import { Perfil } from '../../model/perfil';
 import { PerfilService } from '../../service/perfil.service';
 import { BreadcrumbService } from '../../service/breadcrumb.service';
 import { Router, RouterModule } from '@angular/router';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
     selector: 'app-perfil',
@@ -37,7 +38,8 @@ import { Router, RouterModule } from '@angular/router';
         BreadcrumbModule,
         ConfirmDialogModule,
         FormsModule,
-        RouterModule
+        RouterModule,
+        TooltipModule
     ],
     templateUrl: './perfil.component.html',
     styleUrl: './perfil.component.scss',
