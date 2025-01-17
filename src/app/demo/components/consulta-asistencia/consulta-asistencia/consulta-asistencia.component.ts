@@ -53,7 +53,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
     //planilla
     planilla: PLanilla_Combo[] = [];
     selectedPlanilla: string = "";
-    fechahoy:Date|null = null;
+    fechahoy: string | null = null;
 
     showDetailsDialog: boolean = false; // Variable para controlar el modal
     selectedAsistencia: Asistencia | null = null; // Almacena el detalle de la fila seleccionada
@@ -110,7 +110,11 @@ export class ConsultaAsistenciaComponent implements OnInit {
         this.bS.currentBreadcrumbs$.subscribe(bc => {
             this.items = bc;
         })
-        this.fechahoy=new Date();
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        this.fechahoy = `${year}_${month}_${day}`;
         this.loadPlanillas()
         this.cargarResumen()
     }
@@ -258,7 +262,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
                     `${item.nHorExtrDo}\n`;
             });
 
-            const suggestedName = `Asist_${this.fechaexcelinicio}_${this.fechaexcelfin}_${this.planillaexcelselect}.txt`;
+            const suggestedName = `Asist_${this.fechahoy}_.txt`;
 
             try {
                 // Intentamos usar el método moderno primero
