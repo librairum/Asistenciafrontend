@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HostListener, Injectable } from '@angular/core';
 import { Autenticacion } from '../model/autentication';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { ApiResponse } from '../model/api_response';
+import { GlobalserviceService } from './globalservice.service';
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,24 @@ export class AutorizacionService {
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.checkAuthStatus());
 
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {
+        // Agregar listener para el evento beforeunload
+        window.addEventListener('beforeunload', () => {
+            this.logout();
+        });
+
+        // Agregar listener para el evento unload
+        window.addEventListener('unload', () => {
+            this.logout();
+        });
+
+        // Agregar listener para el evento visibilitychange
+        /*document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                this.logout();
+            }
+        });*/
+     }
 
     autenticacion(autenticacion: Autenticacion): Observable<ApiResponse<Autenticacion>> {
         const url = `${this.apiUrl}/SpList`;
@@ -26,6 +44,7 @@ export class AutorizacionService {
                         userData: response.data[0]
                     }));
                     this.isAuthenticatedSubject.next(true);
+                    localStorage.setItem('sessionStartTime', new Date().toISOString());
                 }
             })
         );
@@ -33,6 +52,7 @@ export class AutorizacionService {
 
     logout(): void {
         localStorage.removeItem('userSession');
+        localStorage.removeItem('sessionStartTime');
         this.isAuthenticatedSubject.next(false);
     }
 
@@ -43,5 +63,16 @@ export class AutorizacionService {
     private checkAuthStatus(): boolean {
         const session = localStorage.getItem('userSession');
         return session ? JSON.parse(session).isAuthenticated : false;
+    }
+    private checkSessionExpiration(): boolean {
+        const startTime = localStorage.getItem('sessionStartTime');
+        if (!startTime) return false;
+
+        const currentTime = new Date();
+        const sessionStart = new Date(startTime);
+        const diffHours = (currentTime.getTime() - sessionStart.getTime()) / (1000 * 60 * 60);
+
+        // Por ejemplo, cerrar sesión después de 24 horas
+        return diffHours >= 4;
     }
 }

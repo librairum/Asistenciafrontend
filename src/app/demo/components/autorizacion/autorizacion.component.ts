@@ -39,6 +39,8 @@ export class AutorizacionComponent implements OnInit {
         this.aS.isAuthenticated().subscribe(isAuthenticated => {
             if (isAuthenticated) {
                 this.link.navigate(['/Menu']);
+            } else{
+                this.link.navigate(['/Inicio_Sesion'])
             }
         });
 

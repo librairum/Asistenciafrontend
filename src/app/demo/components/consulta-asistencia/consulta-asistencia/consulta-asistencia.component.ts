@@ -53,6 +53,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
     //planilla
     planilla: PLanilla_Combo[] = [];
     selectedPlanilla: string = "";
+    fechahoy:Date|null = null;
 
     showDetailsDialog: boolean = false; // Variable para controlar el modal
     selectedAsistencia: Asistencia | null = null; // Almacena el detalle de la fila seleccionada
@@ -65,13 +66,13 @@ export class ConsultaAsistenciaComponent implements OnInit {
     items: any[] = [];
 
     // calendario
-    espaniol:any[]
+    espaniol: any[]
 
     //excel
-    @ViewChild('dt1') dt1:Table|undefined;
+    @ViewChild('dt1') dt1: Table | undefined;
     fechaexcelinicio: string;
     fechaexcelfin: string;
-    planillaexcelselect:string;
+    planillaexcelselect: string;
 
 
     constructor(private aS: AsistenciaService, private router: Router, private bS: BreadcrumbService, private ms: MessageService, private primeng: PrimeNGConfig) {
@@ -99,8 +100,8 @@ export class ConsultaAsistenciaComponent implements OnInit {
             today: 'Hoy',
             clear: 'Limpiar'
         })
-        this.filters={
-            nombretrabajador: {value:'',matchMode:'contains'}
+        this.filters = {
+            nombretrabajador: { value: '', matchMode: 'contains' }
         }
         this.bS.setBreadcrumbs([
             { icon: 'pi pi-home', routerLink: '/Menu' },
@@ -109,6 +110,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
         this.bS.currentBreadcrumbs$.subscribe(bc => {
             this.items = bc;
         })
+        this.fechahoy=new Date();
         this.loadPlanillas()
         this.cargarResumen()
     }
@@ -123,8 +125,8 @@ export class ConsultaAsistenciaComponent implements OnInit {
 
         const fechaInicio = this.aS.formatDateForApi(this.startDate);
         const fechaFin = this.aS.formatDateForApi(this.endDate);
-        this.fechaexcelinicio=fechaInicio
-        this.fechaexcelfin=fechaFin
+        this.fechaexcelinicio = fechaInicio
+        this.fechaexcelfin = fechaFin
 
         this.aS.getCalculoResumen(
             fechaInicio,
@@ -189,52 +191,122 @@ export class ConsultaAsistenciaComponent implements OnInit {
         }
     }
 
-    generateEXCEL(){
-        this.planillaexcelselect=this.planillaexcelselect.slice(0,12)
-        const filteredData=this.dt1?.filteredValue;
-        if(filteredData && filteredData.length>0){
-            const filteredColumnsData=filteredData.map((item:any)=>({
-                item:item.item,
-                Trabajador:item.nombretrabajador,
-                Dias:item.dias,
-                horas25:item.horas25,
-                horas60:item.horas60,
-                horas100:item.horas100,
+    generateEXCEL() {
+        this.planillaexcelselect = this.planillaexcelselect.slice(0, 12)
+        const filteredData = this.dt1?.filteredValue;
+        if (filteredData && filteredData.length > 0) {
+            const filteredColumnsData = filteredData.map((item: any) => ({
+                item: item.item,
+                Trabajador: item.nombretrabajador,
+                Dias: item.dias,
+                horas25: item.horas25,
+                horas60: item.horas60,
+                horas100: item.horas100,
             }));
 
-            const wb=XLSX.utils.book_new();
+            const wb = XLSX.utils.book_new();
 
-            const ws=XLSX.utils.json_to_sheet(filteredColumnsData);
+            const ws = XLSX.utils.json_to_sheet(filteredColumnsData);
 
-            XLSX.utils.book_append_sheet(wb,ws,'Exportar');
+            XLSX.utils.book_append_sheet(wb, ws, 'Exportar');
 
             XLSX.writeFile(wb, 'Asistencia.xlsx');
-        } else if(this.asistencia && this.asistencia.length > 0){
+        } else if (this.asistencia && this.asistencia.length > 0) {
             const filteredColumnsData = this.asistencia.map(
-                (item:any)=>({
-                    item:item.item,
-                Trabajador:item.nombretrabajador,
-                Dias:item.dias,
-                horas25:item.horas25,
-                horas60:item.horas60,
-                horas100:item.horas100,
+                (item: any) => ({
+                    item: item.item,
+                    Trabajador: item.nombretrabajador,
+                    Dias: item.dias,
+                    horas25: item.horas25,
+                    horas60: item.horas60,
+                    horas100: item.horas100,
                 })
             );
 
             const wb = XLSX.utils.book_new();
 
-                        // Convierte los datos filtrados (con las columnas seleccionadas) a una hoja de trabajo
-                    const ws = XLSX.utils.json_to_sheet(filteredColumnsData);
+            // Convierte los datos filtrados (con las columnas seleccionadas) a una hoja de trabajo
+            const ws = XLSX.utils.json_to_sheet(filteredColumnsData);
 
-                        // Añade la hoja de trabajo al libro de trabajo
-                    XLSX.utils.book_append_sheet(wb, ws, this.fechaexcelinicio+'_'+this.fechaexcelfin+'_'+this.planillaexcelselect);
+            // Añade la hoja de trabajo al libro de trabajo
+            XLSX.utils.book_append_sheet(wb, ws, this.fechaexcelinicio + '_' + this.fechaexcelfin + '_' + this.planillaexcelselect);
 
-                        // Descarga el archivo Excel
-                    XLSX.writeFile(wb, 'Asist_'+this.fechaexcelinicio+'_'+this.fechaexcelfin+'_'+this.planillaexcelselect+'.xlsx');
+            // Descarga el archivo Excel
+            XLSX.writeFile(wb, 'Asist_' + this.fechaexcelinicio + '_' + this.fechaexcelfin + '_' + this.planillaexcelselect + '.xlsx');
         } else {
             this.ms.add({ severity: 'error', summary: 'Error', detail: 'No se encontro ningun registro para el excel' });
         }
 
+    }
+
+    async generateTXT() {
+        if (this.asistencia && this.asistencia.length > 0) {
+            let content = '';
+
+            // Generamos el contenido del archivo
+            this.asistencia.forEach(item => {
+                content += `${item.codigoTrabajador}|` +
+                    `${item.diasFalta}|` +
+                    `${item.nHraDomPag}|` +
+                    `${item.nHraFerTra}|` +
+                    `${item.hturnoManu}|` +
+                    `${item.minTardanza}|` +
+                    `${item.nHorExtr25}|` +
+                    `${item.nHorExtr35}|` +
+                    `${item.nHorExtr50}|` +
+                    `${item.nHorExtr60}|` +
+                    `${item.nHorExtrDo}\n`;
+            });
+
+            const suggestedName = `Asist_${this.fechaexcelinicio}_${this.fechaexcelfin}_${this.planillaexcelselect}.txt`;
+
+            try {
+                // Intentamos usar el método moderno primero
+                if ('showSaveFilePicker' in window) {
+                    const options = {
+                        suggestedName: suggestedName,
+                        types: [{
+                            description: 'Archivo de texto',
+                            accept: { 'text/plain': ['.txt'] }
+                        }]
+                    };
+
+                    const handle = await (window as any).showSaveFilePicker(options);
+                    const writable = await handle.createWritable();
+                    await writable.write(content);
+                    await writable.close();
+                } else {
+                    // Fallback para navegadores que no soportan showSaveFilePicker
+                    const blob = new Blob([content], { type: 'text/plain' });
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = suggestedName;
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+                }
+
+                this.ms.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Archivo guardado correctamente'
+                });
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    this.ms.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No se pudo guardar el archivo'
+                    });
+                }
+            }
+        } else {
+            this.ms.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se encontró ningún registro para exportar'
+            });
+        }
     }
 
 

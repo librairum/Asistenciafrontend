@@ -33,33 +33,46 @@
                     <label for="planilla" class="mr-2 font-medium text-gray-700">Planilla</label>
                     <br />
                     <p-dropdown [options]="planilla" optionLabel="nombrePlanilla" optionValue="codigoPlanilla"
-                        placeholder="Selecciona la planilla" [(ngModel)]="selectedPlanilla" (onChange)="onPlanillaChange($event)" >
+                        placeholder="Selecciona la planilla" [(ngModel)]="selectedPlanilla"
+                        (onChange)="onPlanillaChange($event)">
                     </p-dropdown>
                 </div>
             </div>
 
             <!-- Botón Buscar -->
-            <div class="col-3 text-center">
-                <button pButton type="button" label="Buscar" icon="pi pi-search" (click)="cargarResumen()"
-                    class="w-auto p-button-sm" style="margin-right: 10px;">
+            <div class="col-3 text-center flex justify-content-center align-items-center gap-2">
+                <button pButton
+                        type="button"
+                        label="Buscar"
+                        icon="pi pi-search"
+                        (click)="cargarResumen()"
+                        class="p-button-sm">
                 </button>
-                <button
-                    pButton
-                    type="button"
-                    label="Exportar"
-                    icon="pi pi-file-excel"
-                    (click)="generateEXCEL()"
-                    class="p-button-sm p-button-success"
-                ></button>
+
+                <button pButton
+                        type="button"
+                        label="Excel"
+                        icon="pi pi-file-excel"
+                        (click)="generateEXCEL()"
+                        class="p-button-sm p-button-success">
+                </button>
+
+                <button pButton
+                        type="button"
+                        label="TXT"
+                        icon="pi pi-file"
+                        (click)="generateTXT()"
+                        class="p-button-sm p-button-info">
+                </button>
             </div>
         </div>
     </p-panel>
 </div>
 
 <div class="m-3" class="card">
-    <p-table #dt1 [value]="asistencia" [columns]="columnas" dataKey="item" [rows]="10"
-        [rowsPerPageOptions]="[5,10, 20]" [paginator]="true" [loading]="loading"
-        [tableStyle]="{ 'min-width': '75rem' }" [globalFilterFields]="columnsGlobalFilterFields" [filters]="filters">
+    <p-table #dt1 [value]="asistencia" [columns]="columnas" dataKey="item" [rows]="10" [rowsPerPageOptions]="[5,10, 20]"
+        [paginator]="true" [loading]="loading" [tableStyle]="{ 'min-width': '75rem' }"
+        [globalFilterFields]="columnsGlobalFilterFields" [filters]="filters">
 
         <ng-template pTemplate="header" let-columns>
             <!-- Fila para los filtros -->
@@ -70,12 +83,8 @@
             </tr>
             <tr>
                 <th *ngFor="let col of columns">
-                    <p-columnFilter *ngIf="col.field === 'nombretrabajador'"
-                        type="text"
-                        field="nombretrabajador"
-                        placeholder="Ingrese el nombre del trabajador"
-                        [showMenu]="false"
-                        matchMode="contains">
+                    <p-columnFilter *ngIf="col.field === 'nombretrabajador'" type="text" field="nombretrabajador"
+                        placeholder="Ingrese el nombre del trabajador" [showMenu]="false" matchMode="contains">
                     </p-columnFilter>
                 </th>
             </tr>
