@@ -8,7 +8,7 @@ import { ApiResponse } from '../model/api_response';
   providedIn: 'root'
 })
 export class AsistenciaService {
-    //private apiUrl='https://localhost:7089/Asistencia';
+    // private apiUrl='https://localhost:7089/Asistencia';
     private apiUrl='http://104.225.142.105:2060/Asistencia';
 
     constructor(private http: HttpClient) { }
@@ -27,12 +27,12 @@ export class AsistenciaService {
 
     formatDateForApi(date: Date): string {
         const adjustedDate = new Date(date);
-        adjustedDate.setDate(adjustedDate.getDate() + 1);
+        //adjustedDate.setDate(adjustedDate.getDate() + 1);
 
         const year = adjustedDate.getFullYear();
         const month = String(adjustedDate.getMonth() + 1).padStart(2, '0');
         const day = String(adjustedDate.getDate()).padStart(2, '0');
-
+        console.log(`${year}${month}${day}`);
         return `${year}${month}${day}`;
     }
 

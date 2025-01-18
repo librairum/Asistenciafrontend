@@ -36,7 +36,10 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
     ) {
         const navigation = rout.getCurrentNavigation();
         if (navigation?.extras?.state) {
+
             this.navigationData = navigation.extras.state;
+            console.log("Datoa de navegacion");
+            console.log(this.navigationData);
         } else {
             this.rout.navigate(['/Menu/asistencia']);
         }
@@ -59,9 +62,10 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
     }
 
     cargarDetalleAsistencia() {
+        
         const fechaInicio = this.aS.formatDateForApi(this.navigationData.fechaInicio);
         const fechaFin = this.aS.formatDateForApi(this.navigationData.fechaFin);
-
+        
         this.aS.getCalculoDetalle(
             fechaInicio,
             fechaFin,
@@ -69,7 +73,10 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
         ).subscribe({
             next: (response) => {
                 if (response.isSuccess) {
+
                     this.asistencias = response.data;
+                    console.log("Data de asistencia detalle");
+                    console.log(this.asistencias);
                 }
             },
             error: (error) => console.error('Error:', error)
@@ -116,15 +123,23 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
         const filteredData = this.dt1?.filteredValue;
         if (filteredData && filteredData.length > 0) {
             const filteredColumnsData = filteredData.map((item: any) => ({
-                item: item.item,
+                item: item.item,                
+                codigotrabajador: item.codigotrabajador,
+                nombretrabajador:item.nombreTrabajador,
                 Fecha_Marcacion: item.fechaMarcacion,
                 Dia: item.diaNombre,
                 Hora_Entrada: item.horaEntrada,
                 Hora_Salida: item.horaSalida,
-                Horas25: item.horas25,
-                Horas35: item.horas35,
-                Horas60: item.getDayOfWeek,
-                Horas100: item.horas100,
+                diasFalta: item.diasFalta,
+                HDomPag: item.nHraDomPag,
+                HFerTra: item.nHraFerTra,
+                HTurManu: item.hTurnoManu,
+                MinTardanza: item.minTardanza,
+                Horas25: item.nHorExtr25,
+                Horas35: item.nHorExtr35,
+                Horas50:item.nHorExtr50,                
+                Horas60: item.nHorExtr60,
+                nHorExtrDo: item.nHorExtrDo,
             }));
             const wb = XLSX.utils.book_new();
 
@@ -138,15 +153,23 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
         } else if (this.asistencias && this.asistencias.length > 0) {
             const filteredColumnsData = this.asistencias.map(
                 (item: any) => ({
-                    item: item.item,
-                    Fecha_Marcacion: item.fechaMarcacion,
-                    Dia: item.diaNombre,
-                    Hora_Entrada: item.horaEntrada,
-                    Hora_Salida: item.horaSalida,
-                    Horas25: item.horas25,
-                    Horas35: item.horas35,
-                    Horas60: item.horas60,
-                    Horas100: item.horas100,
+                    item: item.item,                
+                codigotrabajador: item.codigotrabajador,
+                nombretrabajador:item.nombreTrabajador,
+                Fecha_Marcacion: item.fechaMarcacion,
+                Dia: item.diaNombre,
+                Hora_Entrada: item.horaEntrada,
+                Hora_Salida: item.horaSalida,
+                diasFalta: item.diasFalta,
+                HDomPag: item.nHraDomPag,
+                HFerTra: item.nHraFerTra,
+                HTurManu: item.hTurnoManu,
+                MinTardanza: item.minTardanza,
+                Horas25: item.nHorExtr25,
+                Horas35: item.nHorExtr35,
+                Horas50:item.nHorExtr50,                
+                Horas60: item.nHorExtr60,
+                nHorExtrDo: item.nHorExtrDo,
                 })
             );
 

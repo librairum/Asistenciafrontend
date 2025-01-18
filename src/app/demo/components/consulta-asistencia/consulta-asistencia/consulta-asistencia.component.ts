@@ -20,7 +20,7 @@ import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { timer } from 'rxjs';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 registerLocaleData(localeEs);
 @Component({
     selector: 'app-consulta-asistencia',
@@ -38,13 +38,20 @@ export class ConsultaAsistenciaComponent implements OnInit {
     asistenciaoriginal: Asistencia[] = [];
     columnas = [
         { field: 'item', header: 'Item' },
+        {field:'codigoTrabajador' , header:'Codigo Trabajador'},
         { field: 'nombretrabajador', header: 'Nombre del Trabajador' },
-        { field: 'dias', header: 'Días' },
-        { field: 'horas25', header: 'Horas 25%' },
-        { field: 'horas60', header: 'Horas 60%' },
-        { field: 'horas100', header: 'Horas 100%' },
-        { field: 'acciones', header: 'Acciones' }
-    ];
+        { field: 'diasFalta', header: 'Dias\nFalta' },
+        { field: 'nHraDomPag', header: 'H.Dom.\nPag' },
+        { field: 'nHraFerTra', header: 'H.Fer:\nTra' },
+        { field: 'hturnoManu', header: 'H.Tur.\nMan' },
+        {field:'minTardanza' , header:'Min.\nTarde'},
+        {field:'nHorExtr25' , header:'H.Ext.\n25%'},
+        {field:'nHorExtr35' , header:'H.Ext.\n35%'},
+        {field:'nHorExtr50' , header:'H.Ext.\n50%'},
+        {field:'nHorExtr60', header:'H.Ext.\n60%'},
+        {field:'nHorExtrDo', header:'H.Ext.\nDoble'},
+        { field: 'acciones', header: 'Acciones' }
+    ];
     columnsGlobalFilterFields = ['nombretrabajador'];
     loading: boolean = true;
     //fechas
@@ -53,7 +60,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
     //planilla
     planilla: PLanilla_Combo[] = [];
     selectedPlanilla: string = "";
-
+    fechahoy: string | null = null;
     showDetailsDialog: boolean = false; // Variable para controlar el modal
     selectedAsistencia: Asistencia | null = null; // Almacena el detalle de la fila seleccionada
 
@@ -108,7 +115,12 @@ export class ConsultaAsistenciaComponent implements OnInit {
         ]);
         this.bS.currentBreadcrumbs$.subscribe(bc => {
             this.items = bc;
-        })
+        });
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        this.fechahoy = `${year}${month}${day}`;
         this.loadPlanillas()
         this.cargarResumen()
     }
@@ -134,7 +146,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
             next: (response) => {
                 if (response.isSuccess) {
                     this.asistencia = response.data;
-
+                    
                 } else {
                     this.asistencia = [];
                     this.ms.add({ severity: 'error', summary: 'Error', detail: 'No se encontro ningun registro' });
@@ -152,6 +164,9 @@ export class ConsultaAsistenciaComponent implements OnInit {
 
     viewDetails(rowData: Asistencia) {
         // Implementar lógica para ver detalles
+        //console.log("ver detalle fechas:");
+        //console.log(this.startDate);
+        //console.log(this.endDate);
         const navigationExtras = {
             state: {
                 codigoEmpleado: rowData.codigoTrabajador,
@@ -188,18 +203,25 @@ export class ConsultaAsistenciaComponent implements OnInit {
             this.planillaexcelselect = planillaSeleccionada.nombrePlanilla;
         }
     }
-
+    
     generateEXCEL(){
         this.planillaexcelselect=this.planillaexcelselect.slice(0,12)
         const filteredData=this.dt1?.filteredValue;
         if(filteredData && filteredData.length>0){
             const filteredColumnsData=filteredData.map((item:any)=>({
                 item:item.item,
+                codTrabajador:item.codigoTrabajador,
                 Trabajador:item.nombretrabajador,
-                Dias:item.dias,
-                horas25:item.horas25,
-                horas60:item.horas60,
-                horas100:item.horas100,
+                DiasFalta:item.diasFalta,
+                HoraDomPag:item.nHraDomPag,
+                HoraFerTra:item.nHraFerTra,
+                HoraTurnoManu:item.hturnoManu,
+                MinTardanza:item.minTardanza,
+                HExtr25:item.nHorExtr25,
+                HExtr35:item.nHorExtr35,
+                HExtr50:item.nHorExtr50,
+                HExtr60: item.nHorExtr60,
+                hExtrDo:item.nHorExtrDo
             }));
 
             const wb=XLSX.utils.book_new();
@@ -213,11 +235,18 @@ export class ConsultaAsistenciaComponent implements OnInit {
             const filteredColumnsData = this.asistencia.map(
                 (item:any)=>({
                     item:item.item,
-                Trabajador:item.nombretrabajador,
-                Dias:item.dias,
-                horas25:item.horas25,
-                horas60:item.horas60,
-                horas100:item.horas100,
+                    codTrabajador:item.codigoTrabajador,
+                    Trabajador:item.nombretrabajador,
+                    DiasFalta:item.diasFalta,
+                    HoraDomPag:item.nHraDomPag,
+                    HoraFerTra:item.nHraFerTra,
+                    HoraTurnoManu:item.hturnoManu,
+                    MinTardanza:item.minTardanza,
+                    HExtr25:item.nHorExtr25,
+                    HExtr35:item.nHorExtr35,
+                    HExtr50:item.nHorExtr50,
+                    HExtr60: item.nHorExtr60,
+                    hExtrDo:item.nHorExtrDo
                 })
             );
 
@@ -235,9 +264,78 @@ export class ConsultaAsistenciaComponent implements OnInit {
             this.ms.add({ severity: 'error', summary: 'Error', detail: 'No se encontro ningun registro para el excel' });
         }
 
+
     }
 
 
+    async generateTXT() {
+        if (this.asistencia && this.asistencia.length > 0) {
+            let content = '';
 
+            // Generamos el contenido del archivo
+            this.asistencia.forEach(item => {
+                content += `${item.codigoTrabajador}|` +
+                    `${item.diasFalta}|` +
+                    `${item.nHraDomPag}|` +
+                    `${item.nHraFerTra}|` +
+                    `${item.hturnoManu}|` +
+                    `${item.minTardanza}|` +
+                    `${item.nHorExtr25}|` +
+                    `${item.nHorExtr35}|` +
+                    `${item.nHorExtr50}|` +
+                    `${item.nHorExtr60}|` +
+                    `${item.nHorExtrDo}\n`;
+            });
+
+            const suggestedName = `Asist_${this.fechahoy}_.txt`;
+
+            try {
+                // Intentamos usar el método moderno primero
+                if ('showSaveFilePicker' in window) {
+                    const options = {
+                        suggestedName: suggestedName,
+                        types: [{
+                            description: 'Archivo de texto',
+                            accept: { 'text/plain': ['.txt'] }
+                        }]
+                    };
+
+                    const handle = await (window as any).showSaveFilePicker(options);
+                    const writable = await handle.createWritable();
+                    await writable.write(content);
+                    await writable.close();
+                } else {
+                    // Fallback para navegadores que no soportan showSaveFilePicker
+                    const blob = new Blob([content], { type: 'text/plain' });
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = suggestedName;
+                    link.click();
+                    window.URL.revokeObjectURL(url);
+                }
+
+                this.ms.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Archivo guardado correctamente'
+                });
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    this.ms.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No se pudo guardar el archivo'
+                    });
+                }
+            }
+        } else {
+            this.ms.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No se encontró ningún registro para exportar'
+            });
+        }
+    }
 
 }
