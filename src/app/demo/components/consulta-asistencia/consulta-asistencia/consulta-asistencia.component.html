@@ -1,109 +1,129 @@
-<!-- asistencia.component.html -->
 <p-toast></p-toast>
 <div class="m-3">
     <p-panel header="Consulta de Resumen de Asistencia">
-        <p-breadcrumb class="max-w-full" [model]="items" />
+        <p-breadcrumb class="w-full" [model]="items"></p-breadcrumb>
         <br />
-        
-        <div class="grid align-items-center">
+
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-center">
             <!-- Fecha de Inicio -->
-            <div class="col-4 text-center">
+            <div class="text-center">
                 <div class="field">
                     <label for="startDate" class="mr-2 font-medium text-gray-700">Fecha de Inicio</label>
-                    
-                    <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="startDate" inputId="startDate" 
-                        placeholder="Selecciona una fecha" [locale]="espaniol" [showIcon]="true">
-                    </p-calendar>
+                    <p-calendar
+                        dateFormat="dd/mm/yy"
+                        [(ngModel)]="startDate"
+                        inputId="startDate"
+                        placeholder="Selecciona una fecha"
+                        [locale]="espaniol"
+                        [showIcon]="true"
+                        class="w-full"
+                    ></p-calendar>
                 </div>
             </div>
 
             <!-- Fecha Fin -->
-            <div class="col-4 text-center">
+            <div class="text-center">
                 <div class="field">
                     <label for="endDate" class="mr-2 font-medium text-gray-700">Fecha Fin</label>
-                    
-                    <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="endDate" inputId="endDate" 
-                        placeholder="Selecciona una fecha" [showIcon]="true" class="col-3">
-                    </p-calendar>
+                    <p-calendar
+                        dateFormat="dd/mm/yy"
+                        [(ngModel)]="endDate"
+                        inputId="endDate"
+                        placeholder="Selecciona una fecha"
+                        [showIcon]="true"
+                        class="w-full"
+                    ></p-calendar>
                 </div>
             </div>
 
             <!-- Planilla -->
-            <div class="col-3 text-center">
+            <div class="text-center">
                 <div class="field">
                     <label for="planilla" class="mr-2 font-medium text-gray-700">Planilla</label>
-                    
-                    <p-dropdown [options]="planilla" optionLabel="nombrePlanilla" optionValue="codigoPlanilla"
-                        placeholder="Selecciona la planilla" [(ngModel)]="selectedPlanilla" (onChange)="onPlanillaChange($event)" >
-                    </p-dropdown>
+                    <p-dropdown
+                        [options]="planilla"
+                        optionLabel="nombrePlanilla"
+                        optionValue="codigoPlanilla"
+                        placeholder="Selecciona la planilla"
+                        [(ngModel)]="selectedPlanilla"
+                        (onChange)="onPlanillaChange($event)"
+                        class="w-full"
+                    ></p-dropdown>
                 </div>
             </div>
-
-            <!-- Botón Buscar -->
-            <!-- <div class="col-2 text-center flex justify-content-center align-items-center gap-2">
-                <button pButton type="button" label="Buscar" icon="pi pi-search" (click)="cargarResumen()"
-                    class="w-auto p-button-sm" style="margin-right: 10px;">
-                </button>
-               
-            </div> -->
         </div>
-        <div class="grid align-items-center">
-          <div class="col-1 text-center">
-            <button pButton type="button" label="Buscar" icon="pi pi-search" (click)="cargarResumen()"
-                    class="w-auto p-button-sm" style="margin-left: 10px;">
-                </button>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-center mt-4">
+            <!-- Botón Buscar -->
+            <div class="text-center">
+                <button
+                    pButton
+                    type="button"
+                    label="Buscar"
+                    icon="pi pi-search"
+                    (click)="cargarResumen()"
+                    class="w-full p-button-sm"
+                ></button>
             </div>
-                <div class="col-1 text-center">
-                    <button
+
+            <!-- Botón Exportar -->
+            <div class="text-center">
+                <button
                     pButton
                     type="button"
                     label="Exportar"
                     icon="pi pi-file-excel"
                     (click)="generateEXCEL()"
-                    class="p-button-xs p-button-success" style="margin-left: 40px;"
+                    class="w-full p-button-xs p-button-success"
                 ></button>
             </div>
-            <div class="col-1 text-center">
-                <button pButton
-                        type="button"
-                        label="TXT"
-                        icon="pi pi-file"
-                        (click)="generateTXT()"
-                        class="p-button-xs p-button-info" style="margin-left: 70px;">
-                </button>
-        </div>
+
+            <!-- Botón TXT -->
+            <div class="text-center">
+                <button
+                    pButton
+                    type="button"
+                    label="TXT"
+                    icon="pi pi-file"
+                    (click)="generateTXT()"
+                    class="w-full p-button-xs p-button-info"
+                ></button>
+            </div>
         </div>
     </p-panel>
 </div>
 
-<div class="m-3" class="card">
-    <p-table #dt1 [value]="asistencia" [columns]="columnas" dataKey="item" [rows]="10"
-        [rowsPerPageOptions]="[5,10, 20]" [paginator]="true" [loading]="loading"
-        [tableStyle]="{ 'min-width': '75rem' }" [globalFilterFields]="columnsGlobalFilterFields" [filters]="filters">
-
+<div class="m-3 card">
+    <p-table
+        #dt1
+        [value]="asistencia"
+        [columns]="columnas"
+        dataKey="item"
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [paginator]="true"
+        [loading]="loading"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [globalFilterFields]="columnsGlobalFilterFields"
+        [filters]="filters"
+    >
         <ng-template pTemplate="header" let-columns>
-            <!-- Fila para los filtros -->
             <tr>
-                <th *ngFor="let col of columns">
-                    {{ col.header }}
-                </th>
+                <th *ngFor="let col of columns">{{ col.header }}</th>
             </tr>
             <tr>
-               
                 <th *ngFor="let col of columns">
-                    <p-columnFilter *ngIf="col.field === 'nombretrabajador'"
+                    <p-columnFilter
+                        *ngIf="col.field === 'nombretrabajador'"
                         type="text"
                         field="nombretrabajador"
                         placeholder="Ingrese el nombre del trabajador"
                         [showMenu]="false"
-                        matchMode="contains">
-                    </p-columnFilter>
+                        matchMode="contains"
+                    ></p-columnFilter>
                 </th>
             </tr>
-            <!-- Fila para los nombres de las columnas -->
-
         </ng-template>
-
 
         <ng-template pTemplate="body" let-rowData>
             <tr>
@@ -114,15 +134,20 @@
                 <td>{{ rowData.nHraDomPag }}</td>
                 <td>{{ rowData.nHraFerTra }}</td>
                 <td>{{ rowData.hturnoManu }}</td>
-                <td>{{rowData.minTardanza}}</td>
-                <td>{{rowData.nHorExtr25}}</td>
-                <td>{{rowData.nHorExtr35}}</td>
-                <td>{{rowData.nHorExtr50}}</td>
-                <td>{{rowData.nHorExtr60}}</td>
-                <td>{{rowData.nHorExtrDo}}</td>
+                <td>{{ rowData.minTardanza }}</td>
+                <td>{{ rowData.nHorExtr25 }}</td>
+                <td>{{ rowData.nHorExtr35 }}</td>
+                <td>{{ rowData.nHorExtr50 }}</td>
+                <td>{{ rowData.nHorExtr60 }}</td>
+                <td>{{ rowData.nHorExtrDo }}</td>
                 <td>
-                    <button pButton icon="pi pi-eye" label="Ver" class="p-button-sm" (click)="viewDetails(rowData)">
-                    </button>
+                    <button
+                        pButton
+                        icon="pi pi-eye"
+                        label="Ver"
+                        class="p-button-sm"
+                        (click)="viewDetails(rowData)"
+                    ></button>
                 </td>
             </tr>
         </ng-template>
