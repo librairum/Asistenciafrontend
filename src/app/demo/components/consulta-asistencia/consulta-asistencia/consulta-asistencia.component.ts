@@ -146,7 +146,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
             next: (response) => {
                 if (response.isSuccess) {
                     this.asistencia = response.data;
-                    
+
                 } else {
                     this.asistencia = [];
                     this.ms.add({ severity: 'error', summary: 'Error', detail: 'No se encontro ningun registro' });
@@ -203,7 +203,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
             this.planillaexcelselect = planillaSeleccionada.nombrePlanilla;
         }
     }
-    
+
     generateEXCEL(){
         this.planillaexcelselect=this.planillaexcelselect.slice(0,12)
         const filteredData=this.dt1?.filteredValue;
