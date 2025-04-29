@@ -2,13 +2,19 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Marcaciones } from '../model/Marcaciones';
+import { GlobalserviceService } from './globalservice.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MarcacionesService {
-    private apiUrl='http://104.225.142.105:2060/Marcaciones'
-    constructor(private http:HttpClient) { }
+    // private apiUrl='http://104.225.142.105:2060/Marcaciones'
+    // private apiUrl='http://localhost:2060/Marcaciones'
+    private apiUrl='';
+    constructor(private http:HttpClient,private gs:GlobalserviceService) { 
+
+      this.apiUrl = gs.getUrl_Servidor();
+    }
 
   //listar
   getMarcaciones():Observable<Marcaciones[]>{

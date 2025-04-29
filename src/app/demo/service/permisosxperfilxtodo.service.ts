@@ -4,17 +4,21 @@ import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../model/api_response';
 import { perfilxpermisos, permisosxperfilxtodo } from '../model/permisosxperfilxtodo';
 import { O } from '@fullcalendar/core/internal-common';
-
+import { GlobalserviceService } from './globalservice.service';
 @Injectable({
   providedIn: 'root'
 })
 export class PermisosxperfilxtodoService {
-    private apiUrl='http://104.225.142.105:2060/Permisos'
-    private apiUrl2='http://104.225.142.105:2060/Perfil/Splist'
+    // private apiUrl='http://104.225.142.105:2060/Permisos'
+    // private apiUrl2='http://104.225.142.105:2060/Perfil/Splist'
 
-    //private apiUrl='https://localhost:7089/Permisos'
-    //private apiUrl2='https://localhost:7089/Perfil/Splist'
-    constructor(private http:HttpClient) { }
+    private apiUrl='';
+    private apiUrl2='';
+    constructor(private http:HttpClient, private gs:GlobalserviceService) { 
+        this.apiUrl = `${gs.getUrl_Servidor()}/Permisos`;
+        this.apiUrl2 = `${gs.getUrl_Servidor()}/Perfil/Splist`;
+
+    }
 
     getPermisosPorPerfilxtodo(codigoPerfil:string,codModulo:string):Observable<ApiResponse<permisosxperfilxtodo>>{
         const params = new HttpParams()

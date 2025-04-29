@@ -91,6 +91,7 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
 
     calculateTotal(field: string): string {
         // Función para sumar tiempos en formato HH:mm
+        // console.log("campo a calcular:" + field);
         const sumTimes = (times: string[]): string => {
             let totalMinutes = times.reduce((acc, time) => {
                 const [hours, minutes] = time.split(':').map(Number);

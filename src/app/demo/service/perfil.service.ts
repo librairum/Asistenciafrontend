@@ -3,14 +3,16 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../model/api_response';
 import { Perfil } from '../model/perfil';
-
+import { GlobalserviceService } from './globalservice.service';
 @Injectable({
   providedIn: 'root'
 })
 export class PerfilService {
-    private apiUrl='http://104.225.142.105:2060/Perfil'
-
-    constructor(private http:HttpClient) { }
+    // private apiUrl='http://104.225.142.105:2060/Perfil'
+    private apiUrl='http://localhost:2060/Perfil'
+    constructor(private http:HttpClient, private gs:GlobalserviceService) {
+        this.apiUrl = `${gs.getUrl_Servidor()}/Perfil`;
+     }
 
     //listar todo
     getAll(): Observable<Perfil[]> {

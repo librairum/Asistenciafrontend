@@ -20,15 +20,17 @@
                         <th>Hora Entrada</th>
                         <th>Hora Salida</th>
                         <th>Dias falta</th>
-                        <th>horas Domingo pagada</th>
+                        <!-- <th>horas Domingo pagada</th>
                         <th>horas feriado trabajado</th>
                         <th>Horas turno Manual</th>
-                        <th>Minutos tardanza</th>                        
+                        <th>Minutos tardanza</th>                         -->
                         <th>Horas 25</th>
                         <th>Horas 35</th>
                         <th>Horas 50</th>
                         <th>Horas 60</th>
-                        <th>Horas Extra doble</th>
+                        <th>Horas 100</th>
+                        <th>Horas 100 Obrero</th>
+                        <!-- <th>Horas Extra doble</th> -->
                     </tr>
                 </ng-template>
 
@@ -38,34 +40,37 @@
                         <td>{{rowData.codigotrabajador}}</td>
                         <td>{{ rowData.nombreTrabajador }}</td>                        
                         <td>{{ rowData.fechaMarcacion }}</td>                         
-                         <td>{{ rowData.diaNombre}}</td>
+                        <td>{{ rowData.diaNombre}}</td>
                         <td>{{ rowData.horaEntrada }}</td>
                         <td>{{ rowData.horaSalida }}</td>
                         <td>{{ rowData.diasFalta }}</td>
-                        <td>{{ rowData.nHraDomPag }}</td>
+                        <!-- <td>{{ rowData.nHraDomPag }}</td>
                         <td>{{ rowData.nHraFerTra }}</td>                                                
                         <td>{{ rowData.hturnoManu }}</td>
-                        <td>{{ rowData.minTardanza }}</td>
+                        <td>{{ rowData.minTardanza }}</td> -->
                         <td>{{ rowData.nHorExtr25 }}</td>
                         <td>{{ rowData.nHorExtr35 }}</td>
                         <td>{{ rowData.nHorExtr50 }}</td>
                         <td>{{ rowData.nHorExtr60 }}</td>
-                        <td>{{rowData.nHorExtrDo}}</td>
+                        <td>{{ rowData.nHorExtr100 }}</td>
+                        <td>{{ rowData.nHorExtr100Obrero }}</td>
+                        <!-- <td>{{rowData.nHorExtrDo}}</td> -->
                     </tr>
                 </ng-template>
 
                         <ng-template pTemplate="footer">
                             <tr>
                                 <td colspan="8" class="text-right font-bold">Totales:</td>
-                                <td>{{ calculateTotal('nHraDomPag') }}</td>
+                                <!-- <td>{{ calculateTotal('nHraDomPag') }}</td>
                                 <td>{{ calculateTotal('nHraFerTra') }}</td>
                                 <td>{{ calculateTotal('hturnoManu') }}</td>
-                                <td>{{ calculateTotal('minTardanza') }}</td>
+                                <td>{{ calculateTotal('minTardanza') }}</td> -->
                                 <td>{{ calculateTotal('nHorExtr25') }}</td>
                                 <td>{{ calculateTotal('nHorExtr35') }}</td>
                                 <td>{{ calculateTotal('nHorExtr50') }}</td>
                                 <td>{{ calculateTotal('nHorExtr60') }}</td>
-                                <td>{{ calculateTotal('nHorExtrDo') }}</td>
+                                <td>{{ calculateTotal('nHorExtr100') }}</td>
+                                <td>{{ calculateTotal('nHorExtr100Obrero') }}</td>
                             </tr>
                         </ng-template>
             </p-table>

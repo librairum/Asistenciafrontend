@@ -7,7 +7,8 @@ export class GlobalserviceService {
 
     private readonly CODIGO_PERFIL_KEY = 'codigoperfil';
     private readonly NOMBRE_USUARIO_KEY = 'nombreUsuario';
-
+    private readonly URL_SERVIDOR = 'http://104.225.142.105:2060';
+    private readonly URL_SERVIDORLOCAL = 'http://localhost:2060';
     constructor() { }
 
     setCodigoPerfil(codigo: string) {
@@ -26,6 +27,12 @@ export class GlobalserviceService {
       return sessionStorage.getItem(this.NOMBRE_USUARIO_KEY) || '';
     }
 
+    getUrl_Servidor():string{
+      return this.URL_SERVIDORLOCAL;
+    }
+    // getUrl_ServidorLocal():string{
+    //   return this.URL_SERVIDORLOCAL;
+    // }
     // Método para limpiar los datos al cerrar sesión
     clearSession() {
       sessionStorage.removeItem(this.CODIGO_PERFIL_KEY);

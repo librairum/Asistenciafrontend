@@ -20,7 +20,8 @@ export class AppMenuComponent implements OnInit {
 
     model: MenuItem[] = [];
 
-    constructor(public layoutService: LayoutService, private pS: PermisosxperfilService, private gS:GlobalserviceService) { }
+    constructor(public layoutService: LayoutService, private pS: PermisosxperfilService, 
+        private gS:GlobalserviceService) { }
 
     ngOnInit() {
         this.loadMenu()

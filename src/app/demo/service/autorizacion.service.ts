@@ -10,11 +10,14 @@ import { GlobalserviceService } from './globalservice.service';
 })
 export class AutorizacionService {
 
-    private apiUrl = 'http://104.225.142.105:2060/Autenticacion';
+    // private apiUrl = 'http://104.225.142.105:2060/Autenticacion';
+    // private apiUrl = 'http://localhost:2060/Autenticacion';
+    private apiUrl = '';
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.checkAuthStatus());
 
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private gs:GlobalserviceService) {
+        this.apiUrl =  this.gs.getUrl_Servidor();
         // Agregar listener para el evento beforeunload
         window.addEventListener('beforeunload', () => {
             this.logout();

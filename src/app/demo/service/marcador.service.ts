@@ -4,14 +4,18 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { Marcador } from '../model/Marcador';
 import { Marcador_ins } from '../model/Marcador';
 import { ApiResponse } from '../model/api_response';
-
+import { GlobalserviceService } from './globalservice.service';
 @Injectable({
     providedIn: 'root',
 })
 export class MarcadorService {
-    private apiUrl = 'http://104.225.142.105:2060/Marcador';
+    // private apiUrl = 'http://104.225.142.105:2060/Marcador';
+    // private apiUrl = 'http://localhost:2060/Marcador';
+    private apiUrl ='';
+    constructor(private http: HttpClient, private gs:GlobalserviceService) {
+        this.apiUrl = gs.getUrl_Servidor();
 
-    constructor(private http: HttpClient) {}
+    }
 
     // listar todos los marcadores
     getMarcadores(): Observable<Marcador[]> {

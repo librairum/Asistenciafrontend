@@ -3,14 +3,17 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { m_anio } from '../model/M_Anio';
 import { ApiResponse } from '../model/api_response';
-
+import { GlobalserviceService } from './globalservice.service';
 @Injectable({
   providedIn: 'root'
 })
 export class MAnioService {
-    private apiUrl='http://104.225.142.105:2060/Anio'
-
-    constructor(private http:HttpClient) { }
+    // private apiUrl='http://104.225.142.105:2060/Anio'
+// private apiUrl='http://localhost:2060/Anio'
+private apiUrl = '';
+constructor(private http:HttpClient, private gs:GlobalserviceService) {
+        this.apiUrl = gs.getUrl_Servidor();
+     }
 
     //listar todo
     getAll(): Observable<m_anio[]> {

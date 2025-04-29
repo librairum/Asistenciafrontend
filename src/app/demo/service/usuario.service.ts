@@ -9,9 +9,13 @@ import { ApiResponse } from '../model/api_response';
     providedIn: 'root'
 })
 export class UsuarioService {
-    private apiUrl = 'http://104.225.142.105:2060/Usuario';
-    // private apiUrl = 'https://localhost:7089/Usuario';
-    private apiUrlPerfil = 'http://104.225.142.105:2060/Perfil';
+    // private apiUrl = 'http://104.225.142.105:2060/Usuario';
+    
+    // private apiUrlPerfil = 'http://104.225.142.105:2060/Perfil';
+    
+    private apiUrl = 'http://localhost:2060/Usuario';
+    private apiUrlPerfil = 'http://localhost:2060/Perfil';
+    
     constructor(private http: HttpClient) { }
 
     getAllPerfil(): Observable<ListarPerfil[]> {

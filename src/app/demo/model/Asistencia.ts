@@ -20,6 +20,8 @@ export interface Asistencia {
     nHorExtr50:string;
     nHorExtr60:string;
     nHorExtrDo:string;
+    nHorExtr100:string;
+    nHorExtr100Obrero:string;
 }
 export interface PLanilla_Combo {
     codigoPlanilla: string;
@@ -44,7 +46,8 @@ export interface AsistenciaDetalle {
     nHorExtr50:string;
     nHorExtr60:string;
     nHorExtrDo:string;
-    
+    nHorExtr100:string;
+    nHorExtr100Obrero:string;
     dias: number;
     horas25: string;
     horas35: string;

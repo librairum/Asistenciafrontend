@@ -40,16 +40,19 @@ export class ConsultaAsistenciaComponent implements OnInit {
         { field: 'item', header: 'Item' },
         {field:'codigoTrabajador' , header:'Codigo Trabajador'},
         { field: 'nombretrabajador', header: 'Nombre del Trabajador' },
+        { field: 'dias', header: 'Dias' },
         { field: 'diasFalta', header: 'Dias\nFalta' },
-        { field: 'nHraDomPag', header: 'H.Dom.\nPag' },
-        { field: 'nHraFerTra', header: 'H.Fer:\nTra' },
-        { field: 'hturnoManu', header: 'H.Tur.\nMan' },
-        {field:'minTardanza' , header:'Min.\nTarde'},
+        // { field: 'nHraDomPag', header: 'H.Dom.\nPag' },
+        // { field: 'nHraFerTra', header: 'H.Fer:\nTra' },
+        // { field: 'hturnoManu', header: 'H.Tur.\nMan' },
+        // {field:'minTardanza' , header:'Min.\nTarde'},
         {field:'nHorExtr25' , header:'H.Ext.\n25%'},
         {field:'nHorExtr35' , header:'H.Ext.\n35%'},
         {field:'nHorExtr50' , header:'H.Ext.\n50%'},
         {field:'nHorExtr60', header:'H.Ext.\n60%'},
-        {field:'nHorExtrDo', header:'H.Ext.\nDoble'},
+        {field:'nHorExtr100', header:'H.Ext.\n100%'},
+        {field:'nHorExtr100Obrero', header:'H.Ext.\n100% Obrero'},
+        // {field:'nHorExtrDo', header:'H.Ext.\nDoble'},
         { field: 'acciones', header: 'Acciones' }
     ];
     columnsGlobalFilterFields = ['nombretrabajador'];
@@ -146,7 +149,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
             next: (response) => {
                 if (response.isSuccess) {
                     this.asistencia = response.data;
-                    
+                    console.log(response.data);
                 } else {
                     this.asistencia = [];
                     this.ms.add({ severity: 'error', summary: 'Error', detail: 'No se encontro ningun registro' });
@@ -212,16 +215,19 @@ export class ConsultaAsistenciaComponent implements OnInit {
                 item:item.item,
                 codTrabajador:item.codigoTrabajador,
                 Trabajador:item.nombretrabajador,
+                Dias:item.dias,
                 DiasFalta:item.diasFalta,
-                HoraDomPag:item.nHraDomPag,
-                HoraFerTra:item.nHraFerTra,
-                HoraTurnoManu:item.hturnoManu,
-                MinTardanza:item.minTardanza,
+                // HoraDomPag:item.nHraDomPag,
+                // HoraFerTra:item.nHraFerTra,
+                // HoraTurnoManu:item.hturnoManu,
+                // MinTardanza:item.minTardanza,
                 HExtr25:item.nHorExtr25,
                 HExtr35:item.nHorExtr35,
                 HExtr50:item.nHorExtr50,
                 HExtr60: item.nHorExtr60,
-                hExtrDo:item.nHorExtrDo
+                HExtr100:item.nHorExtr100,
+                HExtr100Obrero:item.nHroExtr100Obrero
+                // ,hExtrDo:item.nHorExtrDo
             }));
 
             const wb=XLSX.utils.book_new();
@@ -235,18 +241,21 @@ export class ConsultaAsistenciaComponent implements OnInit {
             const filteredColumnsData = this.asistencia.map(
                 (item:any)=>({
                     item:item.item,
-                    codTrabajador:item.codigoTrabajador,
-                    Trabajador:item.nombretrabajador,
-                    DiasFalta:item.diasFalta,
-                    HoraDomPag:item.nHraDomPag,
-                    HoraFerTra:item.nHraFerTra,
-                    HoraTurnoManu:item.hturnoManu,
-                    MinTardanza:item.minTardanza,
-                    HExtr25:item.nHorExtr25,
-                    HExtr35:item.nHorExtr35,
-                    HExtr50:item.nHorExtr50,
-                    HExtr60: item.nHorExtr60,
-                    hExtrDo:item.nHorExtrDo
+                codTrabajador:item.codigoTrabajador,
+                Trabajador:item.nombretrabajador,
+                Dias:item.dias,
+                DiasFalta:item.diasFalta,
+                // HoraDomPag:item.nHraDomPag,
+                // HoraFerTra:item.nHraFerTra,
+                // HoraTurnoManu:item.hturnoManu,
+                // MinTardanza:item.minTardanza,
+                HExtr25:item.nHorExtr25,
+                HExtr35:item.nHorExtr35,
+                HExtr50:item.nHorExtr50,
+                HExtr60: item.nHorExtr60,
+                HExtr100:item.nHorExtr100,
+                HExtr100Obrero:item.nHroExtr100Obrero
+                // ,hExtrDo:item.nHorExtrDo
                 })
             );
 
@@ -284,7 +293,9 @@ export class ConsultaAsistenciaComponent implements OnInit {
                     `${item.nHorExtr35}|` +
                     `${item.nHorExtr50}|` +
                     `${item.nHorExtr60}|` +
-                    `${item.nHorExtrDo}\n`;
+                    `${item.nHorExtr100}|`+
+                    `${item.nHorExtr100Obrero}|\n`;
+                    // `${item.nHorExtrDo}\n`;
             });
 
             const suggestedName = `Asist_${this.fechahoy}_.txt`;

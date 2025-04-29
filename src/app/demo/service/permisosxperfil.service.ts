@@ -3,13 +3,18 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../model/api_response';
 import { permisosxperfil } from '../model/permisosxperfil';
-
+import { GlobalserviceService } from './globalservice.service';
 @Injectable({
   providedIn: 'root'
 })
 export class PermisosxperfilService {
-    private apiUrl='http://104.225.142.105:2060/Permisos'
-    constructor(private http:HttpClient) { }
+    // private apiUrl='http://104.225.142.105:2060/Permisos'
+    // private apiUrl='http://localhost:2060/Permisos'
+    private apiUrl='';
+    
+    constructor(private http:HttpClient, private gs:GlobalserviceService) {
+      this.apiUrl = gs.getUrl_Servidor();
+     }
 
     getPermisosPorPerfil(codigoPerfil:string,codModulo:string):Observable<ApiResponse<permisosxperfil>>{
         const url = `${this.apiUrl}/SpTraeMenuxPerfil`;
