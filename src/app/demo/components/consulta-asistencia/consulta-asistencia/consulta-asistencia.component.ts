@@ -226,7 +226,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
                 HExtr50:item.nHorExtr50,
                 HExtr60: item.nHorExtr60,
                 HExtr100:item.nHorExtr100,
-                HExtr100Obrero:item.nHroExtr100Obrero
+                HExtr100Obrero:item.nHorExtr100Obrero
                 // ,hExtrDo:item.nHorExtrDo
             }));
 
@@ -254,7 +254,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
                 HExtr50:item.nHorExtr50,
                 HExtr60: item.nHorExtr60,
                 HExtr100:item.nHorExtr100,
-                HExtr100Obrero:item.nHroExtr100Obrero
+                HExtr100Obrero:item.nHorExtr100Obrero
                 // ,hExtrDo:item.nHorExtrDo
                 })
             );
@@ -284,11 +284,12 @@ export class ConsultaAsistenciaComponent implements OnInit {
             // Generamos el contenido del archivo
             this.asistencia.forEach(item => {
                 content += `${item.codigoTrabajador}|` +
+                    `${item.dias}|` +
                     `${item.diasFalta}|` +
-                    `${item.nHraDomPag}|` +
-                    `${item.nHraFerTra}|` +
-                    `${item.hturnoManu}|` +
-                    `${item.minTardanza}|` +
+                    // `${item.nHraDomPag}|` +
+                    // `${item.nHraFerTra}|` +
+                    // `${item.hturnoManu}|` +
+                    // `${item.minTardanza}|` +
                     `${item.nHorExtr25}|` +
                     `${item.nHorExtr35}|` +
                     `${item.nHorExtr50}|` +

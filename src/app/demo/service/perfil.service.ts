@@ -9,7 +9,7 @@ import { GlobalserviceService } from './globalservice.service';
 })
 export class PerfilService {
     // private apiUrl='http://104.225.142.105:2060/Perfil'
-    private apiUrl='http://localhost:2060/Perfil'
+    private apiUrl='';
     constructor(private http:HttpClient, private gs:GlobalserviceService) {
         this.apiUrl = `${gs.getUrl_Servidor()}/Perfil`;
      }

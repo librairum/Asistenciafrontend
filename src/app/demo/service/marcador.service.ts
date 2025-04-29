@@ -13,7 +13,7 @@ export class MarcadorService {
     // private apiUrl = 'http://localhost:2060/Marcador';
     private apiUrl ='';
     constructor(private http: HttpClient, private gs:GlobalserviceService) {
-        this.apiUrl = gs.getUrl_Servidor();
+        this.apiUrl = `${gs.getUrl_Servidor()}/Marcador`;
 
     }
 

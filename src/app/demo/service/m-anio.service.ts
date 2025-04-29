@@ -12,7 +12,7 @@ export class MAnioService {
 // private apiUrl='http://localhost:2060/Anio'
 private apiUrl = '';
 constructor(private http:HttpClient, private gs:GlobalserviceService) {
-        this.apiUrl = gs.getUrl_Servidor();
+        this.apiUrl = `${gs.getUrl_Servidor()}/Anio`;
      }
 
     //listar todo

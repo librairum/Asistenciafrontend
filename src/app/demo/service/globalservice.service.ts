@@ -28,7 +28,7 @@ export class GlobalserviceService {
     }
 
     getUrl_Servidor():string{
-      return this.URL_SERVIDORLOCAL;
+      return this.URL_SERVIDOR;
     }
     // getUrl_ServidorLocal():string{
     //   return this.URL_SERVIDORLOCAL;

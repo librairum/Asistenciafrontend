@@ -13,7 +13,7 @@ export class MarcacionesService {
     private apiUrl='';
     constructor(private http:HttpClient,private gs:GlobalserviceService) { 
 
-      this.apiUrl = gs.getUrl_Servidor();
+      this.apiUrl = `${gs.getUrl_Servidor()}/Marcaciones`;
     }
 
   //listar

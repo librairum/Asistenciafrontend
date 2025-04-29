@@ -13,7 +13,8 @@ export class AsistenciaService {
     private apiUrl='';
 
     constructor(private http: HttpClient,  private gs:GlobalserviceService) { 
-        this.apiUrl = this.gs.getUrl_Servidor();
+        this.apiUrl = `${this.gs.getUrl_Servidor()}/Asistencia`;
+
     }
 
     //listar las asistencias

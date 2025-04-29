@@ -13,7 +13,7 @@ export class PermisosxperfilService {
     private apiUrl='';
     
     constructor(private http:HttpClient, private gs:GlobalserviceService) {
-      this.apiUrl = gs.getUrl_Servidor();
+      this.apiUrl = `${this.gs.getUrl_Servidor()}/Permisos`;
      }
 
     getPermisosPorPerfil(codigoPerfil:string,codModulo:string):Observable<ApiResponse<permisosxperfil>>{

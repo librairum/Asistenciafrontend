@@ -14,7 +14,7 @@ export class AsistenciaGeneralService {
     // private apiUrl = 'http://localhost:2060/Asistencia';
     private apiUrl='';
     constructor(private http: HttpClient, private gs: GlobalserviceService) {
-        this.apiUrl = this.gs.getUrl_Servidor();
+        this.apiUrl = `${this.gs.getUrl_Servidor()}/Asistencia`;
     }
 
     getAsistenciaByDateRange(fechainicio: string,fechafin: string): Observable<Asistenciageneral[]> {

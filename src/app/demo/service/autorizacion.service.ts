@@ -17,7 +17,7 @@ export class AutorizacionService {
 
 
     constructor(private http: HttpClient, private gs:GlobalserviceService) {
-        this.apiUrl =  this.gs.getUrl_Servidor();
+        this.apiUrl =  `${this.gs.getUrl_Servidor()}/Autenticacion`;
         // Agregar listener para el evento beforeunload
         window.addEventListener('beforeunload', () => {
             this.logout();
@@ -38,6 +38,8 @@ export class AutorizacionService {
 
     autenticacion(autenticacion: Autenticacion): Observable<ApiResponse<Autenticacion>> {
         const url = `${this.apiUrl}/SpList`;
+        console.log("autenticacion");
+        console.log(url);
         return this.http.post<ApiResponse<Autenticacion>>(url, autenticacion).pipe(
             tap(response => {
                 if (response.isSuccess) {
