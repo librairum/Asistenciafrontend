@@ -99,23 +99,23 @@ export class AnioComponent implements OnInit {
     }
 
     onSave() {
-    if (this.mAnioForm.valid) {
-        const newAnio: m_anio = this.mAnioForm.value;
-        this.maS.create(newAnio).subscribe({
-            next: () => {
-                this.isEditing = false;
-                this.isNew=false;
-                this.mAnioForm.reset();
-                this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado' });
-                this.loadMAnio();
-            },
-            error: (err) => {
-                console.error('Error al guardar:', err);
-                this.mS.add({ severity: 'error', summary: 'Error', detail: 'No se pudo guardar el registro' });
-            },
-        });
+        if (this.mAnioForm.valid) {
+            const newAnio: m_anio = this.mAnioForm.value;
+            this.maS.create(newAnio).subscribe({
+                next: () => {
+                    this.isEditing = false;
+                    this.isNew=false;
+                    this.mAnioForm.reset();
+                    this.mS.add({ severity: 'success', summary: 'Éxito', detail: 'Registro guardado' });
+                    this.loadMAnio();
+                },
+                error: (err) => {
+                    console.error('Error al guardar:', err);
+                    this.mS.add({ severity: 'error', summary: 'Error', detail: 'No se pudo guardar el registro' });
+                },
+            });
+        }
     }
-}
 
     onCancel() {
         this.isEditing = false;
