@@ -38,7 +38,8 @@ import { AuthGuard } from './demo/service/auth.guard';
                     { path: 'documentation', loadChildren: () => import('./demo/components/documentation/documentation.module').then(m => m.DocumentationModule) },
                     { path: 'blocks', loadChildren: () => import('./demo/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
                     { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) },
-                    { path: 'motivohorario', loadChildren: () => import('./demo/components/motivo-horario/motivo-horario.module').then(m => m.MotivoHorarioModule)}
+                    { path: 'motivohorario', loadChildren: () => import('./demo/components/motivo-horario/motivo-horario.module').then(m => m.MotivoHorarioModule)},
+                    { path: 'horariopersonal', loadChildren: () => import('./demo/components/horariopersonal/horariopersonal.module').then(m => m.HorariopersonalModule)}
 
                 ]
             },
@@ -47,6 +48,7 @@ import { AuthGuard } from './demo/service/auth.guard';
             { path: 'landing', loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule) },
             { path: 'notfound', component: NotfoundComponent },
             { path: 'motivo-horario', loadChildren: () => import('./demo/components/motivo-horario/motivo-horario.module').then(m => m.MotivoHorarioModule) },
+            { path: 'horariopersonal', loadChildren: () => import('./demo/components/horariopersonal/horariopersonal.module').then(m => m.HorariopersonalModule) },
             { path: '**', redirectTo: '/notfound' },
         ], { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
     ],

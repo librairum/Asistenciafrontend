@@ -1,5 +1,9 @@
 <p-toast></p-toast>
-<p-confirmDialog></p-confirmDialog>
+<p-confirmDialog
+    [acceptLabel]="'Sí, eliminar'"
+    [rejectLabel]="'No, cancelar'"
+    acceptButtonStyleClass="p-button-danger"
+    ></p-confirmDialog>
 
 <div class="container">
     <p-panel header="Mantenimiento de Años" class="mb-3">
