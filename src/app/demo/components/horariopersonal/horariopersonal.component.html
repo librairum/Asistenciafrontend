@@ -20,7 +20,7 @@
             [style]="{ width: '600px' }"
             [closable]="false"
         >
-            <p-table [value]="diasSemana">
+             <p-table [value]="diasSemana" >
               <ng-template pTemplate="header">
                 <tr>
                   <th>Día</th>
@@ -30,22 +30,22 @@
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-dia>
-                <tr>
-                  <td>{{ dia.nombre }}</td>
-
-                  <td>
+                <tr >
+                  <td class="p-2">{{ dia.nombre }}</td>
+                  <td class="p-2">
                     <p-dropdown
+                      style="min-height: 195px;"
                       [options]="motivos"
                       optionLabel="descripcion"
                       optionValue="idMotivo"
                       [(ngModel)]="getDatosDia(dia.codigo).idMotivo"
                       (onChange)="actualizarHorasSiMotivoInactivo(getDatosDia(dia.codigo))"
                       placeholder="Seleccione motivo"
-                      class="w-full">
+                      appendTo="body">
                     </p-dropdown>
                   </td>
 
-                  <td>
+                  <td class="p-2">
                     <p-calendar
                         [(ngModel)]="getDatosDia(dia.codigo).horaingreso"
                         timeOnly="true"
@@ -56,7 +56,7 @@
 
                   </td>
 
-                  <td>
+                  <td class="p-2">
                     <p-calendar
                         [(ngModel)]="getDatosDia(dia.codigo).horasalida"
                         timeOnly="true"
@@ -88,7 +88,83 @@
             </div>
           </p-dialog>
 
+          <!-- <p-dialog
+  header="Configuración"
+  [(visible)]="displayModal"
+  [modal]="true"
+  [style]="{ width: '600px'}"
+  [closable]="false"
+>
+  <div class="p-fluid">
+    <div
+      *ngFor="let dia of diasSemana"
+      class="flex flex-wrap items-center justify-between mb-3 gap-2"
+    >
 
+      <div class="w-2 font-semibold">
+        {{ dia.nombre }}
+      </div>
+
+
+      <div class="w-5">
+        <p-dropdown
+          [options]="motivos"
+          optionLabel="descripcion"
+          optionValue="idMotivo"
+          [(ngModel)]="getDatosDia(dia.codigo).idMotivo"
+          (onChange)="actualizarHorasSiMotivoInactivo(getDatosDia(dia.codigo))"
+          placeholder="Seleccione motivo"
+          appendTo="body"
+          class="w-full"
+        ></p-dropdown>
+      </div>
+
+
+      <div class="w-2">
+        <p-calendar
+          [(ngModel)]="getDatosDia(dia.codigo).horaingreso"
+          timeOnly="true"
+          hourFormat="24"
+          [showSeconds]="false"
+          [disabled]="esMotivoInactivo(getDatosDia(dia.codigo).idMotivo)"
+          class="w-full"
+        ></p-calendar>
+      </div>
+
+
+      <div class="w-2">
+        <p-calendar
+          [(ngModel)]="getDatosDia(dia.codigo).horasalida"
+          timeOnly="true"
+          hourFormat="24"
+          [showSeconds]="false"
+          [disabled]="esMotivoInactivo(getDatosDia(dia.codigo).idMotivo)"
+          class="w-full"
+        ></p-calendar>
+      </div>
+    </div>
+
+
+    <div class="flex justify-end gap-2 mt-4">
+      <button
+        pButton
+        type="button"
+        label="Cancelar"
+        class="p-button-danger"
+        (click)="cerrarDialogo()"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Guardar"
+        class="p-button-primary"
+        (click)="guardarHorario()"
+      ></button>
+    </div>
+  </div>
+</p-dialog> -->
+
+<!--- separacion-->
 
         <p-table [value]="horarioPersonalLista" dataKey="idEmpleado" editMode="row"
                [paginator]="true" [rows]="20" responsiveLayout="scroll" scrollable="true" scrollDirection="horizontal" class="tabla-scroll.fija"
