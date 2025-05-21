@@ -17,7 +17,7 @@
             header="Configuración"
             [(visible)]="displayModal"
             [modal]="true"
-            [style]="{ width: '600px' }"
+            style="width: 600px;"
             [closable]="false"
         >
              <p-table [value]="diasSemana" >
@@ -88,103 +88,145 @@
             </div>
           </p-dialog>
 
-          <!-- <p-dialog
-  header="Configuración"
-  [(visible)]="displayModal"
-  [modal]="true"
-  [style]="{ width: '600px'}"
-  [closable]="false"
->
-  <div class="p-fluid">
-    <div
-      *ngFor="let dia of diasSemana"
-      class="flex flex-wrap items-center justify-between mb-3 gap-2"
-    >
-
-      <div class="w-2 font-semibold">
-        {{ dia.nombre }}
-      </div>
-
-
-      <div class="w-5">
-        <p-dropdown
-          [options]="motivos"
-          optionLabel="descripcion"
-          optionValue="idMotivo"
-          [(ngModel)]="getDatosDia(dia.codigo).idMotivo"
-          (onChange)="actualizarHorasSiMotivoInactivo(getDatosDia(dia.codigo))"
-          placeholder="Seleccione motivo"
-          appendTo="body"
-          class="w-full"
-        ></p-dropdown>
-      </div>
-
-
-      <div class="w-2">
-        <p-calendar
-          [(ngModel)]="getDatosDia(dia.codigo).horaingreso"
-          timeOnly="true"
-          hourFormat="24"
-          [showSeconds]="false"
-          [disabled]="esMotivoInactivo(getDatosDia(dia.codigo).idMotivo)"
-          class="w-full"
-        ></p-calendar>
-      </div>
-
-
-      <div class="w-2">
-        <p-calendar
-          [(ngModel)]="getDatosDia(dia.codigo).horasalida"
-          timeOnly="true"
-          hourFormat="24"
-          [showSeconds]="false"
-          [disabled]="esMotivoInactivo(getDatosDia(dia.codigo).idMotivo)"
-          class="w-full"
-        ></p-calendar>
-      </div>
-    </div>
-
-
-    <div class="flex justify-end gap-2 mt-4">
-      <button
-        pButton
-        type="button"
-        label="Cancelar"
-        class="p-button-danger"
-        (click)="cerrarDialogo()"
-      ></button>
-      <button
-        pButton
-        type="button"
-        label="Guardar"
-        class="p-button-primary"
-        (click)="guardarHorario()"
-      ></button>
-    </div>
-  </div>
-</p-dialog> -->
-
-<!--- separacion-->
-
-        <p-table [value]="horarioPersonalLista" dataKey="idEmpleado" editMode="row"
+        <ngContainer *ngIf="nombreCargos.length > 0">
+            <p-table [value]="horarioPersonalLista" dataKey="idEmpleado" editMode="row"
                [paginator]="true" [rows]="20" responsiveLayout="scroll" scrollable="true" scrollDirection="horizontal" class="tabla-scroll.fija"
+               #dt
+               [globalFilterFields]="['nroDocumento','tipoDocumento','apellidos','nombres','nombreDept','nombreCargo']"
                >
         <ng-template pTemplate="header">
           <tr>
-            <th class="w-6">nroDocumento</th>
-            <th class="w-6">TipoDocumento</th>
-            <th class="w-6">Apellidos</th>
-            <th class="w-6">Nombres</th>
-            <th class="w-6">NombreDept</th>
-            <th class="w-6">NombreCargo</th>
-            <th class="w-6">lunes</th>
-            <th class="w-6">martes</th>
-            <th class="w-6">miercoles</th>
-            <th class="w-6">jueves</th>
-            <th class="w-6">viernes</th>
-            <th class="w-6">sabado</th>
-            <th class="w-6">domingo</th>
-            <th class="w-6">Acciones</th>
+            <th class="w-10" pSortableColumn="nroDocumento" pResizableColumn>
+                <div class="d-block-ruby">
+                    nroDocumento
+                    <p-columnFilter field="nroDocumento" matchMode="contains" display="menu"></p-columnFilter>
+                </div>
+            </th>
+            <th class="w-10" pSortableColumn="tipoDocumento" pResizableColumn>
+                <div class="d-block-ruby">
+                TipoDocumento
+                <p-columnFilter
+                    field="tipoDocumento"
+                    matchMode="in"
+                    display="menu"
+                    [showMatchModes]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-multiSelect
+                        [options]="tiposDocumentosIdentidad"
+                        optionLabel="label"
+                        optionValue="value"
+                        [ngModel]="value"
+                        (onChange)="filter($event.value)"
+                        placeholder="Seleccionar Tipo"
+                        class="w-full">
+                        </p-multiSelect>
+                    </ng-template>
+                </p-columnFilter>
+                </div>
+            </th>
+            <th class="w-6" pSortableColumn="apellidos" pResizableColumn>
+                <div class="d-block-ruby">
+                Apellidos
+                <p-columnFilter field="apellidos" matchMode="contains" display="menu"></p-columnFilter>
+                </div>
+            </th>
+            <th class="w-6" pSortableColumn="nombres" pResizableColumn>
+                <div class="d-block-ruby">
+                Nombres
+                <p-columnFilter field="nombres" matchMode="contains" display="menu"></p-columnFilter>
+                </div>
+            </th>
+            <th class="w-6" pSortableColumn="nombreDept" pResizableColumn>
+                <div class="d-block-ruby">
+                NombreDept
+                <p-columnFilter field="nombreDept" matchMode="contains" display="menu"></p-columnFilter>
+                </div>
+            </th>
+            <th class="w-6" pSortableColumn="nombreCargo" pResizableColumn>
+                <div class="d-block-ruby">
+                NombreCargo
+                <p-columnFilter
+                    field="nombreCargo"
+                    matchMode="in"
+                    display="menu"
+                    [showMatchModes]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-multiSelect
+                        [options]="nombreCargos"
+                        optionLabel="label"
+                        optionValue="value"
+                        [ngModel]="value"
+                        (onChange)="filter($event.value)"
+                        placeholder="Seleccionar Cargo"
+                        class="w-full">
+                        </p-multiSelect>
+                    </ng-template>
+                </p-columnFilter>
+                </div>
+            </th>
+
+            <th class="w-6" pSortableColumn="lunes" pResizableColumn>
+                <div class="d-block-ruby">
+                lunes
+
+                <p-columnFilter
+                field="lunes"
+                display="menu"
+                [showMatchModes]="false"
+                [filterFunction]="dinamicoFilterFn"
+                matchMode="in"
+              >
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-multiSelect
+                    [options]="nombreMotivos"
+                    optionLabel="label"
+                    optionValue="value"
+                    [ngModel]="value"
+                    (onChange)="logYFiltrar($event.value, filter)"
+                    placeholder="Seleccionar Tipo"
+                    class="w-full"
+                  >
+                  </p-multiSelect>
+                </ng-template>
+              </p-columnFilter>
+
+
+
+            </div>
+            </th>
+            <th class="w-6" pSortableColumn="martes" pResizableColumn>
+                <div class="d-block-ruby">
+                martes
+                <p-columnFilter field="martes" matchMode="contains" display="menu"></p-columnFilter></div>
+            </th>
+            <th class="w-6" pSortableColumn="miercoles" pResizableColumn>
+            <div class="d-block-ruby">
+                miercoles
+                <p-columnFilter field="miercoles" matchMode="contains" display="menu"></p-columnFilter></div>
+            </th>
+            <th class="w-6" pSortableColumn="jueves" pResizableColumn>
+            <div class="d-block-ruby">
+                jueves
+                <p-columnFilter field="jueves" matchMode="contains" display="menu"></p-columnFilter></div>
+            </th>
+            <th class="w-6" pSortableColumn="viernes" pResizableColumn>
+            <div class="d-block-ruby">
+                viernes
+                <p-columnFilter field="viernes" matchMode="contains" display="menu"></p-columnFilter></div>
+            </th>
+            <th class="w-6" pSortableColumn="sabado" pResizableColumn>
+            <div class="d-block-ruby">
+                sabado
+                <p-columnFilter field="sabado" matchMode="contains" display="menu"></p-columnFilter></div>
+            </th>
+            <th class="w-6" pSortableColumn="domingo" pResizableColumn>
+                <div class="d-block-ruby">
+                domingo
+                <p-columnFilter field="domingo" matchMode="contains" display="menu"></p-columnFilter></div>
+            </th>
+            <th class="w-6">
+                Acciones
+            </th>
 
           </tr>
         </ng-template>
@@ -203,7 +245,7 @@
                       </ng-template>
                   </p-cellEditor>
                   <div *ngIf="editingRowIndex !== ri">
-                      {{ horario.idEmpleado }}
+                      {{horario.idEmpleado}}
                   </div>
               </td>
               <td>
@@ -282,6 +324,7 @@
           </tr>
         </ng-template>
       </p-table>
+
+        </ngContainer>
     </div>
   </div>
-

@@ -20,6 +20,9 @@ import { motivo_horario } from '../../model/motivo_horario';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { min } from 'rxjs';
+import { AsistenciaService } from '../../service/asistencia.service';
+import { PLanilla_Combo } from '../../model/Asistencia';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
     selector: 'app-horariopersonal',
@@ -39,6 +42,7 @@ import { min } from 'rxjs';
         DialogModule,
         DropdownModule,
         CalendarModule,
+        MultiSelectModule,
     ],
     standalone: true,
     templateUrl: './horariopersonal.component.html',
@@ -52,6 +56,25 @@ export class HorariopersonalComponent {
     displayModal: boolean = false;
     horarioEmpleado: any[] = [];
     motivos: motivo_horario[] = [];
+    nombreCargoSeleccionado: string[] = [];
+    nombreCargos: { label: string; value: string }[] = [];
+    nombreMotivos: { label: string; value: string }[] = [];
+    nombreMotivos1 = [
+        {label: 'DINAMICO', value: 'DINAMICO'}
+    ]
+
+    cargos = [
+        { label: 'Contabilidad', value: 'Contabilidad' },
+        { label: 'Sistemas', value: 'Sistemas' },
+        { label: 'RRHH', value: 'RRHH' },
+    ];
+
+    data = [
+        { nombreCargo: 'PERMANENTES' },
+        { nombreCargo: 'SPORT' },
+        { nombreCargo: 'PLAZO FIJO' },
+        { nombreCargo: 'OBRERO' },
+    ];
 
     diasSemana = [
         { nombre: 'Lunes', codigo: '01' },
@@ -63,16 +86,24 @@ export class HorariopersonalComponent {
         { nombre: 'Domingo', codigo: '07' },
     ];
 
+    tiposDocumentosIdentidad = [
+        { label: 'C.E', value: 'C.E' },
+        { label: 'DNI', value: 'DNI' },
+    ];
+
     constructor(
         private fb: FormBuilder,
         private horarioPersonalService: HorariopersonalService,
         private mS: MessageService,
         private confirmationService: ConfirmationService,
         private bS: BreadcrumbService,
-        private motivoHorarioService: MotivoHorarioService
+        private motivoHorarioService: MotivoHorarioService,
+        private asistenciaService: AsistenciaService
     ) {}
 
     ngOnInit(): void {
+        this.cargarCargos();
+        this.cargarMotivos();
         this.bS.setBreadcrumbs([
             { icon: 'pi pi-home', routerLink: '/Menu' },
             {
@@ -85,6 +116,8 @@ export class HorariopersonalComponent {
         });
         // this.initForm();
         this.loadHorarioPersonal();
+        console.log('h', this.nombreCargos);
+        console.table(this.horarioPersonalLista);
     }
 
     loadHorarioPersonal(): void {
@@ -141,6 +174,7 @@ export class HorariopersonalComponent {
         this.motivoHorarioService.getAll('01').subscribe({
             next: (data) => {
                 this.motivos = data;
+                console.log(this.motivos);
             },
             error: (err) => console.error('Error cargando motivos: ', err),
         });
@@ -200,7 +234,6 @@ export class HorariopersonalComponent {
             return;
         }
 
-
         const tieneErrorHorario = this.horarioEmpleado.some((item) => {
             if (this.esMotivoInactivo(item.idMotivo)) return false;
 
@@ -256,6 +289,63 @@ export class HorariopersonalComponent {
                 console.error('Error al actualizar horarios:', err);
             },
         });
+    }
+
+    cargarCargos() {
+        this.asistenciaService
+            .getPlanillaCombo()
+            .subscribe((cargos: PLanilla_Combo[]) => {
+                this.nombreCargos = cargos.map((cargo) => ({
+                    label: cargo.nombrePlanilla,
+                    value: cargo.nombrePlanilla,
+                }));
+                console.log('lista cargos \n', this.nombreCargos);
+            });
+    }
+
+    cargarMotivos() {
+        this.motivoHorarioService.getAll('01').subscribe({
+            next: (data) => {
+                this.nombreMotivos = data.map((motivo) => ({
+                    value: motivo.descripcion,
+                    label: motivo.descripcion,
+                }));
+                console.log('lista motivos \n', this.nombreMotivos);
+            },
+            error: (err) => console.error('Error cargando motivos: ', err),
+        });
+    }
+
+    dinamicoFilterFn = (value: any, filters: any[]): boolean => {
+        console.log(
+            'Entró a dinamicoFilterFn, value:',
+            value,
+            'filters:',
+            filters
+        );
+
+        if (!filters || filters.length === 0) {
+            return true;
+        }
+
+        const esDinamico =
+            typeof value === 'string' &&
+            /^\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}$/.test(value.trim());
+
+        for (const filtro of filters) {
+            if (filtro === 'DINAMICO' && esDinamico) {
+                return true;
+            } else if (value === filtro) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    logYFiltrar(selectedValues: any[], filterCallback: Function) {
+        console.log('Valores seleccionados:', selectedValues);
+        filterCallback(selectedValues);
     }
 }
 
