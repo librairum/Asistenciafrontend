@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, PrimeNGConfig } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -23,6 +23,9 @@ import { min } from 'rxjs';
 import { AsistenciaService } from '../../service/asistencia.service';
 import { PLanilla_Combo } from '../../model/Asistencia';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ViewChild } from '@angular/core';
+import { Table } from 'primeng/table';
+
 
 @Component({
     selector: 'app-horariopersonal',
@@ -59,9 +62,12 @@ export class HorariopersonalComponent {
     nombreCargoSeleccionado: string[] = [];
     nombreCargos: { label: string; value: string }[] = [];
     nombreMotivos: { label: string; value: string }[] = [];
-    nombreMotivos1 = [
-        {label: 'DINAMICO', value: 'DINAMICO'}
-    ]
+    nombreMotivos1 = [{ label: 'DINAMICO', value: 'DINAMICO' }];
+    valoresUnicosPorColumna: {
+        [key: string]: { label: string; value: string }[];
+    } = {};
+
+    @ViewChild('dt') dt: Table;
 
     cargos = [
         { label: 'Contabilidad', value: 'Contabilidad' },
@@ -98,7 +104,8 @@ export class HorariopersonalComponent {
         private confirmationService: ConfirmationService,
         private bS: BreadcrumbService,
         private motivoHorarioService: MotivoHorarioService,
-        private asistenciaService: AsistenciaService
+        private asistenciaService: AsistenciaService,
+        private primengConfig: PrimeNGConfig
     ) {}
 
     ngOnInit(): void {
@@ -115,9 +122,29 @@ export class HorariopersonalComponent {
             this.items = bc;
         });
         // this.initForm();
-        this.loadHorarioPersonal();
+        this.refrescar();
         console.log('h', this.nombreCargos);
         console.table(this.horarioPersonalLista);
+        this.traducirMenu();
+    }
+
+    traducirMenu(){
+        this.primengConfig.setTranslation({
+            startsWith: 'Empieza con',
+            contains: 'Contiene',
+            notContains: 'No contiene',
+            endsWith: 'Termina con',
+            equals: 'Igual a',
+            notEquals: 'Distinto de',
+            noFilter: 'Sin filtro',
+            matchAll: 'Coincidir todo',
+            matchAny: 'Coincidir alguno',
+            addRule: 'Agregar regla',
+            removeRule: 'Eliminar regla',
+            clear: 'Limpiar',
+            apply: 'Aplicar',
+            // Puedes seguir agregando otras traducciones si las necesitas
+        });
     }
 
     loadHorarioPersonal(): void {
@@ -125,6 +152,7 @@ export class HorariopersonalComponent {
             next: (data) => {
                 console.log('Respuesta del API:', data);
                 this.horarioPersonalLista = Array.isArray(data) ? data : [];
+                this.generarValoresUnicos();
             },
             error: (err) => {
                 console.error('Error al cargar horarios:', err);
@@ -346,6 +374,47 @@ export class HorariopersonalComponent {
     logYFiltrar(selectedValues: any[], filterCallback: Function) {
         console.log('Valores seleccionados:', selectedValues);
         filterCallback(selectedValues);
+    }
+
+    refrescar(): void {
+        if (this.dt) {
+            this.dt.clear(); // Esto elimina filtros, ordenamientos y búsqueda global
+        }
+        this.loadHorarioPersonal();
+    }
+
+    generarValoresUnicos(): void {
+        const columnas = [
+            'lunes',
+            'martes',
+            'miércoles',
+            'jueves',
+            'viernes',
+            'sábado',
+            'domingo',
+            'nombreCargo',
+            'nombreDept',
+            'tipoDocumento'
+        ];
+
+        columnas.forEach((columna) => {
+            const unicos = new Set<string>();
+            this.horarioPersonalLista.forEach((fila) => {
+                const valor = fila[columna];
+                if (valor) {
+                    unicos.add(valor.trim());
+                }
+            });
+
+            this.valoresUnicosPorColumna[columna] = Array.from(unicos).map(
+                (val) => ({
+                    label: val,
+                    value: val,
+                })
+            );
+        });
+
+        console.log('Valores únicos generados:', this.valoresUnicosPorColumna);
     }
 }
 
