@@ -390,7 +390,7 @@ export class HorariopersonalComponent {
             'miércoles',
             'jueves',
             'viernes',
-            'sábado',
+            'sabado',
             'domingo',
             'nombreCargo',
             'nombreDept',
