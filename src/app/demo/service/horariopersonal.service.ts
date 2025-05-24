@@ -38,11 +38,10 @@ export class HorariopersonalService {
     }
 
     actualizarHorariosMasivo(xml: string): Observable<any> {
-        const params = { xmlmasivo: xml };
+
         return this.http.put<any>(
             `${this.apiUrl}/SpActualizaMasivo`,
-            null,
-            { params }
+            { xmlhorarios: xml } // Aquí está el body
         );
     }
 }

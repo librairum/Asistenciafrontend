@@ -128,7 +128,7 @@ export class HorariopersonalComponent {
         this.traducirMenu();
     }
 
-    traducirMenu(){
+    traducirMenu() {
         this.primengConfig.setTranslation({
             startsWith: 'Empieza con',
             contains: 'Contiene',
@@ -297,9 +297,10 @@ export class HorariopersonalComponent {
             .join('')}
           </DataSet>`;
 
+        // Llamada al servicio actualizado, que envía { xmlhorarios: xml } en el body
         this.horarioPersonalService.actualizarHorariosMasivo(xml).subscribe({
             next: () => {
-                console.log(xml);
+                console.log('XML enviado:', xml);
                 this.mS.add({
                     severity: 'success',
                     summary: 'Éxito',
@@ -378,7 +379,7 @@ export class HorariopersonalComponent {
 
     refrescar(): void {
         if (this.dt) {
-            this.dt.clear(); // Esto elimina filtros, ordenamientos y búsqueda global
+            this.dt.clear();
         }
         this.loadHorarioPersonal();
     }
@@ -394,7 +395,7 @@ export class HorariopersonalComponent {
             'domingo',
             'nombreCargo',
             'nombreDept',
-            'tipoDocumento'
+            'tipoDocumento',
         ];
 
         columnas.forEach((columna) => {
