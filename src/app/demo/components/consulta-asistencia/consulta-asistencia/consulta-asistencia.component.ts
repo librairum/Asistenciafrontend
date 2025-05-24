@@ -42,6 +42,11 @@ export class ConsultaAsistenciaComponent implements OnInit {
         { field: 'nombretrabajador', header: 'Nombre del Trabajador' },
         { field: 'dias', header: 'Dias' },
         { field: 'diasFalta', header: 'Dias\nFalta' },
+        {field:'diasDescanso', header:'Dias\nDescanso'},
+        {field:'horasTrabajadas', header:'Horas\nTrabajadas'},
+        {field:'horasHorario', header:'Horas\nHorario'},
+        {field:'horasExtrasTotales', header:'Horas\nExtTotal'},
+        
         // { field: 'nHraDomPag', header: 'H.Dom.\nPag' },
         // { field: 'nHraFerTra', header: 'H.Fer:\nTra' },
         // { field: 'hturnoManu', header: 'H.Tur.\nMan' },
@@ -217,6 +222,10 @@ export class ConsultaAsistenciaComponent implements OnInit {
                 Trabajador:item.nombretrabajador,
                 Dias:item.dias,
                 DiasFalta:item.diasFalta,
+                DiasDescanso:item.diasDescanso,
+                HorasTrabajadas:item.horasTrabajadas,
+                HorasHorario:item.horasHorario,
+                HorasExtrasTotales:item.horasExtrasTotales,
                 // HoraDomPag:item.nHraDomPag,
                 // HoraFerTra:item.nHraFerTra,
                 // HoraTurnoManu:item.hturnoManu,
@@ -245,6 +254,10 @@ export class ConsultaAsistenciaComponent implements OnInit {
                 Trabajador:item.nombretrabajador,
                 Dias:item.dias,
                 DiasFalta:item.diasFalta,
+                DiasDescanso:item.diasDescanso,
+                HorasTrabajadas:item.horasTrabajadas,
+                HorasHorario:item.horasHorario,
+                HorasExtrasTotales:item.horasExtrasTotales,
                 // HoraDomPag:item.nHraDomPag,
                 // HoraFerTra:item.nHraFerTra,
                 // HoraTurnoManu:item.hturnoManu,
@@ -286,6 +299,11 @@ export class ConsultaAsistenciaComponent implements OnInit {
                 content += `${item.codigoTrabajador}|` +
                     `${item.dias}|` +
                     `${item.diasFalta}|` +
+
+                    `${item.diasDescanso}|` +
+                    `${item.horasTrabajadas}|` +
+                    `${item.horasHorario}|` +
+                    `${item.horasExtrasTotales}|` +
                     // `${item.nHraDomPag}|` +
                     // `${item.nHraFerTra}|` +
                     // `${item.hturnoManu}|` +

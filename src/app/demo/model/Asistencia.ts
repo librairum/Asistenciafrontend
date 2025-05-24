@@ -22,6 +22,10 @@ export interface Asistencia {
     nHorExtrDo:string;
     nHorExtr100:string;
     nHorExtr100Obrero:string;
+    horasTrabajadas:string;
+    horasHorario : string;
+    horasExtrasTotales : string;
+    diasDescanso:number;
 }
 export interface PLanilla_Combo {
     codigoPlanilla: string;
@@ -53,4 +57,9 @@ export interface AsistenciaDetalle {
     horas35: string;
     horas60: string;
     horas100: string;
+    horarioPersonalizado_Motivo:string;
+    horarioPersonalizado:string;
+    horasTrabajadas:string;
+    horasExtrasTrabajadas:string;
+   
 }

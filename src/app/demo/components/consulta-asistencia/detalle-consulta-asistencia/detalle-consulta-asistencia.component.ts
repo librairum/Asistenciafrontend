@@ -88,7 +88,38 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
         const fecha = new Date(date);
         return dias[fecha.getDay()];
     }
+    calculateTotal(field: string): string {
+        // Función para sumar tiempos en formato HH:mm, soportando valores negativos
+        const sumTimes = (times: string[]): string => {
+            let totalMinutes = times.reduce((acc, time) => {
+                // Determinar si el tiempo es negativo
+                const isNegative = time.startsWith('-');
+                let [hours, minutes] = time.replace('-', '').split(':').map(Number); // Quitar el signo y convertir a número
 
+                let timeInMinutes = (hours * 60 + minutes);
+
+                // Si el tiempo era negativo, resta los minutos
+                if (isNegative) {
+                    timeInMinutes *= -1;
+                }
+
+                return acc + timeInMinutes;
+            }, 0);
+
+            // Manejar el signo del resultado final
+            const sign = totalMinutes < 0 ? '-' : '';
+            totalMinutes = Math.abs(totalMinutes); // Trabajar con el valor absoluto para el formateo
+
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+
+            return `${sign}${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+        };
+
+        const times = this.asistencias.map(a => a[field as keyof AsistenciaDetalle] as string);
+        return sumTimes(times);
+    }
+    /*
     calculateTotal(field: string): string {
         // Función para sumar tiempos en formato HH:mm
         // console.log("campo a calcular:" + field);
@@ -106,6 +137,7 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
         const times = this.asistencias.map(a => a[field as keyof AsistenciaDetalle] as string);
         return sumTimes(times);
     }
+    */
 
     volverAListado() {
         const navigationExtras2 = {
@@ -131,7 +163,8 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
                 Dia: item.diaNombre,
                 Hora_Entrada: item.horaEntrada,
                 Hora_Salida: item.horaSalida,
-                diasFalta: item.diasFalta,
+                horasTrabajadas: item.horasTrabajadas,
+                horasExtrasTrabajadas:item.horasExtrasTrabajadas,
                 // HDomPag: item.nHraDomPag,
                 // HFerTra: item.nHraFerTra,
                 // HTurManu: item.hTurnoManu,
@@ -163,7 +196,8 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
                     Dia: item.diaNombre,
                     Hora_Entrada: item.horaEntrada,
                     Hora_Salida: item.horaSalida,
-                    diasFalta: item.diasFalta,
+                    horasTrabajadas: item.horasTrabajadas,
+                    horasExtrasTrabajadas:item.horasExtrasTrabajadas,
                     // HDomPag: item.nHraDomPag,
                     // HFerTra: item.nHraFerTra,
                     // HTurManu: item.hTurnoManu,

@@ -15,11 +15,16 @@
                         <th>Item</th>
                         <th>Nro.Doc</th>
                         <th>Nombres <br/> Completo</th>
+                        <th>Horario Motivo</th>
+                        <th>Horario</th>
                         <th>Fecha</th>
                         <th>Día</th>
                         <th>Hora Entrada</th>
                         <th>Hora Salida</th>
-                        <th>Dias falta</th>
+                        <th>Hora trabajas</th>
+                        <th>Hora Ext.Total</th>
+                        <!-- <th>Dias falta</th> -->
+                        
                         <!-- <th>horas Domingo pagada</th>
                         <th>horas feriado trabajado</th>
                         <th>Horas turno Manual</th>
@@ -38,12 +43,17 @@
                     <tr>
                         <td>{{ rowData.item }}</td>
                         <td>{{rowData.codigotrabajador}}</td>
-                        <td>{{ rowData.nombreTrabajador }}</td>                        
+                        <td>{{ rowData.nombreTrabajador }}</td>
+                        <td>{{rowData.horarioPersonalizado_Motivo}}</td>  
+                        <td>{{rowData.horarioPersonalizado}}</td>                      
                         <td>{{ rowData.fechaMarcacion }}</td>                         
                         <td>{{ rowData.diaNombre}}</td>
                         <td>{{ rowData.horaEntrada }}</td>
                         <td>{{ rowData.horaSalida }}</td>
-                        <td>{{ rowData.diasFalta }}</td>
+                        <td>{{rowData.horasTrabajadas}}</td>
+                        <td>{{rowData.horasExtrasTrabajadas}}</td>
+                        
+                        <!-- <td>{{ rowData.diasFalta }}</td> -->
                         <!-- <td>{{ rowData.nHraDomPag }}</td>
                         <td>{{ rowData.nHraFerTra }}</td>                                                
                         <td>{{ rowData.hturnoManu }}</td>
@@ -60,11 +70,10 @@
 
                         <ng-template pTemplate="footer">
                             <tr>
-                                <td colspan="8" class="text-right font-bold">Totales:</td>
-                                <!-- <td>{{ calculateTotal('nHraDomPag') }}</td>
-                                <td>{{ calculateTotal('nHraFerTra') }}</td>
-                                <td>{{ calculateTotal('hturnoManu') }}</td>
-                                <td>{{ calculateTotal('minTardanza') }}</td> -->
+                                <td colspan="11" class="text-right font-bold">Totales:</td>
+                                
+                                <!-- <td>{{calculateTotal("horasTrabajadas")}}</td>
+                                <td>{{calculateTotal("horasExtrasTotales")}} </td> -->
                                 <td>{{ calculateTotal('nHorExtr25') }}</td>
                                 <td>{{ calculateTotal('nHorExtr35') }}</td>
                                 <td>{{ calculateTotal('nHorExtr50') }}</td>
