@@ -47,15 +47,16 @@
         <!-- Botones -->
         <div class="flex flex-wrap gap-3 w-full lg:w-auto lg:ml-auto lg:items-center">
             <!-- Botón Buscar -->
-            <button
-                pButton
-                type="button"
-                label="Buscar"
-                icon="pi pi-search"
-                (click)="Buscar()"
-                class="p-button p-button-primary w-full lg:w-auto"
-            ></button>
-
+            <div style="display: flex; justify-content: end;">
+                <button
+                    pButton
+                    type="button"
+                    label="Buscar"
+                    icon="pi pi-search"
+                    (click)="Buscar()"
+                    class="p-button p-button-primary w-full lg:w-auto"
+                ></button>
+            </div>
             <!-- Botón Exportar -->
             <button
                 pButton

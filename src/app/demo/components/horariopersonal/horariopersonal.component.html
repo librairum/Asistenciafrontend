@@ -89,6 +89,16 @@
           </p-dialog>
 
         <ngContainer *ngIf="nombreCargos.length > 0">
+            <div class="flex justify-content-end mb-3">
+                <button
+            pButton
+            type="button"
+            label="Refrescar"
+            icon="pi pi-search"
+            (click)="refrescar()"
+            class="p-button p-button-primary w-full lg:w-auto"
+        ></button>
+            </div>
             <p-table [value]="horarioPersonalLista" dataKey="idEmpleado" editMode="row"
                [paginator]="true" [rows]="20" responsiveLayout="scroll" scrollable="true" scrollDirection="horizontal" class="tabla-scroll.fija"
                #dt
@@ -98,30 +108,27 @@
           <tr>
             <th class="w-10" pSortableColumn="nroDocumento" pResizableColumn>
                 <div class="d-block-ruby">
-                    nroDocumento
+                    Nro.Doc
                     <p-columnFilter field="nroDocumento" matchMode="contains" display="menu"></p-columnFilter>
                 </div>
             </th>
             <th class="w-10" pSortableColumn="tipoDocumento" pResizableColumn>
                 <div class="d-block-ruby">
-                TipoDocumento
-                <p-columnFilter
-                    field="tipoDocumento"
-                    matchMode="in"
-                    display="menu"
-                    [showMatchModes]="false">
+                TipDoc
+                <p-columnFilter field="tipoDocumento" display="menu" [showMatchModes]="false" matchMode="in">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                         <p-multiSelect
-                        [options]="tiposDocumentosIdentidad"
-                        optionLabel="label"
-                        optionValue="value"
-                        [ngModel]="value"
-                        (onChange)="filter($event.value)"
-                        placeholder="Seleccionar Tipo"
-                        class="w-full">
+                          [options]="valoresUnicosPorColumna['tipoDocumento']"
+                          optionLabel="label"
+                          optionValue="value"
+                          [ngModel]="value"
+                          (onChange)="filter($event.value)"
+                          placeholder="Seleccionar valor"
+                          class="w-full"
+                        >
                         </p-multiSelect>
-                    </ng-template>
-                </p-columnFilter>
+                      </ng-template>
+                  </p-columnFilter>
                 </div>
             </th>
             <th class="w-6" pSortableColumn="apellidos" pResizableColumn>
@@ -138,91 +145,177 @@
             </th>
             <th class="w-6" pSortableColumn="nombreDept" pResizableColumn>
                 <div class="d-block-ruby">
-                NombreDept
-                <p-columnFilter field="nombreDept" matchMode="contains" display="menu"></p-columnFilter>
+                Departamento
+                <p-columnFilter field="nombreDept" display="menu" [showMatchModes]="false" matchMode="in">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-multiSelect
+                          [options]="valoresUnicosPorColumna['nombreDept']"
+                          optionLabel="label"
+                          optionValue="value"
+                          [ngModel]="value"
+                          (onChange)="filter($event.value)"
+                          placeholder="Seleccionar valor"
+                          class="w-full"
+                        >
+                        </p-multiSelect>
+                      </ng-template>
+                  </p-columnFilter>
                 </div>
             </th>
             <th class="w-6" pSortableColumn="nombreCargo" pResizableColumn>
                 <div class="d-block-ruby">
-                NombreCargo
-                <p-columnFilter
-                    field="nombreCargo"
-                    matchMode="in"
-                    display="menu"
-                    [showMatchModes]="false">
+                Cargo
+                <p-columnFilter field="nombreCargo" display="menu" [showMatchModes]="false" matchMode="in">
                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                         <p-multiSelect
-                        [options]="nombreCargos"
-                        optionLabel="label"
-                        optionValue="value"
-                        [ngModel]="value"
-                        (onChange)="filter($event.value)"
-                        placeholder="Seleccionar Cargo"
-                        class="w-full">
+                          [options]="valoresUnicosPorColumna['nombreCargo']"
+                          optionLabel="label"
+                          optionValue="value"
+                          [ngModel]="value"
+                          (onChange)="filter($event.value)"
+                          placeholder="Seleccionar valor"
+                          class="w-full"
+                        >
                         </p-multiSelect>
-                    </ng-template>
-                </p-columnFilter>
+                      </ng-template>
+                  </p-columnFilter>
                 </div>
             </th>
 
             <th class="w-6" pSortableColumn="lunes" pResizableColumn>
-                <div class="d-block-ruby">
-                lunes
-
-                <p-columnFilter
-                field="lunes"
-                display="menu"
-                [showMatchModes]="false"
-                [filterFunction]="dinamicoFilterFn"
-                matchMode="in"
-              >
+                <div class="d-block-ruby"  style="width: 127px;">
+                Lunes
+              <p-columnFilter field="lunes" display="menu" [showMatchModes]="false" matchMode="in">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-multiSelect
-                    [options]="nombreMotivos"
-                    optionLabel="label"
-                    optionValue="value"
-                    [ngModel]="value"
-                    (onChange)="logYFiltrar($event.value, filter)"
-                    placeholder="Seleccionar Tipo"
-                    class="w-full"
-                  >
-                  </p-multiSelect>
-                </ng-template>
+                    <p-multiSelect
+                      [options]="valoresUnicosPorColumna['lunes']"
+                      optionLabel="label"
+                      optionValue="value"
+                      [ngModel]="value"
+                      (onChange)="filter($event.value)"
+                      placeholder="Seleccionar valor"
+                      class="w-full"
+                    >
+                    </p-multiSelect>
+                  </ng-template>
               </p-columnFilter>
-
 
 
             </div>
             </th>
             <th class="w-6" pSortableColumn="martes" pResizableColumn>
-                <div class="d-block-ruby">
-                martes
-                <p-columnFilter field="martes" matchMode="contains" display="menu"></p-columnFilter></div>
+                <div class="d-block-ruby"  style="width: 127px;">
+                Martes
+                <p-columnFilter field="martes" display="menu" [showMatchModes]="false" matchMode="in">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-multiSelect
+                          [options]="valoresUnicosPorColumna['martes']"
+                          optionLabel="label"
+                          optionValue="value"
+                          [ngModel]="value"
+                          (onChange)="filter($event.value)"
+                          placeholder="Seleccionar valor"
+                          class="w-full"
+                        >
+                        </p-multiSelect>
+                      </ng-template>
+                  </p-columnFilter>
+            </div>
             </th>
             <th class="w-6" pSortableColumn="miercoles" pResizableColumn>
-            <div class="d-block-ruby">
-                miercoles
-                <p-columnFilter field="miercoles" matchMode="contains" display="menu"></p-columnFilter></div>
+            <div class="d-block-ruby"  style="width: 127px;">
+                Miercoles
+                <p-columnFilter field="miercoles" display="menu" [showMatchModes]="false" matchMode="in">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-multiSelect
+                          [options]="valoresUnicosPorColumna['miercoles']"
+                          optionLabel="label"
+                          optionValue="value"
+                          [ngModel]="value"
+                          (onChange)="filter($event.value)"
+                          placeholder="Seleccionar valor"
+                          class="w-full"
+                        >
+                        </p-multiSelect>
+                      </ng-template>
+                  </p-columnFilter>
+            </div>
             </th>
             <th class="w-6" pSortableColumn="jueves" pResizableColumn>
-            <div class="d-block-ruby">
-                jueves
-                <p-columnFilter field="jueves" matchMode="contains" display="menu"></p-columnFilter></div>
+            <div class="d-block-ruby"  style="width: 127px;">
+                Jueves
+                <p-columnFilter field="jueves" display="menu" [showMatchModes]="false" matchMode="in">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-multiSelect
+                          [options]="valoresUnicosPorColumna['jueves']"
+                          optionLabel="label"
+                          optionValue="value"
+                          [ngModel]="value"
+                          (onChange)="filter($event.value)"
+                          placeholder="Seleccionar valor"
+                          class="w-full"
+                        >
+                        </p-multiSelect>
+                      </ng-template>
+                  </p-columnFilter>
+            </div>
             </th>
             <th class="w-6" pSortableColumn="viernes" pResizableColumn>
-            <div class="d-block-ruby">
-                viernes
-                <p-columnFilter field="viernes" matchMode="contains" display="menu"></p-columnFilter></div>
+            <div class="d-block-ruby"  style="width: 127px;">
+                Viernes
+                <p-columnFilter field="viernes" display="menu" [showMatchModes]="false" matchMode="in">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-multiSelect
+                          [options]="valoresUnicosPorColumna['viernes']"
+                          optionLabel="label"
+                          optionValue="value"
+                          [ngModel]="value"
+                          (onChange)="filter($event.value)"
+                          placeholder="Seleccionar valor"
+                          class="w-full"
+                        >
+                        </p-multiSelect>
+                      </ng-template>
+                  </p-columnFilter>
+            </div>
             </th>
             <th class="w-6" pSortableColumn="sabado" pResizableColumn>
-            <div class="d-block-ruby">
-                sabado
-                <p-columnFilter field="sabado" matchMode="contains" display="menu"></p-columnFilter></div>
+            <div class="d-block-ruby"  style="width: 127px;">
+                Sábado
+                <p-columnFilter field="sabado" display="menu" [showMatchModes]="false" matchMode="in">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-multiSelect
+                          [options]="valoresUnicosPorColumna['sabado']"
+                          optionLabel="label"
+                          optionValue="value"
+                          [ngModel]="value"
+                          (onChange)="filter($event.value)"
+                          placeholder="Seleccionar valor"
+                          class="w-full"
+                        >
+                        </p-multiSelect>
+                      </ng-template>
+                  </p-columnFilter>
+            </div>
             </th>
             <th class="w-6" pSortableColumn="domingo" pResizableColumn>
-                <div class="d-block-ruby">
-                domingo
-                <p-columnFilter field="domingo" matchMode="contains" display="menu"></p-columnFilter></div>
+                <div class="d-block-ruby"  style="width: 127px;">
+                Domingo
+                <p-columnFilter field="domingo" display="menu" [showMatchModes]="false" matchMode="in">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                        <p-multiSelect
+                          [options]="valoresUnicosPorColumna['domingo']"
+                          optionLabel="label"
+                          optionValue="value"
+                          [ngModel]="value"
+                          (onChange)="filter($event.value)"
+                          placeholder="Seleccionar valor"
+                          class="w-full"
+                        >
+                        </p-multiSelect>
+                      </ng-template>
+                  </p-columnFilter>
+            </div>
             </th>
             <th class="w-6">
                 Acciones
