@@ -24,7 +24,7 @@
                         <th>Hora trabajas</th>
                         <th>Hora Ext.Total</th>
                         <!-- <th>Dias falta</th> -->
-                        
+
                         <!-- <th>horas Domingo pagada</th>
                         <th>horas feriado trabajado</th>
                         <th>Horas turno Manual</th>
@@ -44,18 +44,18 @@
                         <td>{{ rowData.item }}</td>
                         <td>{{rowData.codigotrabajador}}</td>
                         <td>{{ rowData.nombreTrabajador }}</td>
-                        <td>{{rowData.horarioPersonalizado_Motivo}}</td>  
-                        <td>{{rowData.horarioPersonalizado}}</td>                      
-                        <td>{{ rowData.fechaMarcacion }}</td>                         
+                        <td>{{rowData.horarioPersonalizado_Motivo}}</td>
+                        <td>{{rowData.horarioPersonalizado}}</td>
+                        <td>{{ rowData.fechaMarcacion }}</td>
                         <td>{{ rowData.diaNombre}}</td>
                         <td>{{ rowData.horaEntrada }}</td>
                         <td>{{ rowData.horaSalida }}</td>
                         <td>{{rowData.horasTrabajadas}}</td>
                         <td>{{rowData.horasExtrasTrabajadas}}</td>
-                        
+
                         <!-- <td>{{ rowData.diasFalta }}</td> -->
                         <!-- <td>{{ rowData.nHraDomPag }}</td>
-                        <td>{{ rowData.nHraFerTra }}</td>                                                
+                        <td>{{ rowData.nHraFerTra }}</td>
                         <td>{{ rowData.hturnoManu }}</td>
                         <td>{{ rowData.minTardanza }}</td> -->
                         <td>{{ rowData.nHorExtr25 }}</td>
@@ -70,10 +70,10 @@
 
                         <ng-template pTemplate="footer">
                             <tr>
-                                <td colspan="11" class="text-right font-bold">Totales:</td>
-                                
-                                <!-- <td>{{calculateTotal("horasTrabajadas")}}</td>
-                                <td>{{calculateTotal("horasExtrasTotales")}} </td> -->
+                                <td colspan="9" class="text-right font-bold">Totales:</td>
+
+                                <td>{{calculateTotal("horasTrabajadas")}}</td>
+                                <td>{{calculateTotal("horasExtrasTrabajadas")}} </td>
                                 <td>{{ calculateTotal('nHorExtr25') }}</td>
                                 <td>{{ calculateTotal('nHorExtr35') }}</td>
                                 <td>{{ calculateTotal('nHorExtr50') }}</td>
