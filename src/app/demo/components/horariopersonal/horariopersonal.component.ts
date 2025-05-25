@@ -1,7 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ConfirmationService, MessageService, PrimeNGConfig } from 'primeng/api';
+import {
+    FormBuilder,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+} from '@angular/forms';
+import {
+    ConfirmationService,
+    MessageService,
+    PrimeNGConfig,
+} from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -19,13 +28,12 @@ import { MotivoHorarioService } from '../../service/motivo-horario.service';
 import { motivo_horario } from '../../model/motivo_horario';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
-import { min } from 'rxjs';
 import { AsistenciaService } from '../../service/asistencia.service';
 import { PLanilla_Combo } from '../../model/Asistencia';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
-
+import { ConfigService } from '../../service/config.service';
 
 @Component({
     selector: 'app-horariopersonal',
@@ -62,25 +70,13 @@ export class HorariopersonalComponent {
     nombreCargoSeleccionado: string[] = [];
     nombreCargos: { label: string; value: string }[] = [];
     nombreMotivos: { label: string; value: string }[] = [];
-    nombreMotivos1 = [{ label: 'DINAMICO', value: 'DINAMICO' }];
     valoresUnicosPorColumna: {
         [key: string]: { label: string; value: string }[];
     } = {};
+    empleadoSeleccionadoDNI: string = '';
+    empleadoSeleccionadoNombreCompleto: string = '';
 
     @ViewChild('dt') dt: Table;
-
-    cargos = [
-        { label: 'Contabilidad', value: 'Contabilidad' },
-        { label: 'Sistemas', value: 'Sistemas' },
-        { label: 'RRHH', value: 'RRHH' },
-    ];
-
-    data = [
-        { nombreCargo: 'PERMANENTES' },
-        { nombreCargo: 'SPORT' },
-        { nombreCargo: 'PLAZO FIJO' },
-        { nombreCargo: 'OBRERO' },
-    ];
 
     diasSemana = [
         { nombre: 'Lunes', codigo: '01' },
@@ -92,20 +88,14 @@ export class HorariopersonalComponent {
         { nombre: 'Domingo', codigo: '07' },
     ];
 
-    tiposDocumentosIdentidad = [
-        { label: 'C.E', value: 'C.E' },
-        { label: 'DNI', value: 'DNI' },
-    ];
-
     constructor(
-        private fb: FormBuilder,
         private horarioPersonalService: HorariopersonalService,
         private mS: MessageService,
-        private confirmationService: ConfirmationService,
         private bS: BreadcrumbService,
         private motivoHorarioService: MotivoHorarioService,
         private asistenciaService: AsistenciaService,
-        private primengConfig: PrimeNGConfig
+        private primengConfig: PrimeNGConfig,
+        private configService: ConfigService
     ) {}
 
     ngOnInit(): void {
@@ -121,10 +111,7 @@ export class HorariopersonalComponent {
         this.bS.currentBreadcrumbs$.subscribe((bc) => {
             this.items = bc;
         });
-        // this.initForm();
         this.refrescar();
-        console.log('h', this.nombreCargos);
-        console.table(this.horarioPersonalLista);
         this.traducirMenu();
     }
 
@@ -143,22 +130,22 @@ export class HorariopersonalComponent {
             removeRule: 'Eliminar regla',
             clear: 'Limpiar',
             apply: 'Aplicar',
-            // Puedes seguir agregando otras traducciones si las necesitas
         });
     }
 
     loadHorarioPersonal(): void {
-        this.horarioPersonalService.getAll('01').subscribe({
-            next: (data) => {
-                console.log('Respuesta del API:', data);
-                this.horarioPersonalLista = Array.isArray(data) ? data : [];
-                this.generarValoresUnicos();
-            },
-            error: (err) => {
-                console.error('Error al cargar horarios:', err);
-                this.horarioPersonalLista = [];
-            },
-        });
+        this.horarioPersonalService
+            .getAll(this.configService.getCodigoEmpresa())
+            .subscribe({
+                next: (data) => {
+                    this.horarioPersonalLista = Array.isArray(data) ? data : [];
+                    this.generarValoresUnicos();
+                },
+                error: (err) => {
+                    console.error('Error al cargar horarios:', err);
+                    this.horarioPersonalLista = [];
+                },
+            });
     }
 
     esMotivoInactivo(idMotivo: string): boolean {
@@ -186,8 +173,14 @@ export class HorariopersonalComponent {
         });
     }
 
-    abrirModalConDatos(idEmpleado: number): void {
+    abrirModalConDatos(horario: horario_personal): void {
         this.displayModal = true;
+        let idEmpleado = horario.idEmpleado;
+
+        this.empleadoSeleccionadoDNI = horario.nroDocumento || '';
+        this.empleadoSeleccionadoNombreCompleto = `${horario.nombres ?? ''} ${
+            horario.apellidos ?? ''
+        }`.trim();
 
         this.horarioPersonalService
             .getHorarioPorEmpleado(idEmpleado)
@@ -199,13 +192,15 @@ export class HorariopersonalComponent {
                 error: (err) => console.error('Error cargando horarios: ', err),
             });
 
-        this.motivoHorarioService.getAll('01').subscribe({
-            next: (data) => {
-                this.motivos = data;
-                console.log(this.motivos);
-            },
-            error: (err) => console.error('Error cargando motivos: ', err),
-        });
+        // cargar motivos también
+        this.motivoHorarioService
+            .getAll(this.configService.getCodigoEmpresa())
+            .subscribe({
+                next: (data) => {
+                    this.motivos = data;
+                },
+                error: (err) => console.error('Error cargando motivos: ', err),
+            });
     }
 
     getDatosDia(codigoDia: string): any {
@@ -214,6 +209,8 @@ export class HorariopersonalComponent {
 
     cerrarDialogo(): void {
         this.displayModal = false;
+        this.empleadoSeleccionadoDNI = '';
+        this.empleadoSeleccionadoNombreCompleto = '';
     }
 
     formatHora(date: any): string {
@@ -282,42 +279,48 @@ export class HorariopersonalComponent {
             return;
         }
 
-        const xml = `<DataSet>${this.horarioEmpleado
-            .map(
-                (d) => `
-            <tbl>
-              <EmpresaCod>${d.empresaCod}</EmpresaCod>
-              <IdEmpleado>${d.idEmpleado}</IdEmpleado>
-              <dia>${d.dia}</dia>
-              <IdMotivo>${d.idMotivo}</IdMotivo>
-              <horaingreso>${this.formatHora(d.horaingreso)}</horaingreso>
-              <horasalida>${this.formatHora(d.horasalida)}</horasalida>
-            </tbl>`
-            )
-            .join('')}
-          </DataSet>`;
+        const registros = this.horarioEmpleado.map((d) => ({
+            empresaCod: d.empresaCod,
+            idEmpleado: d.idEmpleado,
+            dia: d.dia,
+            idMotivo: d.idMotivo,
+            horaingreso: this.formatHora(d.horaingreso),
+            horasalida: this.formatHora(d.horasalida),
+        }));
 
-        // Llamada al servicio actualizado, que envía { xmlhorarios: xml } en el body
-        this.horarioPersonalService.actualizarHorariosMasivo(xml).subscribe({
-            next: () => {
-                console.log('XML enviado:', xml);
+        // Ejecutar cada llamada secuencialmente
+        let errores = 0;
+        const procesar = async () => {
+            for (const registro of registros) {
+                try {
+                    await this.horarioPersonalService
+                        .actualizarHorario(registro)
+                        .toPromise();
+                } catch (error) {
+                    errores++;
+                    console.error('Error al actualizar un horario:', error);
+                }
+            }
+
+            if (errores === 0) {
                 this.mS.add({
                     severity: 'success',
                     summary: 'Éxito',
-                    detail: 'Horarios actualizados correctamente',
+                    detail: 'Todos los horarios fueron actualizados correctamente',
                 });
-                this.displayModal = false;
-                this.loadHorarioPersonal();
-            },
-            error: (err) => {
+            } else {
                 this.mS.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No se pudo actualizar el horario',
+                    severity: 'warn',
+                    summary: 'Proceso parcial',
+                    detail: `${errores} de ${registros.length} registros fallaron al actualizarse`,
                 });
-                console.error('Error al actualizar horarios:', err);
-            },
-        });
+            }
+
+            this.displayModal = false;
+            this.loadHorarioPersonal();
+        };
+
+        procesar();
     }
 
     cargarCargos() {
@@ -328,52 +331,24 @@ export class HorariopersonalComponent {
                     label: cargo.nombrePlanilla,
                     value: cargo.nombrePlanilla,
                 }));
-                console.log('lista cargos \n', this.nombreCargos);
             });
     }
 
     cargarMotivos() {
-        this.motivoHorarioService.getAll('01').subscribe({
-            next: (data) => {
-                this.nombreMotivos = data.map((motivo) => ({
-                    value: motivo.descripcion,
-                    label: motivo.descripcion,
-                }));
-                console.log('lista motivos \n', this.nombreMotivos);
-            },
-            error: (err) => console.error('Error cargando motivos: ', err),
-        });
+        this.motivoHorarioService
+            .getAll(this.configService.getCodigoEmpresa())
+            .subscribe({
+                next: (data) => {
+                    this.nombreMotivos = data.map((motivo) => ({
+                        value: motivo.descripcion,
+                        label: motivo.descripcion,
+                    }));
+                },
+                error: (err) => console.error('Error cargando motivos: ', err),
+            });
     }
 
-    dinamicoFilterFn = (value: any, filters: any[]): boolean => {
-        console.log(
-            'Entró a dinamicoFilterFn, value:',
-            value,
-            'filters:',
-            filters
-        );
-
-        if (!filters || filters.length === 0) {
-            return true;
-        }
-
-        const esDinamico =
-            typeof value === 'string' &&
-            /^\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}$/.test(value.trim());
-
-        for (const filtro of filters) {
-            if (filtro === 'DINAMICO' && esDinamico) {
-                return true;
-            } else if (value === filtro) {
-                return true;
-            }
-        }
-
-        return false;
-    };
-
     logYFiltrar(selectedValues: any[], filterCallback: Function) {
-        console.log('Valores seleccionados:', selectedValues);
         filterCallback(selectedValues);
     }
 
@@ -414,8 +389,5 @@ export class HorariopersonalComponent {
                 })
             );
         });
-
-        console.log('Valores únicos generados:', this.valoresUnicosPorColumna);
     }
 }
-

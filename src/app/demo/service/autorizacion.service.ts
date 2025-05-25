@@ -38,8 +38,6 @@ export class AutorizacionService {
 
     autenticacion(autenticacion: Autenticacion): Observable<ApiResponse<Autenticacion>> {
         const url = `${this.apiUrl}/SpList`;
-        console.log("autenticacion");
-        console.log(url);
         return this.http.post<ApiResponse<Autenticacion>>(url, autenticacion).pipe(
             tap(response => {
                 if (response.isSuccess) {

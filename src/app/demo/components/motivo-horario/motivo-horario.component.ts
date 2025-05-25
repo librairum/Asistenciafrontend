@@ -14,6 +14,7 @@ import { MotivoHorarioService } from '../../service/motivo-horario.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { BreadcrumbService } from '../../service/breadcrumb.service';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ConfigService } from '../../service/config.service';
 
 @Component({
     selector: 'app-motivo-horario',
@@ -54,11 +55,11 @@ export class MotivoHorarioComponent implements OnInit {
         private motivoHorarioSerice: MotivoHorarioService,
         private mS: MessageService,
         private confirmationService: ConfirmationService,
-        private bS: BreadcrumbService
+        private bS: BreadcrumbService,
+        private configService: ConfigService
     ) {}
 
     ngOnInit(): void {
-        console.log('Hola desde motivo-horario');
         this.bS.setBreadcrumbs([
             { icon: 'pi pi-home', routerLink: '/Menu' },
             { label: 'Motivo Horario', routerLink: '/Menu/motivohorario' },
@@ -79,10 +80,9 @@ export class MotivoHorarioComponent implements OnInit {
     }
 
     loadMotivoHorario(): void {
-        this.motivoHorarioSerice.getAll('01').subscribe({
+        this.motivoHorarioSerice.getAll(this.configService.getCodigoEmpresa()).subscribe({
             next: (data) => (this.motivoHorarioLista = data),
         });
-        console.log(this.motivoHorarioLista);
     }
 
     onRowEditInit(motivoHorario: motivo_horario) {
@@ -94,7 +94,7 @@ export class MotivoHorarioComponent implements OnInit {
 
     onRowEditSave(motivoHorario: motivo_horario) {
 
-        motivoHorario.empresaCod = '01';
+        motivoHorario.empresaCod = this.configService.getCodigoEmpresa();
 
         motivoHorario.flagCalculaTiempo = motivoHorario.flagCalculaTiempo ? 'S' : 'N';
 
@@ -141,12 +141,11 @@ export class MotivoHorarioComponent implements OnInit {
         if (this.motivoHorarioForm.valid) {
             const raw = this.motivoHorarioForm.value;
             const motivoHorario: motivo_horario = {
-                empresaCod: '01',
+                empresaCod: this.configService.getCodigoEmpresa(),
                 idMotivo: raw.idMotivo,
                 descripcion: raw.descripcion,
                 flagCalculaTiempo: raw.flagCalculaTiempo ? 'S' : 'N',
             };
-            console.log('datos enviados', motivoHorario);
 
             this.motivoHorarioSerice.create(motivoHorario).subscribe({
                 next: () => {
@@ -178,7 +177,7 @@ export class MotivoHorarioComponent implements OnInit {
             header: 'Confirmar eliminación',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                const empresaCod = '01';
+                const empresaCod = this.configService.getCodigoEmpresa();
                 this.motivoHorarioSerice
                     .delete(empresaCod, motivo.idMotivo)
                     .subscribe({

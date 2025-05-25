@@ -14,7 +14,7 @@
 
     <div class="card">
         <p-dialog
-            header="Configuración"
+            [header]="'Configuración de ' + empleadoSeleccionadoDNI + ' - ' + empleadoSeleccionadoNombreCompleto"
             [(visible)]="displayModal"
             [modal]="true"
             style="width: 600px;"
@@ -34,7 +34,7 @@
                   <td class="p-2">{{ dia.nombre }}</td>
                   <td class="p-2">
                     <p-dropdown
-                      style="min-height: 195px;"
+                      [ngStyle]="{'min-height': '195px;'}"
                       [options]="motivos"
                       optionLabel="descripcion"
                       optionValue="idMotivo"
@@ -407,7 +407,7 @@
             <td>
                 <div class="flex justify-content-center gap-2">
                 <button pButton pInitEditableRow
-                        (click)="abrirModalConDatos(horario.idEmpleado)"
+                        (click)="abrirModalConDatos(horario)"
                         icon="pi pi-pencil" pTooltip="Abrir Configuración"
                         [disabled]="isNew || isEditingAnyRow"
                         class="p-button-rounded p-button-text p-button-sm"></button>

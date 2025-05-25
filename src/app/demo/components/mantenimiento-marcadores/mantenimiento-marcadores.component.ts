@@ -75,7 +75,6 @@ export class MantenimientoMarcadoresComponent implements OnInit {
         this.loading = true;
         this.mrS.getMarcadores().subscribe({
             next: (data) => {
-                //console.log('Datos obtenidos:', data); // Console log para verificar la data
                 this.marcadores = data;
 
                 this.marcadores.forEach((marcador, index) => {
@@ -107,7 +106,7 @@ export class MantenimientoMarcadoresComponent implements OnInit {
             this.table.cancelRowEdit(index);
         } else {
             this.editingRowIndex = index; // Marca la fila en edición
-       
+
             this.originalMarcadores[marcador.marcadorProveedorCod] = {
                 ...marcador,
             };
@@ -117,8 +116,6 @@ export class MantenimientoMarcadoresComponent implements OnInit {
     onRowEditSave(marcador: Marcador, index: number): void {
         this.editingRowIndex = null; // Desmarca la edición
 
-   
-        //console.log('paara actualizar:', marcador); // Console log para verificar la data
         if (marcador.marcadorDesc != '' && marcador.marcadorClienteCod != '') {
             const marcador_ins: Marcador_ins = {
                 marcadorClienteCod: marcador.marcadorClienteCod,
@@ -126,7 +123,6 @@ export class MantenimientoMarcadoresComponent implements OnInit {
                 marcadorDesc: marcador.marcadorDesc,
                 marcadorEstado: marcador.marcadorEstado,
             };
-            //console.log('paara actualizar:', marcador_ins); // Console log para verificar la data
 
             this.mrS.createMarcador(marcador_ins).subscribe({
                 next: () => {

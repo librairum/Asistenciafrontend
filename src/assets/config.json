@@ -1,0 +1,9 @@
+{
+    "url": "http://localhost:2060",
+    "theme": "dark",
+    "appVersion": "2.0.0",
+    "moduloEmpresa": "01",
+    "codigoEmpresa": "01",
+    "tipoAplicacion": "01",
+    "estado": "01"
+}

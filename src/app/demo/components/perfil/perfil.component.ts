@@ -90,7 +90,6 @@ export class PerfilComponent implements OnInit {
     loadPerfil(): void {
         this.maS.getAll().subscribe({
             next: (data) => {
-                //console.log('Datos obtenidos:', data); // Console log para verificar la data
                 this.mPerfilList = data;
             },
             error: (err) => {
@@ -107,7 +106,6 @@ export class PerfilComponent implements OnInit {
             }
         }
         this.link.navigate(['Menu/asignarpermiso'],navigationExtras)
-        console.log(navigationExtras);
     }
 
     onRowEditInit(perfil: any, index: number) {

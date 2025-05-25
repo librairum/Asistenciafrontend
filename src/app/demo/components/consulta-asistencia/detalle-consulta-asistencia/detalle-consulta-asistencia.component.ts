@@ -38,8 +38,6 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
         if (navigation?.extras?.state) {
 
             this.navigationData = navigation.extras.state;
-            console.log("Datoa de navegacion");
-            console.log(this.navigationData);
         } else {
             this.rout.navigate(['/Menu/asistencia']);
         }
@@ -62,10 +60,10 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
     }
 
     cargarDetalleAsistencia() {
-        
+
         const fechaInicio = this.aS.formatDateForApi(this.navigationData.fechaInicio);
         const fechaFin = this.aS.formatDateForApi(this.navigationData.fechaFin);
-        
+
         this.aS.getCalculoDetalle(
             fechaInicio,
             fechaFin,
@@ -75,8 +73,6 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
                 if (response.isSuccess) {
 
                     this.asistencias = response.data;
-                    console.log("Data de asistencia detalle");
-                    console.log(this.asistencias);
                 }
             },
             error: (error) => console.error('Error:', error)
@@ -122,7 +118,6 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
     /*
     calculateTotal(field: string): string {
         // Función para sumar tiempos en formato HH:mm
-        // console.log("campo a calcular:" + field);
         const sumTimes = (times: string[]): string => {
             let totalMinutes = times.reduce((acc, time) => {
                 const [hours, minutes] = time.split(':').map(Number);
@@ -156,7 +151,7 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
         const filteredData = this.dt1?.filteredValue;
         if (filteredData && filteredData.length > 0) {
             const filteredColumnsData = filteredData.map((item: any) => ({
-                item: item.item,                
+                item: item.item,
                 codigotrabajador: item.codigotrabajador,
                 nombretrabajador:item.nombreTrabajador,
                 Fecha_Marcacion: item.fechaMarcacion,
@@ -171,7 +166,7 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
                 // MinTardanza: item.minTardanza,
                 HExtr25: item.nHorExtr25,
                 HExtr35: item.nHorExtr35,
-                HExtr50:item.nHorExtr50,                
+                HExtr50:item.nHorExtr50,
                 HExtr60: item.nHorExtr60,
                 HExtr100:item.nHorExtr100,
                 HExtr100Obrero:item.nHorExtr100Obrero
@@ -189,7 +184,7 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
         } else if (this.asistencias && this.asistencias.length > 0) {
             const filteredColumnsData = this.asistencias.map(
                 (item: any) => ({
-                    item: item.item,                
+                    item: item.item,
                     codigotrabajador: item.codigotrabajador,
                     nombretrabajador:item.nombreTrabajador,
                     Fecha_Marcacion: item.fechaMarcacion,
@@ -204,7 +199,7 @@ export class DetalleConsultaAsistenciaComponent implements OnInit {
                     // MinTardanza: item.minTardanza,
                     HExtr25: item.nHorExtr25,
                     HExtr35: item.nHorExtr35,
-                    HExtr50:item.nHorExtr50,                
+                    HExtr50:item.nHorExtr50,
                     HExtr60: item.nHorExtr60,
                     HExtr100:item.nHorExtr100,
                     HExtr100Obrero:item.nHorExtr100Obrero

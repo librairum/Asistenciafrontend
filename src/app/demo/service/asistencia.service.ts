@@ -12,7 +12,7 @@ export class AsistenciaService {
     // private apiUrl='http://104.225.142.105:2060/Asistencia';
     private apiUrl='';
 
-    constructor(private http: HttpClient,  private gs:GlobalserviceService) { 
+    constructor(private http: HttpClient,  private gs:GlobalserviceService) {
         this.apiUrl = `${this.gs.getUrl_Servidor()}/Asistencia`;
 
     }
@@ -20,14 +20,14 @@ export class AsistenciaService {
     //listar las asistencias
     getCalculoResumen(fechainicio:string,fechafin:string,
         codigoplanilla:string):Observable<ApiResponse<Asistencia>>{
-            
+
         const params=new HttpParams()
         .set('fechainicio', fechainicio)
         .set('fechafin', fechafin)
         .set('codigoplanilla', codigoplanilla);
 
 
-        
+
         return this.http.get<ApiResponse<Asistencia>>(`${this.apiUrl}/SpListCalculoResumen`, { params });
     }
 
@@ -38,7 +38,6 @@ export class AsistenciaService {
         const year = adjustedDate.getFullYear();
         const month = String(adjustedDate.getMonth() + 1).padStart(2, '0');
         const day = String(adjustedDate.getDate()).padStart(2, '0');
-        console.log(`${year}${month}${day}`);
         return `${year}${month}${day}`;
     }
 

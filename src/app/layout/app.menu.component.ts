@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
 import { PermisosxperfilService } from '../demo/service/permisosxperfil.service';
 import { GlobalserviceService } from '../demo/service/globalservice.service';
+import { ConfigService } from '../demo/service/config.service';
 
 interface MenuItem{
     label: string;
@@ -20,8 +21,8 @@ export class AppMenuComponent implements OnInit {
 
     model: MenuItem[] = [];
 
-    constructor(public layoutService: LayoutService, private pS: PermisosxperfilService, 
-        private gS:GlobalserviceService) { }
+    constructor(public layoutService: LayoutService, private pS: PermisosxperfilService,
+        private gS:GlobalserviceService, private configService: ConfigService) { }
 
     ngOnInit() {
         this.loadMenu()
@@ -29,7 +30,7 @@ export class AppMenuComponent implements OnInit {
 
     loadMenu(){
         const codigoPerfil=this.gS.getCodigoPerfil();
-        const modulo='01';
+        const modulo = this.configService.getModuloEmpresa();
 
         this.pS.getPermisosPorPerfil(codigoPerfil,modulo).subscribe(response=>{
             if(response.isSuccess && response.data){

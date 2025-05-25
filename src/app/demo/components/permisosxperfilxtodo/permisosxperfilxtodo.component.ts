@@ -18,6 +18,7 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { permisosxperfil } from '../../model/permisosxperfil';
 import { DropdownModule } from 'primeng/dropdown';
 import { Router, RouterModule } from '@angular/router';
+import { ConfigService } from '../../service/config.service';
 
 @Component({
   selector: 'app-permisosxperfilxtodo',
@@ -36,7 +37,7 @@ export class PermisosxperfilxtodoComponent implements OnInit {
     selectedperfil:string = "";
     navigationData:any;
 
-    constructor(private fb:FormBuilder,private ptS:PermisosxperfilxtodoService,private gS:GlobalserviceService,private mS:MessageService,private bS:BreadcrumbService,private link: Router) {
+    constructor(private fb:FormBuilder,private ptS:PermisosxperfilxtodoService,private gS:GlobalserviceService,private mS:MessageService,private bS:BreadcrumbService,private link: Router , private configService: ConfigService) {
         const navigation=link.getCurrentNavigation();
         if(navigation?.extras?.state){
             this.navigationData=navigation.extras.state
@@ -58,7 +59,7 @@ export class PermisosxperfilxtodoComponent implements OnInit {
         this.loadPerfiles()
         this.permisosForm=this.fb.group({
             codigoPerfil:this.navigationData.codigo,
-            codModulo:'01'
+            codModulo:this.configService.getModuloEmpresa()
         });
         this.cargarPermisos();
 
@@ -269,7 +270,7 @@ export class PermisosxperfilxtodoComponent implements OnInit {
 
         const xmlPermisos = this.generatePermisosXML();
 
-        this.ptS.insertarPermisos('01', this.selectedperfil, xmlPermisos).subscribe({
+        this.ptS.insertarPermisos(this.configService.getModuloEmpresa(), this.selectedperfil, xmlPermisos).subscribe({
             next: (response: ApiResponse<permisosxperfilxtodo>) => {
                 if (response.isSuccess) {
                     this.mS.add({
