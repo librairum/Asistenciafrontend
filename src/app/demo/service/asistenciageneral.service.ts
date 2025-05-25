@@ -14,10 +14,9 @@ export class AsistenciaGeneralService {
     // private apiUrl = 'http://104.225.142.105:2060/Asistencia';
     // private apiUrl = 'http://localhost:2060/Asistencia';
     private apiUrl='';
-
-        constructor(private http: HttpClient,  private configService:ConfigService) {
-            this.apiUrl = `${this.configService.getApiUrl()}/Asistencia`;
-        }
+    constructor(private http: HttpClient, private gs: GlobalserviceService, private configService: ConfigService) {
+        this.apiUrl = `${this.configService.getApiUrl()}/Asistencia`;
+    }
 
     getAsistenciaByDateRange(fechainicio: string,fechafin: string): Observable<Asistenciageneral[]> {
         return this.http.get<ApiResponse<Asistenciageneral>>(`${this.apiUrl}/SpListAsistenciGeneral?fechainicio=${fechainicio}&fechafin=${fechafin}`)

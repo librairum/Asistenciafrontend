@@ -154,6 +154,7 @@ export class ConsultaAsistenciaComponent implements OnInit {
             next: (response) => {
                 if (response.isSuccess) {
                     this.asistencia = response.data;
+                    console.log(response.data);
                 } else {
                     this.asistencia = [];
                     this.ms.add({ severity: 'error', summary: 'Error', detail: 'No se encontro ningun registro' });
@@ -171,6 +172,9 @@ export class ConsultaAsistenciaComponent implements OnInit {
 
     viewDetails(rowData: Asistencia) {
         // Implementar lógica para ver detalles
+        //console.log("ver detalle fechas:");
+        //console.log(this.startDate);
+        //console.log(this.endDate);
         const navigationExtras = {
             state: {
                 codigoEmpleado: rowData.codigoTrabajador,

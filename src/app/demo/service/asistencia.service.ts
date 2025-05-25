@@ -13,8 +13,9 @@ export class AsistenciaService {
     // private apiUrl='http://104.225.142.105:2060/Asistencia';
     private apiUrl='';
 
-    constructor(private http: HttpClient,  private configService:ConfigService) {
+    constructor(private http: HttpClient,  private gs:GlobalserviceService, private configService: ConfigService) {
         this.apiUrl = `${this.configService.getApiUrl()}/Asistencia`;
+
     }
 
     //listar las asistencias
@@ -25,6 +26,9 @@ export class AsistenciaService {
         .set('fechainicio', fechainicio)
         .set('fechafin', fechafin)
         .set('codigoplanilla', codigoplanilla);
+
+            console.log(fechafin);
+            console.log(fechainicio);
 
 
 
@@ -38,6 +42,7 @@ export class AsistenciaService {
         const year = adjustedDate.getFullYear();
         const month = String(adjustedDate.getMonth() + 1).padStart(2, '0');
         const day = String(adjustedDate.getDate()).padStart(2, '0');
+        console.log(`${year}${month}${day}`);
         return `${year}${month}${day}`;
     }
 

@@ -151,6 +151,7 @@ export class AsistenciageneralComponent implements OnInit {
             .getAsistenciaByDateRange(this.stardate, this.enddate)
             .subscribe({
                 next: (data) => {
+                    //console.log('Datos obtenidos:', data); // Console log para verificar la data
                     this.Asistenciagenerales = data;
                     this.Asistenciagenerales.forEach(
                         (Asistenciageneral, index) => {
