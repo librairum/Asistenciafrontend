@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Marcaciones } from '../model/Marcaciones';
 import { GlobalserviceService } from './globalservice.service';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,9 @@ export class MarcacionesService {
     // private apiUrl='http://104.225.142.105:2060/Marcaciones'
     // private apiUrl='http://localhost:2060/Marcaciones'
     private apiUrl='';
-    constructor(private http:HttpClient,private gs:GlobalserviceService) { 
+    constructor(private http:HttpClient,private configService: ConfigService) {
 
-      this.apiUrl = `${gs.getUrl_Servidor()}/Marcaciones`;
+      this.apiUrl = `${configService.getApiUrl()}/Marcaciones`;
     }
 
   //listar

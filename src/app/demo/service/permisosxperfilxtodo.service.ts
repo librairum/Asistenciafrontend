@@ -5,6 +5,7 @@ import { ApiResponse } from '../model/api_response';
 import { perfilxpermisos, permisosxperfilxtodo } from '../model/permisosxperfilxtodo';
 import { O } from '@fullcalendar/core/internal-common';
 import { GlobalserviceService } from './globalservice.service';
+import { ConfigService } from './config.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,9 +15,9 @@ export class PermisosxperfilxtodoService {
 
     private apiUrl='';
     private apiUrl2='';
-    constructor(private http:HttpClient, private gs:GlobalserviceService) { 
-        this.apiUrl = `${gs.getUrl_Servidor()}/Permisos`;
-        this.apiUrl2 = `${gs.getUrl_Servidor()}/Perfil/Splist`;
+    constructor(private http:HttpClient, private configService: ConfigService) {
+        this.apiUrl = `${configService.getApiUrl()}/Permisos`;
+        this.apiUrl2 = `${configService.getApiUrl()}/Perfil/Splist`;
 
     }
 

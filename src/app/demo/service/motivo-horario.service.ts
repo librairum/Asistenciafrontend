@@ -4,14 +4,16 @@ import { GlobalserviceService } from './globalservice.service';
 import { ApiResponse } from '../model/api_response';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { motivo_horario } from '../model/motivo_horario';
+import { ConfigService } from './config.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class MotivoHorarioService {
     private apiUrl = '';
-    constructor(private http: HttpClient, private gs: GlobalserviceService) {
-        this.apiUrl = `${gs.getUrl_Servidor()}`;
+
+    constructor(private http: HttpClient,  private configService:ConfigService) {
+        this.apiUrl = `${this.configService.getApiUrl()}`;
     }
 
     getAll(EmpresaCod: string): Observable<motivo_horario[]> {

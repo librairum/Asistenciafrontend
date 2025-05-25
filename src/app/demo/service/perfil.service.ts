@@ -4,14 +4,15 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../model/api_response';
 import { Perfil } from '../model/perfil';
 import { GlobalserviceService } from './globalservice.service';
+import { ConfigService } from './config.service';
 @Injectable({
   providedIn: 'root'
 })
 export class PerfilService {
     // private apiUrl='http://104.225.142.105:2060/Perfil'
     private apiUrl='';
-    constructor(private http:HttpClient, private gs:GlobalserviceService) {
-        this.apiUrl = `${gs.getUrl_Servidor()}/Perfil`;
+    constructor(private http:HttpClient, private configService:ConfigService) {
+        this.apiUrl = `${configService.getApiUrl()}/Perfil`;
      }
 
     //listar todo

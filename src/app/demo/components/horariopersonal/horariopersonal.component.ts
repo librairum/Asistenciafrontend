@@ -242,7 +242,7 @@ export class HorariopersonalComponent {
 
     guardarHorario(): void {
         const motivoPorAsignar = this.motivos.find(
-            (m) => m.descripcion.toUpperCase() === 'POR ASIGNAR'
+            (m) => m.idMotivo === '00'
         );
         const motivoPorAsignarId = motivoPorAsignar?.idMotivo;
 

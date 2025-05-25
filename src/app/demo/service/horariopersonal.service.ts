@@ -17,7 +17,7 @@ export class HorariopersonalService {
         private gs: GlobalserviceService,
         private configService: ConfigService
     ) {
-        this.apiUrl = `${gs.getUrl_Servidor()}/HorarioPersonal`;
+        this.apiUrl = `${configService.getApiUrl()}/HorarioPersonal`;
     }
 
     getAll(EmpresaCod: string): Observable<horario_personal[]> {

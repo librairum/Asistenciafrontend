@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { Asistencia, AsistenciaDetalle, PLanilla_Combo } from '../model/Asistencia';
 import { ApiResponse } from '../model/api_response';
 import { GlobalserviceService } from './globalservice.service';
+import { ConfigService } from './config.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,9 +13,8 @@ export class AsistenciaService {
     // private apiUrl='http://104.225.142.105:2060/Asistencia';
     private apiUrl='';
 
-    constructor(private http: HttpClient,  private gs:GlobalserviceService) {
-        this.apiUrl = `${this.gs.getUrl_Servidor()}/Asistencia`;
-
+    constructor(private http: HttpClient,  private configService:ConfigService) {
+        this.apiUrl = `${this.configService.getApiUrl()}/Asistencia`;
     }
 
     //listar las asistencias

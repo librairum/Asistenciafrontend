@@ -4,6 +4,7 @@ import { Autenticacion } from '../model/autentication';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { ApiResponse } from '../model/api_response';
 import { GlobalserviceService } from './globalservice.service';
+import { ConfigService } from './config.service';
 
 @Injectable({
     providedIn: 'root'
@@ -16,8 +17,8 @@ export class AutorizacionService {
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.checkAuthStatus());
 
 
-    constructor(private http: HttpClient, private gs:GlobalserviceService) {
-        this.apiUrl =  `${this.gs.getUrl_Servidor()}/Autenticacion`;
+    constructor(private http: HttpClient, private configService: ConfigService) {
+        this.apiUrl =  `${this.configService.getApiUrl()}/Autenticacion`;
         // Agregar listener para el evento beforeunload
         window.addEventListener('beforeunload', () => {
             this.logout();

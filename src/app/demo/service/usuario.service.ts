@@ -4,23 +4,24 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { ListarPerfil, Usuario, UsuarioCrear } from '../model/Usuario';
 import { ApiResponse } from '../model/api_response';
 import { GlobalserviceService } from './globalservice.service';
+import { ConfigService } from './config.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UsuarioService {
     // private apiUrl = 'http://104.225.142.105:2060/Usuario';
-    
+
     // private apiUrlPerfil = 'http://104.225.142.105:2060/Perfil';
-    
+
     //private apiUrl = 'http://localhost:2060/Usuario';
     //private apiUrlPerfil = 'http://localhost:2060/Perfil';
     private apiUrl = '';
     private apiUrlPerfil = '';
-    constructor(private http: HttpClient, private gs:GlobalserviceService) {
+    constructor(private http: HttpClient, private configService: ConfigService) {
 
-         this.apiUrl = `${gs.getUrl_Servidor()}/Usuario`;
-         this.apiUrlPerfil = `${gs.getUrl_Servidor()}/Perfil`;
+         this.apiUrl = `${configService.getApiUrl()}/Usuario`;
+         this.apiUrlPerfil = `${configService.getApiUrl()}/Perfil`;
      }
 
     getAllPerfil(): Observable<ListarPerfil[]> {

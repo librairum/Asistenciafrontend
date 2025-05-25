@@ -5,6 +5,7 @@ import { Marcador } from '../model/Marcador';
 import { Marcador_ins } from '../model/Marcador';
 import { ApiResponse } from '../model/api_response';
 import { GlobalserviceService } from './globalservice.service';
+import { ConfigService } from './config.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -12,10 +13,10 @@ export class MarcadorService {
     // private apiUrl = 'http://104.225.142.105:2060/Marcador';
     // private apiUrl = 'http://localhost:2060/Marcador';
     private apiUrl ='';
-    constructor(private http: HttpClient, private gs:GlobalserviceService) {
-        this.apiUrl = `${gs.getUrl_Servidor()}/Marcador`;
 
-    }
+        constructor(private http: HttpClient,  private configService:ConfigService) {
+            this.apiUrl = `${this.configService.getApiUrl()}/Marcador`;
+        }
 
     // listar todos los marcadores
     getMarcadores(): Observable<Marcador[]> {
