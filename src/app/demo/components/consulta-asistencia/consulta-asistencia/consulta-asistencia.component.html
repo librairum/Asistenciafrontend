@@ -157,6 +157,16 @@
                         (click)="viewDetails(rowData)"
                     ></button>
                 </td>
+                <td>
+                    <!-- Botón PDF: icono PDF y color rojo -->
+                    <button
+                        pButton
+                        icon="pi pi-file-pdf"
+                        label="PDF"
+                        class="p-button-sm p-button-danger"
+                        (click)="generatePDF(rowData)"
+                    ></button>
+                </td>
             </tr>
         </ng-template>
 

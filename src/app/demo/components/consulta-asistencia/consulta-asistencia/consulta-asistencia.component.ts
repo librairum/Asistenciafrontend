@@ -21,6 +21,7 @@ import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { timer } from 'rxjs';
 import * as XLSX from 'xlsx';
+import {jsPDF} from 'jspdf';
 registerLocaleData(localeEs);
 @Component({
     selector: 'app-consulta-asistencia',
@@ -366,6 +367,157 @@ export class ConsultaAsistenciaComponent implements OnInit {
                 detail: 'No se encontró ningún registro para exportar'
             });
         }
+    }
+
+    generatePDF(rowData: any) {
+        const doc = new jsPDF();
+
+        // --- Medidas de columnas ---
+        const x1 = 10;   // borde izquierdo
+        const x2 = 55;   // división 1
+        const x3 = 150;  // división 2
+        const x4 = 200;  // borde derecho
+
+        let y = 15;
+
+        // --- Caja principal ---
+        doc.rect(x1, 10, x4 - x1, 250);
+
+        // --- Cabecera: 2 filas, 3 columnas ---
+        // Líneas verticales
+        doc.line(x2, 10, x2, 45);
+        doc.line(x3, 10, x3, 45);
+
+        // Líneas horizontales
+        doc.line(x1, 45, x4, 45);
+
+        // --- [IMAGEN LOGO] ---
+        fetch('assets/demo/logo.png')
+            .then(res => res.blob())
+            .then(blob => {
+                const reader = new FileReader();
+                reader.onload = (e: any) => {
+                    // Imagen más alta (ajustar y=12, height=28)
+                    doc.addImage(e.target.result, 'PNG', x1 + 3.5, 12, 35, 28);
+
+                    // --- Alineado vertical para columna 2 y 3 ---
+                    // Calcula el centro vertical del header (de y=10 a y=45)
+                    const headerTop = 10;
+                    const headerBottom = 45;
+                    const headerCenter = (headerTop + headerBottom) / 2; // 27.5
+
+                    // Ajusta el espacio entre las dos líneas de texto
+                    const lineSpacing = 6;
+
+                    // Columna 2 (centrado vertical)
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('RECORDATORIO', (x2 + x3) / 2, headerCenter - lineSpacing / 2, { align: 'center' });
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('DPTO. DE RECURSOS HUMANOS', (x2 + x3) / 2, headerCenter + lineSpacing / 2, { align: 'center' });
+
+                    // Columna 3 (centrado vertical)
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Con copia a:', x3 + 3, headerCenter - lineSpacing / 2);
+                    doc.text('Archivo de RRHH', x3 + 3, headerCenter + lineSpacing / 2);
+
+                    // --- Datos principales (A, De, Asunto, Fecha) ---
+                    let yDatos = 45 + 8;
+                    doc.setFontSize(11);
+
+                    // A:
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('A:', x1 + 3, yDatos);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${rowData?.nombretrabajador || 'GARAY DIEGO KILLA WAYRA'}`, x2 + 3, yDatos);
+                    doc.setFont('helvetica', 'italic');
+                    doc.text('PROFESOR', x2 + 3, yDatos + 7);
+
+                    // De:
+                    yDatos += 17;
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('DE:', x1 + 3, yDatos);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('ISRAEL VARGAS PARDO', x2 + 3, yDatos);
+                    doc.setFont('helvetica', 'italic');
+                    doc.text('JEFE DE RECURSOS HUMANOS', x2 + 3, yDatos + 7);
+
+                    // Asunto:
+                    yDatos += 17;
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Asunto:', x1 + 3, yDatos);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('LLAMADO DE ATENCIÓN POR TARDANZA', x2 + 3, yDatos);
+
+                    // Fecha:
+                    yDatos += 14;
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Fecha:', x1 + 3, yDatos);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('4 de junio del 2025', x2 + 3, yDatos);
+
+                    // --- Línea horizontal debajo de los datos principales ---
+                    yDatos += 7;
+                    doc.line(x1, yDatos, x4, yDatos);
+
+                    // --- Cuerpo del mensaje y firma ---
+                    yDatos += 8;
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(10);
+
+                    // Texto justificado: bordes izquierdo y derecho alineados
+                    const parrafos = [
+                        'Por medio de la presente, se le informa que el día 4 de junio del presente año usted incurrió en una falta al presentarse tarde a su lugar de trabajo.',
+                        'Le recomendamos, que el horario de ingreso establecido para su área es a las 07:00, contando con una tolerancia máxima de 15 minutos. A partir de las 7:15:00 AM, se considera tardanza, y si el ingreso ocurre después de las 7:16:00 AM, se considera inasistencia, independientemente de si se presenta posteriormente a la empresa.',
+                        'Al tratarse de la primera ocasión en la que incurre en esta situación, este memorándum constituye únicamente un llamado de atención. No obstante, de repetirse esta conducta, la empresa tomará las medidas correspondientes conforme a lo establecido en el reglamento interno.',
+                        'Sin otro particular, quedamos atentos a su comprensión y cumplimiento.',
+                        'Atentamente,'
+                    ];
+                    let cuerpoY = yDatos + 7;
+                    const margenIzq = x1 + 3;
+                    const anchoTexto = 180;
+
+                    parrafos.forEach(parrafo => {
+                        const lineas = doc.splitTextToSize(parrafo, anchoTexto);
+                        for (let i = 0; i < lineas.length; i++) {
+                            const texto = lineas[i];
+                            // Justifica todas las líneas excepto la última del párrafo y las de un solo palabra
+                            if (i < lineas.length - 1 && texto.trim().indexOf(' ') > 0) {
+                                const palabras = texto.trim().split(/\s+/);
+                                const anchoLinea = palabras.reduce((acc, palabra) => acc + doc.getTextWidth(palabra), 0);
+                                const espacioExtra = (anchoTexto - anchoLinea) / (palabras.length - 1);
+                                let x = margenIzq;
+                                palabras.forEach((palabra, idx) => {
+                                    doc.text(palabra, x, cuerpoY);
+                                    if (idx < palabras.length - 1) {
+                                        x += doc.getTextWidth(palabra) + espacioExtra;
+                                    }
+                                });
+                            } else {
+                                doc.text(texto, margenIzq, cuerpoY);
+                            }
+                            cuerpoY += 6;
+                        }
+                        cuerpoY += 4; // Espacio entre párrafos
+                    });
+
+                    // Firma
+                    cuerpoY += 4;
+                    fetch('assets/demo/logo-firma.png')
+                        .then(res2 => res2.blob())
+                        .then(blob2 => {
+                            const reader2 = new FileReader();
+                            reader2.onload = (e2: any) => {
+                                doc.addImage(e2.target.result, 'PNG', x1 + 3, cuerpoY, 50, 20);
+                                doc.save(`LlamadoAtencion_${rowData?.codigoTrabajador || 'trabajador'}.pdf`);
+                            };
+                            reader2.readAsDataURL(blob2);
+                        });
+                };
+                reader.readAsDataURL(blob);
+            });
     }
 
 }
